@@ -153,12 +153,12 @@ namespace discreteGermGrain
 
 		boost::program_options::options_description options("Usage");
 		options.add_options()
-			("gridGraph", boost::program_options::value<int>(), "(int) The dimension of the square grid graph to use. ")
-			("probability", boost::program_options::value<double>(), "(float) The probability with which a vertex is present. ")
-			("n", boost::program_options::value<int>(), "(int) The number of samples to take. ")
-			("seed", boost::program_options::value<int>(), "(int) The random seed used to generate the random graphs")
+			GRID_GRAPH_OPTION
+			PROBABILITY_OPTION
+			N_OPTION
+			SEED_OPTION
 			("diagnostics", boost::program_options::bool_switch()->default_value(false), "(flag) Should we output diagnostic information?")
-			("help", "Display this message");
+			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
 		try

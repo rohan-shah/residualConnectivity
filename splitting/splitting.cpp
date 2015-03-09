@@ -154,7 +154,7 @@ namespace discreteGermGrain
 			observations.swap(nextSetObservations);
 		}
 	}
-	void doCrudeMCStep(std::vector<DiscreteGermGrainObs>& observations, boost::mt19937& randomSource, Context const& context, int initialRadius, int nGraphs)
+	void doCrudeMCStep(std::vector<DiscreteGermGrainObs>& observations, boost::mt19937& randomSource, Context const& context, int initialRadius, int n)
 	{
 		//set up per-thread random number generators
 		boost::mt19937::result_type perThreadSeeds[100];
@@ -172,7 +172,7 @@ namespace discreteGermGrain
 #ifdef USE_OPENMP
 			#pragma omp for
 #endif
-			for(int i = 0; i < nGraphs; i++)
+			for(int i = 0; i < n; i++)
 			{
 				DiscreteGermGrainObs obs(context, perThreadSource);
 				DiscreteGermGrainSubObs subObs(obs.getSubObservation(initialRadius));
@@ -204,15 +204,14 @@ namespace discreteGermGrain
 	{
 		boost::program_options::options_description options("Usage");
 		options.add_options()
-			("gridGraph", boost::program_options::value<int>(), "(int) The dimension of the square grid graph to use. Incompatible with graphFile")
-			("graphFile", boost::program_options::value<std::string>(), "(string) The path to a graphml file. Incompatible with gridGraph")
-			("probability", boost::program_options::value<double>(), "(float) The probability that a vertex is open")
-			("seed", boost::program_options::value<int>(), "(int) The random seed used to generate the random graphs")
-			("initialRadius", boost::program_options::value<int>(), "(int) The initial radius")
-			("nGraphs", boost::program_options::value<int>(), "(int) The number of graphs initially generated")
-			("splittingFactor", boost::program_options::value<std::vector<float> >()->multitoken(), "(float) The splitting factor to use at every step")
-			("outputFile", boost::program_options::value<std::string>(), "(string, optional) File to output realisations to")
-			("help", "Display this message");
+			INPUT_GRAPH_OPTION
+			PROBABILITY_OPTION
+			SEED_OPTION
+			INITIAL_RADIUS_OPTION
+			N_OPTION
+			SPLITTING_FACTOR_OPTION
+			OUTPUT_FILE_OPTION
+			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
 		try
@@ -259,8 +258,8 @@ namespace discreteGermGrain
 		}
 
 
-		int nGraphs;
-		if(!readNGraphs(variableMap, nGraphs))
+		int n;
+		if(!readN(variableMap, n))
 		{
 			return 0;
 		}
@@ -289,9 +288,9 @@ namespace discreteGermGrain
 		//This means that logProbabilities may or may not contain any data. 
 
 		std::vector<DiscreteGermGrainObs> observations;
-		doCrudeMCStep(observations, randomSource, context, initialRadius, nGraphs);
-		float crudeMCProbability = ((float)observations.size()) / nGraphs;
-		std::cout << "Retaining " << observations.size() << " / " << nGraphs << " observations from crude MC step" << std::endl;		
+		doCrudeMCStep(observations, randomSource, context, initialRadius, n);
+		float crudeMCProbability = ((float)observations.size()) / n;
+		std::cout << "Retaining " << observations.size() << " / " << n << " observations from crude MC step" << std::endl;		
 
 		float finalEstimate;
 		if(initialRadius != 0)

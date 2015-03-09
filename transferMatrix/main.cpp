@@ -13,11 +13,11 @@ namespace discreteGermGrain
 	{
 		boost::program_options::options_description options("Usage");
 		options.add_options()
-			("gridGraph", boost::program_options::value<int>(), "(int) The dimension of the square grid graph to use. ")
+			GRID_GRAPH_OPTION
 			("bySize", boost::program_options::bool_switch()->default_value(false), "(flag) Should we attempt to also count the number of vertices for each subgraph?")
 			("saveMatrix", boost::program_options::bool_switch()->default_value(false), "(flag) Should we save the transition matrix?")
 			("diagnostics", boost::program_options::bool_switch()->default_value(false), "(flag) Should we output diagnostic information?")
-			("help", "Display this message");
+			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
 		try

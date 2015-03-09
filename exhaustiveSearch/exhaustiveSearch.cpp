@@ -16,9 +16,8 @@ namespace discreteGermGrain
 	{
 		boost::program_options::options_description options("Usage");
 		options.add_options()
-			("gridGraph", boost::program_options::value<int>(), "(int) The number of points for each dimension of the square grid. Incompatible with graphFile")
-			("graphFile", boost::program_options::value<std::string>(), "(string) The path to a graphml file. Incompatible with gridGraph")
-			("help", "Display this message");
+			INPUT_GRAPH_OPTION
+			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
 		try

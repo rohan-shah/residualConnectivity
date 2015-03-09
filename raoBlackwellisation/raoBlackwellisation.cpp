@@ -19,13 +19,11 @@ namespace discreteGermGrain
 
 		boost::program_options::options_description options("Usage");
 		options.add_options()
-			("gridGraph", boost::program_options::value<int>(), "(int) The dimension of the square grid graph to use. Incompatible with graphFile and tarusGraph. ")
-			("graphFile", boost::program_options::value<std::string>(), "(string) The path to a graphml file. Incompatible with gridGraph and torusGraph. ")
-			("torusGraph", boost::program_options::value<int>(), "(int) The dimension of the torus graph to use. Incompatible with gridGraph and graphFile. ")
-			("probability", boost::program_options::value<double>(), "(float) The probability that a vertex is open")
-			("n", boost::program_options::value<int>(), "(int) The number of simulations to perform")
-			("seed", boost::program_options::value<int>(), "(int) The random seed used to generate the random graphs")
-			("help", "Display this message");
+			INPUT_GRAPH_OPTION
+			PROBABILITY_OPTION
+			N_OPTION
+			SEED_OPTION
+			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
 		try

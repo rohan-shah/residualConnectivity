@@ -1,4 +1,5 @@
 #include <boost/accumulators/accumulators.hpp>
+#include "arguments.h"
 #include <limits>
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/statistics/sum.hpp>
@@ -19,7 +20,7 @@ namespace discreteGermGrain
 		boost::program_options::options_description options("Usage");
 		options.add_options()
 			("nPoints", boost::program_options::value<int>(), "The number of different values strictly between 0 and 1 to use for the grid search. Values are equally spaced. ")
-			("help", "Display this message");
+			HELP_OPTION;
 		boost::program_options::variables_map variableMap;
 		try
 		{
