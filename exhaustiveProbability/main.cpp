@@ -64,7 +64,7 @@ namespace discreteGermGrain
 
 		std::string message;
 		Context context = Context::gridContext(1, mpf_get_d(probability.get_mpf_t()));
-		if(!readContext(variableMap, context, message))
+		if(!readContext(variableMap, context, mpf_get_d(probability.get_mpf_t()), message))
 		{
 			std::cout << message << std::endl;
 			return 0;

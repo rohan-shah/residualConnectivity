@@ -39,8 +39,8 @@ namespace discreteGermGrain
 			return 0;
 		}
 		std::string message;
-		Context context(Context::gridContext(1, 0));
-		if(!readContext(variableMap, context, message))
+		Context context = Context::gridContext(1, 0.5);
+		if(!readContext(variableMap, context, 0.5, message))
 		{
 			std::cout << message << std::endl;
 			return 0;

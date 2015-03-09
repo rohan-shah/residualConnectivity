@@ -154,7 +154,7 @@ namespace discreteGermGrain
 		boost::program_options::options_description options("Usage");
 		options.add_options()
 			("gridGraph", boost::program_options::value<int>(), "(int) The dimension of the square grid graph to use. ")
-			("probability", boost::program_options::value<float>(), "(float) The probability with which a vertex is present. ")
+			("probability", boost::program_options::value<double>(), "(float) The probability with which a vertex is present. ")
 			("n", boost::program_options::value<int>(), "(int) The number of samples to take. ")
 			("seed", boost::program_options::value<int>(), "(int) The random seed used to generate the random graphs")
 			("diagnostics", boost::program_options::bool_switch()->default_value(false), "(flag) Should we output diagnostic information?")
@@ -189,7 +189,7 @@ namespace discreteGermGrain
 			return 0;
 		}
 
-		float probability;
+		double probability;
 		if(!readProbability(variableMap, probability, message))
 		{
 			std::cout << message << std::endl;

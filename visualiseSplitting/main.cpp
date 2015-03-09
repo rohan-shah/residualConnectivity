@@ -75,14 +75,14 @@ namespace discreteGermGrain
 		readSeed(variableMap, randomSource);
 
 		std::string message;
-		float probability;
+		double probability;
 		if(!readProbability(variableMap, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
 		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, message))
+		if(!readContext(variableMap, context, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;

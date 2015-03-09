@@ -22,7 +22,7 @@ namespace discreteGermGrain
 			("gridGraph", boost::program_options::value<int>(), "(int) The dimension of the square grid graph to use. Incompatible with graphFile and tarusGraph. ")
 			("graphFile", boost::program_options::value<std::string>(), "(string) The path to a graphml file. Incompatible with gridGraph and torusGraph. ")
 			("torusGraph", boost::program_options::value<int>(), "(int) The dimension of the torus graph to use. Incompatible with gridGraph and graphFile. ")
-			("probability", boost::program_options::value<float>(), "(float) The probability that a vertex is open")
+			("probability", boost::program_options::value<double>(), "(float) The probability that a vertex is open")
 			("n", boost::program_options::value<int>(), "(int) The number of simulations to perform")
 			("seed", boost::program_options::value<int>(), "(int) The random seed used to generate the random graphs")
 			("help", "Display this message");
@@ -54,16 +54,15 @@ namespace discreteGermGrain
 			return 0;
 		}
 
-		float probability;
+		double probability;
 		std::string message;
 		if(!readProbability(variableMap, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
-
 		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, message))
+		if(!readContext(variableMap, context, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;

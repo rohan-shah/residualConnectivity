@@ -4,7 +4,6 @@
 #include <boost/graph/connected_components.hpp>
 #include <vector>
 #include "lexographicOrder.h"
-#include "unique_array.h"
 #include <boost/graph/copy.hpp>
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>

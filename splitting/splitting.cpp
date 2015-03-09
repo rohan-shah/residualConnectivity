@@ -206,7 +206,7 @@ namespace discreteGermGrain
 		options.add_options()
 			("gridGraph", boost::program_options::value<int>(), "(int) The dimension of the square grid graph to use. Incompatible with graphFile")
 			("graphFile", boost::program_options::value<std::string>(), "(string) The path to a graphml file. Incompatible with gridGraph")
-			("probability", boost::program_options::value<float>(), "(float) The probability that a vertex is open")
+			("probability", boost::program_options::value<double>(), "(float) The probability that a vertex is open")
 			("seed", boost::program_options::value<int>(), "(int) The random seed used to generate the random graphs")
 			("initialRadius", boost::program_options::value<int>(), "(int) The initial radius")
 			("nGraphs", boost::program_options::value<int>(), "(int) The number of graphs initially generated")
@@ -236,14 +236,14 @@ namespace discreteGermGrain
 		}
 
 		std::string message;
-		float probability;
+		double probability;
 		if(!readProbability(variableMap, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
 		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, message))
+		if(!readContext(variableMap, context, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
