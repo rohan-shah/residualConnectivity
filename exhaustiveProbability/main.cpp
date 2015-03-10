@@ -24,7 +24,6 @@ namespace discreteGermGrain
 	{
 		boost::program_options::options_description options("Usage");
 		options.add_options()
-			INPUT_GRAPH_OPTION
 			PROBABILITY_OPTION
 			HELP_OPTION;
 
@@ -58,14 +57,6 @@ namespace discreteGermGrain
 		}
 		inopProbability = 1 - opProbability;
 
-		Context context = Context::gridContext(1, opProbability);
-		if(!readContext(variableMap, context, opProbability, message))
-		{
-			std::cout << message << std::endl;
-			return 0;
-		}
-		std::size_t nVertices = boost::num_vertices(context.getGraph());
-
 		std::vector<std::string> lines;
 		std::string line;
 		while(std::getline(std::cin, line))
@@ -73,13 +64,7 @@ namespace discreteGermGrain
 			lines.push_back(line);
 		}
 		std::size_t nLines = lines.size();
-		{
-			if(nLines != nVertices + 2)
-			{
-				std::cout << "Invalid number of lines of input entered" << std::endl;
-				return 0;
-			}
-		}
+		std::size_t nVertices = nLines - 2;
 		if(lines[0] != "Number of connected subgraphs with that number of points")
 		{
 			std::cout << "First line was invalid" << std::endl;
