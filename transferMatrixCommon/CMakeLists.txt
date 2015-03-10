@@ -4,7 +4,7 @@ set(CppFiles constructMatrices.cpp constructStates.cpp countSubgraphsBySize.cpp 
 add_library(transferMatrixCommon STATIC ${HeaderFiles} ${CppFiles})
 target_compile_definitions(transferMatrixCommon PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
 target_include_directories(transferMatrixCommon PUBLIC ${Boost_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/transferMatrixCommon)
-target_link_libraries(transferMatrixCommon PUBLIC ${Boost_LIBRARIES})
+target_link_libraries(transferMatrixCommon PUBLIC ${Boost_LIBRARIES} residualConnectivityCommon)
 if(WIN32)
 	set_target_properties(transferMatrixCommon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/ PDB_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/)
 else()

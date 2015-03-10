@@ -7,6 +7,7 @@
 #include "Context.h"
 #include <boost/graph/graphml.hpp>
 #include "arguments.h"
+#include "argumentsMPIR.h"
 namespace discreteGermGrain
 {
 	int main(int argc, char **argv)
@@ -47,8 +48,8 @@ namespace discreteGermGrain
 		}
 
 		std::string message;
-		double opProbability;
-		if(!readProbability(variableMap, opProbability, message))
+		mpfr_class opProbability;
+		if(!readProbabilityString(variableMap, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;

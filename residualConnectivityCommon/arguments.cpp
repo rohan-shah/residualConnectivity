@@ -16,22 +16,6 @@ namespace discreteGermGrain
 		}
 		return true;
 	}
-	bool readProbability(boost::program_options::variables_map& variableMap, double& out, std::string& message)
-	{
-		if(variableMap.count("probability") != 1)
-		{
-			message = "Please enter a single value for input `probability'";
-			return false;
-		}
-		double probability = variableMap["probability"].as<double>();
-		if(probability > 1 || probability < 0)
-		{
-			message = "Please enter a number between 0 and 1 for probability";
-			return false;
-		}
-		out = probability;
-		return true;
-	}
 	bool readGridGraph(boost::program_options::variables_map& variableMap, int& gridDimension, std::string& message)
 	{
 		if(variableMap.count("gridGraph") != 1)
@@ -47,11 +31,11 @@ namespace discreteGermGrain
 		}
 		return true;
 	}
-	bool readContext(boost::program_options::variables_map& variableMap, Context& out, double opProbability, std::string& message)
+	bool readContext(boost::program_options::variables_map& variableMap, Context& out, mpfr_class opProbability, std::string& message)
 	{
 		if(variableMap.count("graphFile") + variableMap.count("gridGraph") + variableMap.count("torusGraph") != 1)
 		{
-			message = "Please enter exactly one of `gridGraph', `graphFile' or `torusGrahp'";
+			message = "Please enter exactly one of `gridGraph', `graphFile' or `torusGraph'";
 			return false;
 		}
 		else if(variableMap.count("graphFile") == 1)

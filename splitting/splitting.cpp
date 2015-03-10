@@ -15,6 +15,7 @@
 #include <omp.h>
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
+#include "argumentsMPIR.h"
 namespace discreteGermGrain
 {
 	void stepOne(const std::vector<DiscreteGermGrainObs>& observations, std::vector<DiscreteGermGrainObs>& finalObservations, std::vector<float>& probabilities, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)
@@ -235,8 +236,8 @@ namespace discreteGermGrain
 		}
 
 		std::string message;
-		double probability;
-		if(!readProbability(variableMap, probability, message))
+		mpfr_class probability;
+		if(!readProbabilityString(variableMap, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;

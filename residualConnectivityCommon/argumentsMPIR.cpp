@@ -2,14 +2,22 @@
 #include <iostream>
 namespace discreteGermGrain
 {
-	bool readProbabilityString(boost::program_options::variables_map& variableMap, mpf_class& out)
+	bool readProbabilityString(boost::program_options::variables_map& variableMap, mpfr_class& out, std::string& message)
 	{
-		if(variableMap.count("probability") != 1)
+		if(variableMap.count("opProbability") != 1)
 		{
-			std::cout << "Please enter exactly one value for input `probability'" << std::endl;
+			message = "Please enter exactly one value for input `opProbability'";
 			return false;
 		}
-		int retVal = mpf_set_str(out.get_mpf_t(), variableMap["probability"].as<std::string>().c_str(), 10);
-		return retVal == 0;
+		try
+		{
+			out = mpfr_class(variableMap["opProbability"].as<std::string>());
+		}
+		catch(...)
+		{
+			message = "Error parsing input `opProbability' as a number"; 
+			return false;
+		}
+		return true;
 	}
 }

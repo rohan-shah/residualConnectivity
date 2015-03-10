@@ -8,6 +8,7 @@
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
 #include <boost/graph/adj_list_serialize.hpp>
+#include "includeNumerics.h"
 namespace discreteGermGrain
 {
 	struct vertexDistanceCache
@@ -50,14 +51,14 @@ namespace discreteGermGrain
 		friend class boost::serialization::access;
 		typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> inputGraph;
 		typedef std::pair<float, float> vertexPosition;
-		Context(boost::shared_ptr<const inputGraph> graph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, float opProbability);
+		Context(boost::shared_ptr<const inputGraph> graph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, mpfr_class opProbability);
 		Context(Context&& other);
 		const std::vector<vertexDistanceCache>& getDistanceCache() const;
 		template<class Archive> void save(Archive& ar, const unsigned int version) const
 		{
 			ar & graph;
-			ar & distanceCache;
 			ar & ordering;
+			ar & opProbability;
 			
 			std::size_t nVertices = boost::num_vertices(*graph);
 			ar & boost::serialization::make_array(shortestDistances.get(), nVertices * nVertices);
@@ -65,8 +66,9 @@ namespace discreteGermGrain
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
 			ar & graph;
-			ar & distanceCache;
 			ar & ordering;
+			ar & opProbability;
+			opProbabilityD = opProbability.convert_to<double>();
 
 			std::size_t nVertices = boost::num_vertices(*graph);
 			boost::shared_array<int> shortestDistances(new int[nVertices * nVertices]);
@@ -78,20 +80,18 @@ namespace discreteGermGrain
 		const int* getShortestDistances() const;
 		const inputGraph& getGraph() const;
 		const std::vector<vertexDistanceCache>& getDistanceCache(int scale) const;
-		static Context gridContext(int gridDimension, float opProbability);
-		static Context torusContext(int dimension, float opProbability);
-		static Context fromFile(std::string path, float opProbability, bool& successful, std::string& message);
+		static Context gridContext(int gridDimension, mpfr_class opProbability);
+		static Context torusContext(int dimension, mpfr_class opProbability);
+		static Context fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message);
 		Context& operator=(Context&& other);
 		const std::vector<vertexPosition>& getVertexPositions() const;
-		double getOperationalProbability() const;
+		mpfr_class getOperationalProbability() const;
+		double getOperationalProbabilityD() const;
 	private:
-		static const int specifiedDistances[];	
-		static const int nSpecifiedDistances;
 		Context();
-		double opProbability;
+		mpfr_class opProbability;
+		double opProbabilityD;
 		boost::shared_ptr<const inputGraph> graph;
-		std::vector<boost::shared_ptr<const std::vector<vertexDistanceCache> > > distanceCache;
-		boost::shared_ptr<const std::vector<vertexDistanceCache> > uninformativeDistanceCache;
 
 		boost::shared_ptr<const std::vector<int> > ordering;
 		boost::shared_array<const int> shortestDistances;

@@ -49,8 +49,8 @@ namespace discreteGermGrain
 			};
 		};
 	}
-	Context::Context(boost::shared_ptr<const inputGraph> unorderedGraph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, float opProbability)
-		: opProbability(opProbability), ordering(ordering), vertexPositions(new std::vector<vertexPosition>())
+	Context::Context(boost::shared_ptr<const inputGraph> unorderedGraph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, mpfr_class opProbability)
+		: opProbability(opProbability), opProbabilityD(opProbability.convert_to<double>()), ordering(ordering), vertexPositions(new std::vector<vertexPosition>())
 	{
 		std::size_t nVertices = boost::num_vertices(*unorderedGraph);
 		if(nVertices != ordering->size())
@@ -101,34 +101,6 @@ namespace discreteGermGrain
 		ContextImpl::constant_property_map<Context::inputGraph::edge_descriptor, 1> edgeWeights;
 		boost::johnson_all_pairs_shortest_paths(*orderedGraph, tmp, boost::weight_map(edgeWeights));
 		this->shortestDistances = shortestDistances;
-
-		//set up ordering / distance cache
-		for(int k = 0; k < nSpecifiedDistances; k++)
-		{
-			int specifiedDistance = specifiedDistances[k];
-			boost::shared_ptr<std::vector<vertexDistanceCache> > currentDistanceCache(new std::vector<vertexDistanceCache>(nVertices));
-			std::vector<vertexDistanceCache>& currentDistanceCacheRef = *currentDistanceCache;
-			for(std::size_t i = 0; i < nVertices; i++)
-			{
-				vertexDistanceCache& current = currentDistanceCacheRef[i];
-				current.lastVertex = (int)i;
-				for(std::size_t j = i+1; j < nVertices; j++)
-				{
-					int distance = shortestDistances[i + nVertices * j];
-					if(distance <= specifiedDistance)
-					{
-						current.lastVertex = (int)j;
-					}
-				}
-			}
-			distanceCache.push_back(currentDistanceCache);
-		}
-		boost::shared_ptr<std::vector<vertexDistanceCache> > uninformative(new std::vector<vertexDistanceCache>(nVertices));
-		for(std::size_t i = 0; i < nVertices; i++)
-		{
-			(*uninformative)[i].lastVertex = (int)nVertices-1;
-		}
-		uninformativeDistanceCache = uninformative;
 	}
 	std::size_t Context::nVertices() const
 	{
@@ -137,26 +109,17 @@ namespace discreteGermGrain
 	Context::Context(Context&& other)
 	{
 		graph.swap(other.graph);
-		distanceCache.swap(other.distanceCache);
-		uninformativeDistanceCache.swap(other.uninformativeDistanceCache);
 		ordering.swap(other.ordering);
 		shortestDistances.swap(other.shortestDistances);
 		vertexPositions.swap(other.vertexPositions);
 		opProbability = other.opProbability;
-	}
-	const std::vector<vertexDistanceCache>& Context::getDistanceCache(int scale) const
-	{
-		for(int i = 0; i < nSpecifiedDistances; i++)
-		{
-			if(scale <= specifiedDistances[i]) return (*distanceCache[i]);
-		}
-		return *uninformativeDistanceCache;
+		opProbabilityD = opProbability.convert_to<double>();
 	}
 	const Context::inputGraph& Context::getGraph() const
 	{
 		return *graph;
 	}
-	Context Context::gridContext(int gridDimension, float opProbability)
+	Context Context::gridContext(int gridDimension, mpfr_class opProbability)
 	{
 		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions(new std::vector<vertexPosition>(gridDimension * gridDimension));
 		boost::shared_ptr<Context::inputGraph> graph(new Context::inputGraph(gridDimension * gridDimension));
@@ -180,22 +143,19 @@ namespace discreteGermGrain
 	{
 		return shortestDistances.get();
 	}
-	const int Context::specifiedDistances[] = {1, 2, 4, 8};
-	const int Context::nSpecifiedDistances = 4;
 	Context& Context::operator=(Context&& other)
 	{
 		graph.swap(other.graph);
-		distanceCache.swap(other.distanceCache);
-		uninformativeDistanceCache.swap(other.uninformativeDistanceCache);
 		ordering.swap(other.ordering);
 		shortestDistances.swap(other.shortestDistances);
 		vertexPositions.swap(other.vertexPositions);
 		opProbability = other.opProbability;
+		opProbabilityD = opProbability.convert_to<double>();
 		return *this;
 	}
 	Context::Context()
 	{}
-	Context Context::fromFile(std::string path, float opProbability, bool& successful, std::string& message)
+	Context Context::fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message)
 	{
 		std::ifstream input(path);
 		if(!input.is_open())
@@ -244,7 +204,7 @@ namespace discreteGermGrain
 	{
 		return *vertexPositions;
 	}
-	Context Context::torusContext(int dimension, float opProbability)
+	Context Context::torusContext(int dimension, mpfr_class opProbability)
 	{
 		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions(new std::vector<vertexPosition>(dimension * dimension));
 		boost::shared_ptr<Context::inputGraph> graph(new Context::inputGraph(dimension * dimension));
@@ -277,8 +237,12 @@ namespace discreteGermGrain
 
 		return Context(graph, ordering, vertexPositions, opProbability);
 	}
-	double Context::getOperationalProbability() const
+	mpfr_class Context::getOperationalProbability() const
 	{
 		return opProbability;
+	}
+	double Context::getOperationalProbabilityD() const
+	{
+		return opProbabilityD;
 	}
 }

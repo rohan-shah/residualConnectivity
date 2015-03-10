@@ -77,7 +77,6 @@ namespace discreteGermGrain
 		
 		Context const& context;
 		int currentRadius;
-		float openProbability;
 		boost::shared_array<const vertexState> state;
 	};
 }

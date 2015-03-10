@@ -6,17 +6,12 @@
 #include <boost/accumulators/statistics/sum_kahan.hpp>
 #include <boost/program_options.hpp>
 #include <iostream>
-#include <mpir.h>
-#include <mpirxx.h>
 #include <boost/numeric/ublas/matrix.hpp>
 #include <boost/numeric/ublas/matrix_proxy.hpp>
 namespace discreteGermGrain
 {
 	int main(int argc, char** argv)
 	{
-		//use high precision for floating point stuff
-		mpf_set_default_prec(256);
-
 		boost::program_options::options_description options("Usage");
 		options.add_options()
 			("nPoints", boost::program_options::value<int>(), "The number of different values strictly between 0 and 1 to use for the grid search. Values are equally spaced. ")
@@ -83,83 +78,60 @@ namespace discreteGermGrain
 			graphCounts.push_back(nGraphs);
 		}
 		//set up vector of probabilities
-		std::vector<float> probabilities;
+		std::vector<mpfr_class> probabilities;
 		for(int i = 0; i < nPoints; i++)
 		{
-			probabilities.push_back(((float)i+1) / (nPoints+1));
+			probabilities.push_back(mpfr_class(i+1) / (nPoints+1));
 		}
-		std::vector<double> percolationProbabilities(nPoints);
+		std::vector<mpfr_class> connectivityProbabilities(nPoints);
 		//work out percolation probabilities
 		for(int i = 0; i < nPoints; i++)
 		{
-			float trueProbability = probabilities[i];
-			std::vector<mpf_class> parts;
+			mpfr_class trueProbability = probabilities[i];
+			mpfr_class sum = 0;
 			for(int k = 1; k <= gridSize * gridSize; k++)
 			{
-				mpf_class tmpProbability = trueProbability;
-				mpf_class oneMinusProbability = 1 - trueProbability;
-				mpf_class part1, part2;
-				mpf_pow_ui(part1.get_mpf_t(), tmpProbability.get_mpf_t(), k);
-				mpf_pow_ui(part2.get_mpf_t(), oneMinusProbability.get_mpf_t(), gridSize * gridSize - k);
-				parts.push_back(graphCounts[k] *part1*part2);
+				mpfr_class inopProbability = 1 - trueProbability;
+				mpfr_class part1 = boost::multiprecision::pow(trueProbability, k);
+				mpfr_class part2 = boost::multiprecision::pow(inopProbability, gridSize * gridSize - k);
+				sum += graphCounts[k] *part1*part2;
 				//parts.push_back(graphCounts[k] * std::pow(trueProbability, k) * std::pow(1 - trueProbability, gridSize * gridSize - k));
 			}
-			boost::accumulators::accumulator_set<mpf_class, boost::accumulators::stats<boost::accumulators::tag::sum> > acc;
-			std::for_each(parts.begin(), parts.end(), std::ref(acc));
-			percolationProbabilities[i] = boost::accumulators::sum(acc).get_d();
+			connectivityProbabilities[i] = sum;
 		}
 
 		//work out variances, and use these to get the minimum variance (among a certain class of models) importance sampling densities
-		std::vector<float> bestProbability;
+		std::vector<mpfr_class> bestProbability;
 		//Rows of variances all use the same underlying probability model for the data. What changes is the parameter used for the importance sampling density. 
 		boost::numeric::ublas::matrix<double> variances(nPoints, nPoints);
 		for(int i = 0; i < nPoints; i++)
 		{
 			//This is the probability to use for the true density
-			float trueProbability = probabilities[i];
+			mpfr_class trueProbability = probabilities[i];
+			mpfr_class trueInopProbability = 1 - trueProbability;
 			//what is the best probability for importance sampling?
 			for(int j = 0; j < nPoints; j++)
 			{
-				float importanceProbability = probabilities[j];
+				mpfr_class importanceProbability = probabilities[j];
+				mpfr_class fraction = trueProbability / importanceProbability;
+				mpfr_class inopFraction = (1-trueProbability) / (1-importanceProbability);
 				//Work out the importance sampling variance (or something that's only a fixed constant different from it). 
 				//We do this by conditioning on the number of points (k)
-				std::vector<mpf_class> parts;
+				mpfr_class sum = 0;
 				for(int k = 1; k <= gridSize * gridSize; k++)
 				{
 					//ratio of densities
-					mpf_class densityRatio;
-					{
-						mpf_class part1, part2;
-						mpf_class fraction = trueProbability / importanceProbability;
-						mpf_pow_ui(part1.get_mpf_t(), fraction.get_mpf_t(), k);
-						
-						fraction = (1-trueProbability) / (1-importanceProbability);
-						mpf_pow_ui(part2.get_mpf_t(), fraction.get_mpf_t(), gridSize * gridSize - k);
-						densityRatio = part1 * part2;
-					}
-					mpf_class probability;
-					{
-						mpf_class part2, part3;
-						mpf_class tmpProb;
-						
-						tmpProb = trueProbability;
-						mpf_pow_ui(part2.get_mpf_t(), tmpProb.get_mpf_t(), k);
-						
-						tmpProb = 1 - trueProbability;
-						mpf_pow_ui(part3.get_mpf_t(), tmpProb.get_mpf_t(), gridSize * gridSize - k);
-						probability = graphCounts[k] * part2 * part3;
-					}
-					mpf_class product = densityRatio * probability;
-					parts.push_back(product.get_d());
+					mpfr_class densityRatio = boost::multiprecision::pow(fraction, k) * boost::multiprecision::pow(inopFraction, gridSize * gridSize - k);
+					mpfr_class probability = graphCounts[k] * boost::multiprecision::pow(trueProbability, k) * boost::multiprecision::pow(trueInopProbability, gridSize * gridSize - k);
+					mpfr_class product = densityRatio * probability;
+					sum += product;
 					//double densityRatio = std::pow(trueProbability / importanceProbability, k) * std::pow((1-trueProbability) / (1-importanceProbability), gridSize * gridSize - k);
 					//The probability of having k points, AND that the graph is connected (under the true density, not the importance density)
 					//double probability = graphCounts[k] * std::pow(trueProbability, k) * std::pow(1-trueProbability, gridSize * gridSize - k);
 					//parts.push_back(densityRatio * probability);
 				}
 
-				boost::accumulators::accumulator_set<mpf_class, boost::accumulators::stats<boost::accumulators::tag::sum> > acc;
-				std::for_each(parts.begin(), parts.end(), std::ref(acc));
-				variances(i, j) = boost::accumulators::sum(acc).get_d() - percolationProbabilities[i] * percolationProbabilities[i];
+				variances(i, j) = ((mpfr_class)(sum - connectivityProbabilities[i] * connectivityProbabilities[i])).convert_to<double>();
 			}
 			boost::numeric::ublas::matrix_row<boost::numeric::ublas::matrix<double> > varianceRow(variances, i);
 			bestProbability.push_back(probabilities[std::distance(varianceRow.begin(), std::min_element(varianceRow.begin(), varianceRow.end()))]);

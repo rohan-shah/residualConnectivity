@@ -47,7 +47,7 @@ namespace discreteGermGrain
 		//set up the initial total numbers of vertices
 		for(std::size_t i = 0; i < stateSize; i++)
 		{
-			if(initial(i).get_ui()) countsBySizes[stateVertexCounts[i]][i] = 1L;
+			if(initial(i) > 0) countsBySizes[stateVertexCounts[i]][i] = 1L;
 		}
 
 		for(int i = 0; i < gridDimension - 1; i++)

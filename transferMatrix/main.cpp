@@ -61,11 +61,7 @@ namespace discreteGermGrain
 				std::size_t stateSize = transitionMatrix.innerSize();
 				std::cout << "Used " << stateSize << " states, with " << 100*((float)nonZeroCount / (float)(stateSize * stateSize)) << "% nonzero entries" << std::endl;
 			}
-			char* resultCStr = mpz_get_str(NULL, 10, result.get_mpz_t());
-			std::string resultStr = resultCStr;
-
-			std::cout << "Result was " << resultCStr << std::endl;
-			free(resultCStr);
+			std::cout << "Result was " << result.str() << std::endl;
 
 			if(saveMatrix) 
 			{
@@ -74,7 +70,7 @@ namespace discreteGermGrain
 				{
 					for(int j = 0; j < transitionMatrix.innerSize(); j++)
 					{
-						smallerTransitionMatrix(i, j) = transitionMatrix(i, j).get_si();
+						smallerTransitionMatrix(i, j) = transitionMatrix(i, j).convert_to<int>();
 					}
 				}
 
@@ -100,10 +96,7 @@ namespace discreteGermGrain
 			std::cout << "Number of connected subgraphs with that number of points" << std::endl;
 			for(int i = 0; i < gridDimension*gridDimension+1; i++)
 			{
-				char* resultCStr = mpz_get_str(NULL, 10, counts[i].get_mpz_t());
-				std::string resultStr = resultCStr;
-				std::cout << std::setw(3) << i << ":  " << resultStr << std::endl;
-				free(resultCStr);
+				std::cout << std::setw(3) << i << ":  " << counts[i].str() << std::endl;
 			}
 		}
 		return 0;

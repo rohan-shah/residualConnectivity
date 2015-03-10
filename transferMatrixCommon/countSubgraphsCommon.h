@@ -2,7 +2,7 @@
 #define COUNT_SUBGRAPHS_COMMON_HEADER_GUARD
 #include <Eigen/Core>
 #include <vector>
-#include <mpirxx.h>
+#include "includeNumerics.h"
 namespace discreteGermGrain
 {
 	enum VertexState

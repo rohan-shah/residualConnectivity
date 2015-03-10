@@ -6,17 +6,13 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include "DiscreteGermGrainObs.h"
 #include "Context.h"
-#include <mpir.h>
-#include <mpirxx.h>
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
+#include "argumentsMPIR.h"
 namespace discreteGermGrain
 {
 	int main(int argc, char **argv)
 	{
-		//use high precision for floating point stuff
-		mpf_set_default_prec(256);
-
 		boost::program_options::options_description options("Usage");
 		options.add_options()
 			INPUT_GRAPH_OPTION
@@ -52,9 +48,9 @@ namespace discreteGermGrain
 			return 0;
 		}
 
-		double probability;
+		mpfr_class probability;
 		std::string message;
-		if(!readProbability(variableMap, probability, message))
+		if(!readProbabilityString(variableMap, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
@@ -70,10 +66,10 @@ namespace discreteGermGrain
 		readSeed(variableMap, randomSource);
 
 		std::size_t nVertices = boost::num_vertices(context.getGraph());
-		boost::random::geometric_distribution<int, float> numberOffVertices(probability);
+		boost::random::geometric_distribution<int, float> numberOffVertices(probability.convert_to<double>());
 
-		mpf_class total = 0;
-		mpf_class q = 1 - probability;
+		mpfr_class total = 0;
+		mpfr_class q = 1 - probability;
 
 		std::vector<int> connectedComponents(nVertices);
 		std::vector<bool> isBoundary(nVertices);
@@ -159,12 +155,10 @@ namespace discreteGermGrain
 				componentSize = 0;
 				nBoundaryPoints = 0;
 			}
-			mpf_class powerOfQ;
 			int power = ((int)nVertices - nOff) - componentSize - nBoundaryPoints;
-			mpf_pow_ui(powerOfQ.get_mpf_t(), q.get_mpf_t(), power); 
-			total += powerOfQ;
+			total += boost::multiprecision::pow(q, power);
 		}
-		double estimate = total.get_d() / n;
+		double estimate = mpfr_class(total /n).convert_to<double>();
 		std::cout << "Connectivity estimate is " << estimate << std::endl;
 		return 0;
 	}

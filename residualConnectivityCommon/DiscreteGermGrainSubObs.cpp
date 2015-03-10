@@ -105,7 +105,7 @@ namespace discreteGermGrain
 	}
 	void DiscreteGermGrainSubObs::getRandomPointPattern(boost::mt19937& randomSource, vertexState* outputState)
 	{
-		boost::random::bernoulli_distribution<float> vertexDistribution(openProbability);
+		boost::random::bernoulli_distribution<float> vertexDistribution(context.getOperationalProbabilityD());
 		std::size_t nVertices = context.nVertices();
 		//generate a full random grid, which includes the subPoints 
 		for(std::size_t i = 0; i < nVertices; i++)
@@ -175,7 +175,7 @@ namespace discreteGermGrain
 	}
 	boost::shared_array<const vertexState> DiscreteGermGrainSubObs::estimateRadius1(boost::mt19937& randomSource, int nSimulations, float& outputProbability)
 	{
-		double openProbability = context.getOperationalProbability();
+		double openProbability = context.getOperationalProbabilityD();
 		boost::bernoulli_distribution<float> bern(openProbability);
 		if(currentRadius != 1)
 		{

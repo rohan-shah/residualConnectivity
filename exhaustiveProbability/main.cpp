@@ -8,8 +8,6 @@
 #include <iostream>
 #include <iomanip>
 #include "Context.h"
-#include <mpir.h>
-#include <mpirxx.h>
 #include "arguments.h"
 #include "argumentsMPIR.h"
 namespace discreteGermGrain
@@ -24,8 +22,6 @@ namespace discreteGermGrain
 	}
 	int main(int argc, char** argv)
 	{
-		mpf_set_default_prec(1024);
-
 		boost::program_options::options_description options("Usage");
 		options.add_options()
 			INPUT_GRAPH_OPTION
@@ -53,17 +49,17 @@ namespace discreteGermGrain
 			return 0;
 		}
 	
-		mpf_class probability, probabilityComplement, one_mpf;
-		mpf_set_d(one_mpf.get_mpf_t(), 1);
-		if(!readProbabilityString(variableMap, probability))
+		std::string message;
+		mpfr_class inopProbability, opProbability;
+		if(!readProbabilityString(variableMap, opProbability, message))
 		{
+			std::cout << message << std::endl;
 			return 0;
 		}
-		mpf_sub(probabilityComplement.get_mpf_t(), one_mpf.get_mpf_t(), probability.get_mpf_t());
+		inopProbability = 1 - opProbability;
 
-		std::string message;
-		Context context = Context::gridContext(1, mpf_get_d(probability.get_mpf_t()));
-		if(!readContext(variableMap, context, mpf_get_d(probability.get_mpf_t()), message))
+		Context context = Context::gridContext(1, opProbability);
+		if(!readContext(variableMap, context, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
@@ -101,28 +97,21 @@ namespace discreteGermGrain
 			mpz_class nGraphs;
 			std::string nGraphsString;
 			ss >> nGraphsString;
-			mpz_set_str(nGraphs.get_mpz_t(), nGraphsString.c_str(), 10);
+			nGraphs = mpz_class(nGraphsString);
 			graphCounts.push_back(nGraphs);
 		}
 		std::cout << "Probability is ";
 
-		mpf_class total = 0;
+		mpfr_class total = 0;
 
 		for(std::size_t i = 0; i < nVertices+1; i++)
 		{
-			mpf_class probabilityPower, probabilityComplementPower;
-			mpf_pow_ui(probabilityPower.get_mpf_t(), probability.get_mpf_t(), i);
-			mpf_pow_ui(probabilityComplementPower.get_mpf_t(), probabilityComplement.get_mpf_t(), nVertices - i);
+			mpfr_class opProbabilityPower = boost::multiprecision::pow(opProbability, i);
+			mpfr_class inopProbabilityPower = boost::multiprecision::pow(inopProbability, nVertices - i);
 
-			total += graphCounts[i] * probabilityPower * probabilityComplementPower;
-			//parts[i] = graphCounts[i] * pow(probability, i) * pow(1 - probability, nVertices-i);
+			total += graphCounts[i] * opProbabilityPower * inopProbabilityPower;
 		}
-		mp_exp_t exponent;
-		char* resultCStr = mpf_get_str(NULL, &exponent, 10, 10, total.get_mpf_t());
-		std::string resultStr = resultCStr;
-
-		std::cout << resultStr.substr(0, 1) << "." << resultStr.substr(1, resultStr.size() - 2) << "e" << (exponent-1) << std::endl;
-		free(resultCStr);
+		std::cout << total.str() << std::endl;
 		return 0;
 	}
 }

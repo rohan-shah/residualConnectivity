@@ -9,8 +9,8 @@
 #include "constructStates.h"
 #include "sortStatesAndVertexCounts.h"
 #include <boost/scoped_array.hpp>
-#include <mpfr.h>
-#include <mpirxx.h>
+#include "includeNumerics.h"
+#include "argumentsMPIR.h"
 #include <boost/noncopyable.hpp>
 namespace discreteGermGrain
 {
@@ -44,7 +44,7 @@ namespace discreteGermGrain
 			std::swap(connectivityProbability, other.connectivityProbability);
 			return *this;
 		}
-		TransferEstimationData(const std::vector<unsigned long long>& unsortedPossibleDestinations, const std::vector<int>& destinationVertexCounts, std::vector<int>& scratch, double probability, int gridDimension)
+		TransferEstimationData(const std::vector<unsigned long long>& unsortedPossibleDestinations, const std::vector<int>& destinationVertexCounts, std::vector<int>& scratch, mpfr_class probability, int gridDimension)
 		{
 			const std::size_t nDestinations = unsortedPossibleDestinations.size();
 
@@ -105,7 +105,7 @@ namespace discreteGermGrain
 					//number of transitions to states with this number of vertices;
 					std::size_t nTransitions = currentRange->second - currentRange->first + 1;
 					//probabilities of going to a state with this number of vertices
-					double currentCountProbability = nTransitions * pow(probability, currentVertexCount) * pow(1-probability, gridDimension - currentVertexCount);
+					double currentCountProbability = nTransitions * pow(probability.convert_to<double>(), currentVertexCount) * pow(1-probability.convert_to<double>(), gridDimension - currentVertexCount);
 					unnormalisedCountProbabilities.push_back(currentCountProbability);
 					acc(currentCountProbability);
 					currentRange++;
@@ -148,9 +148,6 @@ namespace discreteGermGrain
 	};
 	int main(int argc, char **argv)
 	{
-		//use high precision for floating point stuff
-		mpf_set_default_prec(256);
-
 		boost::program_options::options_description options("Usage");
 		options.add_options()
 			GRID_GRAPH_OPTION
@@ -189,8 +186,8 @@ namespace discreteGermGrain
 			return 0;
 		}
 
-		double probability;
-		if(!readProbability(variableMap, probability, message))
+		mpfr_class probability;
+		if(!readProbabilityString(variableMap, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;

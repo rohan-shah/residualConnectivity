@@ -18,7 +18,7 @@ namespace discreteGermGrain
 		boost::shared_array<vertexState> state(new vertexState[nVertices]);
 		this->state = state;
 
-		double openProbability = context.getOperationalProbability();
+		double openProbability = context.getOperationalProbabilityD();
 		boost::random::bernoulli_distribution<float> vertexDistribution(openProbability);
 		
 		//Get out which vertices are present, and the count of the total number of present vertices
@@ -35,7 +35,7 @@ namespace discreteGermGrain
 		: context(context)
 	{
 		std::size_t nVertices = boost::num_vertices(context.getGraph());
-		boost::random::bernoulli_distribution<float> vertexDistribution(context.getOperationalProbability());
+		boost::random::bernoulli_distribution<float> vertexDistribution(context.getOperationalProbabilityD());
 
 		boost::shared_array<vertexState> state(new vertexState[nVertices]);
 		for(std::size_t vertexCounter = 0; vertexCounter < nVertices; vertexCounter++)
@@ -60,16 +60,10 @@ namespace discreteGermGrain
 		memcpy(state.get(), other.state.get(), sizeof(vertexState)*context.nVertices());
 		this->state = state;
 	}
-	/*DiscreteGermGrainObs::DiscreteGermGrainObs(Context const& context)
-		:context(context), state(NULL)
-	{
-
-	}*/
 	DiscreteGermGrainObs::DiscreteGermGrainObs(DiscreteGermGrainObs&& other)
 		:context(other.context)
 	{
 		state.swap(other.state);
-
 		subPointsCache.swap(other.subPointsCache);
 	}
 	DiscreteGermGrainSubObs DiscreteGermGrainObs::getSubObservation(int radius) const
@@ -82,7 +76,6 @@ namespace discreteGermGrain
 
 		std::size_t nVertices = context.nVertices();
 		const int* shortestDistances = context.getShortestDistances();
-		const std::vector<vertexDistanceCache>& relevantCache = context.getDistanceCache(radius);
 
 		int sourceVertex = 0;
 		
@@ -102,13 +95,11 @@ namespace discreteGermGrain
 				//If no such found, we'll continue from finalSearchVertex+1
 				bool found = false;
 				std::size_t nextSourceVertex = -1;
-				//where can we stop searching?
-				int finalSearchVertex = relevantCache[sourceVertex].lastVertex;
 				//keep copy of source vertex
 				std::size_t copiedSourceVertex = sourceVertex;
 				//we want to begin on the NEXT vertex
 				sourceVertex++;
-				while(sourceVertex <= finalSearchVertex) 
+				while(sourceVertex <= (int)nVertices)
 				{
 					int previousState = state[sourceVertex].state;
 					if(shortestDistances[copiedSourceVertex + nVertices * sourceVertex] <= radius)
@@ -148,7 +139,6 @@ namespace discreteGermGrain
 	{
 		if(&context != &(other.context)) throw std::runtime_error("Attempting to mix different Contexts!");
 		state.swap(other.state);
-
 		subPointsCache.swap(other.subPointsCache);
 		return *this;
 	}

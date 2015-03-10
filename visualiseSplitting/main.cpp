@@ -7,6 +7,7 @@
 #include "isSingleComponentWithRadius.h"
 #include <boost/graph/graphml.hpp>
 #include "arguments.h"
+#include "argumentsMPIR.h"
 #include <QApplication>
 #if defined(_WIN32)
 	#include <Windows.h>
@@ -75,8 +76,8 @@ namespace discreteGermGrain
 		readSeed(variableMap, randomSource);
 
 		std::string message;
-		double probability;
-		if(!readProbability(variableMap, probability, message))
+		mpfr_class probability;
+		if(!readProbabilityString(variableMap, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
