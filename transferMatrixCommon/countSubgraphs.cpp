@@ -1,33 +1,29 @@
 #include "countSubgraphsCommon.h"
 #include "constructMatrices.h"
-#include "constructStates.h"
+#include "states.h"
 #include "countSubgraphs.h"
 #include <stdexcept>
 #include <vector>
 namespace discreteGermGrain
 {
-	mpz_class countSubgraphsSingleThreaded(int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount)
+	mpz_class countSubgraphsSingleThreaded(int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsLogger* logger)
 	{
 		if(gridDimension > 32)
 		{
 			throw std::runtime_error("Parameter gridDimension for function countSubgraphsMultiThreaded must be less than 33");
 		}
-
-		std::vector<unsigned long long> states;
-		{
-			std::vector<int> stateVertexCounts;
-			constructStates(states, stateVertexCounts, gridDimension);
-		}
-
-		//We don't need the state vertex counts here, so it doesn't matter that the sorting destroys the relationship between 
-		//stateVertexCounts and states
-		std::sort(states.begin()+1, states.end()-1);
-
-		const std::size_t stateSize = states.size();
+		logger->beginComputeStates();
+			transferStates states(gridDimension);
+			states.sort();
+		logger->endComputeStates(states);
+		const std::vector<unsigned long long>& allStates = states.getStates();
+		const std::size_t stateSize = allStates.size();
 
 		FinalColumnVector final;
 		InitialRowVector initial;
-		constructMatricesDense(transitionMatrix, final, initial, gridDimension, states, nonZeroCount);
+		logger->beginConstructDenseMatrices();
+			constructMatricesDense(transitionMatrix, final, initial, states, nonZeroCount);
+		logger->endConstructDenseMatrices(transitionMatrix, final, initial, nonZeroCount);
 
 		/*Eigen version
 		LargeIntMatrix products(transitionMatrix);
@@ -39,28 +35,31 @@ namespace discreteGermGrain
 		*/
 
 
-		//basic FFLAS version
-		/*
-		LargeIntMatrix products(transitionMatrix), scratchMatrix;
-		typedef FFPACK::UnparametricField<unsigned long long> fflasField;
-		fflasField field;
-		for(int i = 0; i < gridDimension-2; i++)
-		{
-			FFLAS::fgemm(field, FFLAS::FflasNoTrans, FFLAS::FflasNoTrans, stateSize, stateSize, stateSize, 1ULL, &(products(0,0)), stateSize, &(transitionMatrix(0, 0)), stateSize, 0ULL, &(scratchMatrix(0,0)), stateSize);
-			scratchMatrix.swap(products);
-		}
-		return initial * products * final;
-		*/
-		
 		//complicated EIGEN version
+		//work out how many multiplications we need to do in the while loop
 		int finalPower = gridDimension - 1;
+		int nSteps = 0;
+		int currentResultPower = 0;
+		if(finalPower & 1) currentResultPower = 1;
+		int currentSquarePower = 1;
+		while(currentResultPower != finalPower)
+		{
+			nSteps++;
+			currentSquarePower <<= 1;
+			if(finalPower & currentSquarePower)
+			{
+				currentResultPower += currentSquarePower;
+				nSteps++;
+			}
+		}
+
 		if(finalPower == 1)
 		{
 			return initial * transitionMatrix * final;
 		}
 		else
 		{
-			int currentResultPower = 0;
+			currentResultPower = 0;
 			LargeDenseIntMatrix result;
 			if(finalPower & 1)
 			{
@@ -71,29 +70,33 @@ namespace discreteGermGrain
 			{
 				result.setIdentity(stateSize, stateSize);
 			}
-			int currentSquarePower = 1;
-
+			currentSquarePower = 1;
 			LargeDenseIntMatrix squared(transitionMatrix);
-
+			
+			logger->beginMultiplications();
+			int currentStep = 0;
 			while(currentResultPower != finalPower)
 			{
 				squared *= squared;
+				logger->completedMultiplicationStep(++currentStep, nSteps);
 				currentSquarePower <<= 1;
 				if(finalPower & currentSquarePower)
 				{
 					result *= squared;
+					logger->completedMultiplicationStep(++currentStep, nSteps);
 					currentResultPower += currentSquarePower;
 				}
 			}
+			logger->endMultiplications();
 			return initial * result * final;
 		}
 	}
-	mpz_class countSubgraphsMultiThreaded(int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount)
+	mpz_class countSubgraphsMultiThreaded(int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsLogger* logger)
 	{
 		if(gridDimension > 32)
 		{
 			throw std::runtime_error("Parameter gridDimension for function countSubgraphsMultiThreaded must be less than 33");
 		}
-		return countSubgraphsSingleThreaded(gridDimension, transitionMatrix, nonZeroCount);
+		return countSubgraphsSingleThreaded(gridDimension, transitionMatrix, nonZeroCount, logger);
 	}
 }

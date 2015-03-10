@@ -2,9 +2,23 @@
 #define COUNT_SUBGRAPHS_BY_SIZE_HEADER_GUARD
 #include <vector>
 #include "countSubgraphsCommon.h"
+#include "states.h"
 namespace discreteGermGrain
 {
-	void countSubgraphsBySizeMultiThreaded(mpz_class* counts, int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount);
-	void countSubgraphsBySizeSingleThreaded(mpz_class* counts, int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount);
+	class countSubgraphsBySizeLogger
+	{
+	public:
+		virtual void beginComputeStates(){}
+		virtual void endComputeStates(const transferStates& states){}
+		virtual void beginConstructDenseMatrices(){}
+		virtual void endConstructDenseMatrices(LargeDenseIntMatrix& transitionMatrix, FinalColumnVector& final, InitialRowVector& initial, std::size_t nonZeroTransitionCount){}
+		virtual void beginMultiplications(){}
+		virtual void completedMultiplicationStep(int completed, int total){}
+		virtual void endMultiplications(){}
+		virtual void beginCheckFinalStates(){}
+		virtual void endCheckFinalStates(){}
+	};
+	void countSubgraphsBySizeMultiThreaded(mpz_class* counts, int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger);
+	void countSubgraphsBySizeSingleThreaded(mpz_class* counts, int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger);
 }
 #endif

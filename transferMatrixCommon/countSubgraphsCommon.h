@@ -3,6 +3,7 @@
 #include <Eigen/Core>
 #include <vector>
 #include "includeNumerics.h"
+#include "states.h"
 namespace discreteGermGrain
 {
 	enum VertexState
@@ -16,9 +17,9 @@ namespace discreteGermGrain
 	typedef Eigen::Matrix<mpz_class, 1, -1, Eigen::RowMajor, 1, -1> InitialRowVector;
 	typedef Eigen::Matrix<mpz_class, -1, 1, Eigen::ColMajor, -1, 1> FinalColumnVector;
 
-	void generateCachedIndices(unsigned long long binaryEncoding, int gridDimension, std::vector<std::size_t>& cachedIndices, int nGroups, const std::vector<unsigned long long>& states);
-	void generateBinaryMasks(const std::vector<unsigned long long>& states, std::vector<unsigned long long>& binaryMasks, int gridDimension);
+	void generateCachedIndices(unsigned long long binaryEncoding, std::vector<std::size_t>& cachedIndices, int nGroups, const transferStates& states);
+	void generateBinaryMasks(const transferStates& states, std::vector<unsigned long long>& binaryMasks);
 	std::string stateToString(unsigned long long state, int gridDimension);
-	void generateStateGroupBinaryMasks(const std::vector<unsigned long long>& states, std::vector<std::vector<unsigned long long> >& stateGroupBinaryMasks, int gridDimension);
+	void generateStateGroupBinaryMasks(const transferStates& states, std::vector<std::vector<unsigned long long> >& stateGroupBinaryMasks);
 }
 #endif

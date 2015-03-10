@@ -9,14 +9,49 @@
 #include <fstream>
 namespace discreteGermGrain
 {
+	class transferMatrixLogger : public countSubgraphsBySizeLogger, public countSubgraphsLogger
+	{
+	public:
+		virtual void beginComputeStates()
+		{
+			std::cout << "Computing states...." << std::endl;
+		}
+		virtual void endComputeStates(const transferStates& states)
+		{
+			std::cout << "Finished computing states, " << states.getStates().size() << " states found. " << std::endl;
+		}
+		virtual void beginConstructDenseMatrices()
+		{
+			std::cout << "Beginning construction of transition matrix..." << std::endl;
+		}
+		virtual void endConstructDenseMatrices(LargeDenseIntMatrix& transitionMatrix, FinalColumnVector& final, InitialRowVector& initial, std::size_t nonZeroTransitionCount)
+		{
+			std::cout << "Finished constructing transition matrix, " << nonZeroTransitionCount << " / " << transitionMatrix.innerSize()*transitionMatrix.innerSize() << " transitions are possible." << std::endl;
+		}
+		virtual void completedMultiplicationStep(int completed, int total)
+		{
+			std::cout << "Completed multiplication step " << completed << " / " << total << "." <<std::endl;
+		}
+		virtual void endMultiplications()
+		{
+			std::cout << "Finished multiplication steps." << std::endl;
+		}
+		virtual void beginCheckFinalStates()
+		{
+			std::cout << "Checking valid final states." << std::endl;
+		}
+		virtual void endCheckFinalStates()
+		{
+			std::cout << "Finished checking valid final states. " << std::endl;
+		}
+	};
 	int main(int argc, char **argv)
 	{
 		boost::program_options::options_description options("Usage");
 		options.add_options()
 			GRID_GRAPH_OPTION
 			("bySize", boost::program_options::bool_switch()->default_value(false), "(flag) Should we attempt to also count the number of vertices for each subgraph?")
-			("saveMatrix", boost::program_options::bool_switch()->default_value(false), "(flag) Should we save the transition matrix?")
-			("diagnostics", boost::program_options::bool_switch()->default_value(false), "(flag) Should we output diagnostic information?")
+			("outputFile", boost::program_options::value<std::string>(), "(string) File to output count data to")
 			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
@@ -48,56 +83,46 @@ namespace discreteGermGrain
 			return 0;
 		}
 		bool bySize = variableMap["bySize"].as<bool>();
-		bool saveMatrix = variableMap["saveMatrix"].as<bool>();
-		bool diagnostics = variableMap["diagnostics"].as<bool>();
 		if(!bySize)
 		{
+			if(variableMap.count("outputFile") > 0)
+			{
+				std::cout << "Input `outputFile' only valid with option --bySize" << std::endl;
+				return 0;
+			}
 			std::size_t nonZeroCount;
 			LargeDenseIntMatrix transitionMatrix;
-			mpz_class result = countSubgraphsMultiThreaded(gridDimension, transitionMatrix, nonZeroCount);
-
-			if(diagnostics)
-			{
-				std::size_t stateSize = transitionMatrix.innerSize();
-				std::cout << "Used " << stateSize << " states, with " << 100*((float)nonZeroCount / (float)(stateSize * stateSize)) << "% nonzero entries" << std::endl;
-			}
+			transferMatrixLogger logger;
+			mpz_class result = countSubgraphsMultiThreaded(gridDimension, transitionMatrix, nonZeroCount, &logger);
 			std::cout << "Result was " << result.str() << std::endl;
-
-			if(saveMatrix) 
-			{
-				Eigen::Matrix<unsigned long long, -1, -1, Eigen::RowMajor, -1, -1> smallerTransitionMatrix;
-				for(int i = 0; i < transitionMatrix.innerSize(); i++)
-				{
-					for(int j = 0; j < transitionMatrix.innerSize(); j++)
-					{
-						smallerTransitionMatrix(i, j) = transitionMatrix(i, j).convert_to<int>();
-					}
-				}
-
-				std::ofstream ofs("./matrix.out");
-				ofs << smallerTransitionMatrix;
-				ofs.flush();
-				ofs.close();
-			}
 		}
 		else
 		{
+			if(variableMap.count("outputFile") == 0)
+			{
+				std::cout << "Input `outputFile' is required with option --bySize" << std::endl;
+				return 0;
+			}
+			std::string outputFile = variableMap["outputFile"].as<std::string>();
+			std::ofstream outputStream(outputFile.c_str(), std::ios_base::out);
+			if(!outputStream)
+			{
+				std::cout << "Unable to open specified file for writing" << std::endl;
+				return 0;
+			}
 			boost::scoped_array<mpz_class> counts(new mpz_class[gridDimension*gridDimension+1]);
 			std::size_t nonZeroCount = 0;
 			LargeDenseIntMatrix transitionMatrix;
+			transferMatrixLogger logger;
+			countSubgraphsBySizeMultiThreaded(counts.get(), gridDimension, transitionMatrix, nonZeroCount, &logger);
 
-			countSubgraphsBySizeMultiThreaded(counts.get(), gridDimension, transitionMatrix, nonZeroCount);
-
-			if(diagnostics)
-			{
-				std::size_t stateSize = transitionMatrix.innerSize();
-				std::cerr << "Used " << stateSize << " states, with " << 100*((float)nonZeroCount / (float)(stateSize * stateSize)) << "% nonzero entries" << std::endl;
-			}
-			std::cout << "Number of connected subgraphs with that number of points" << std::endl;
+			outputStream << "Number of connected subgraphs with that number of points" << std::endl;
 			for(int i = 0; i < gridDimension*gridDimension+1; i++)
 			{
-				std::cout << std::setw(3) << i << ":  " << counts[i].str() << std::endl;
+				outputStream << std::setw(3) << i << ":  " << counts[i].str() << std::endl;
 			}
+			outputStream.flush();
+			outputStream.close();
 		}
 		return 0;
 	}

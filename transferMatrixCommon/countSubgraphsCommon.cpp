@@ -1,11 +1,14 @@
 #include "countSubgraphsCommon.h"
-#include "constructStates.h"
+#include "states.h"
 #include <boost/scoped_array.hpp>
 #include "subgraphMacros.hpp"
+#include <alloca.h>
 namespace discreteGermGrain
 {
-	void generateCachedIndices(unsigned long long binaryEncoding, int gridDimension, std::vector<std::size_t>& cachedIndices, int nGroups, const std::vector<unsigned long long>& states)
+	void generateCachedIndices(unsigned long long binaryEncoding, std::vector<std::size_t>& cachedIndices, int nGroups, const transferStates& states)
 	{
+		const std::vector<unsigned long long>& allStates = states.getStates();
+		int gridDimension = states.getGridDimension();
 		const std::size_t cachedIndicesSize = ((std::size_t)1) << (2*nGroups);
 		cachedIndices.resize(cachedIndicesSize);
 #ifndef NDEBUG
@@ -35,9 +38,9 @@ namespace discreteGermGrain
 				copiedBinaryEncoding >>= 1;
 			}
 			std::vector<unsigned long long>::const_iterator searchForExpanded;
-			if(*(searchForExpanded = std::lower_bound(states.begin(), states.end(), expanded)) == expanded)
+			if(*(searchForExpanded = std::lower_bound(allStates.begin(), allStates.end(), expanded)) == expanded)
 			{
-				cachedIndices[cacheIndex] = std::distance(states.begin(), searchForExpanded);
+				cachedIndices[cacheIndex] = std::distance(allStates.begin(), searchForExpanded);
 			}
 		}
 		//The above is an optimised version of:
@@ -64,12 +67,14 @@ namespace discreteGermGrain
 		}
 		*/
 	}
-	void generateBinaryMasks(const std::vector<unsigned long long>& states, std::vector<unsigned long long>& binaryMasks, int gridDimension)
+	void generateBinaryMasks(const transferStates& states, std::vector<unsigned long long>& binaryMasks)
 	{
-		const std::size_t stateSize = states.size();
+		int gridDimension = states.getGridDimension();
+		const std::vector<unsigned long long>& allStates = states.getStates();
+		const std::size_t stateSize = allStates.size();
 		for(std::size_t stateCounter = 0; stateCounter < stateSize-1; stateCounter++)
 		{
-			register unsigned long long state = states[stateCounter];
+			register unsigned long long state = allStates[stateCounter];
 			register unsigned long long binaryMask = 0;
 			register unsigned long long bit = 1;
 			for(int i = 0; i < gridDimension; i++)
@@ -138,15 +143,17 @@ namespace discreteGermGrain
 		}
 		return returnValue;
 	}
-	void generateStateGroupBinaryMasks(const std::vector<unsigned long long>& states, std::vector<std::vector<unsigned long long> >& stateGroupBinaryMasks, int gridDimension)
+	void generateStateGroupBinaryMasks(const transferStates& states, std::vector<std::vector<unsigned long long> >& stateGroupBinaryMasks)
 	{
-		const std::size_t stateSize = states.size();
-		int* stack = new int[gridDimension];
+		const std::vector<unsigned long long>& allStates = states.getStates();
+		const std::size_t stateSize = allStates.size();
+		int gridDimension = states.getGridDimension();
+		int* stack = (int*)alloca(sizeof(int)*gridDimension);
 		//no mask for the -1 state
 		for(std::size_t i = 0; i < stateSize-1; i++)
 		{
 			int stackOffset = 0;
-			register unsigned long long state = states[i];
+			register unsigned long long state = allStates[i];
 			register unsigned long long bit = 1ULL;
 			std::vector<unsigned long long> masks;
 			register int nextFreeID = 0;
@@ -214,7 +221,6 @@ namespace discreteGermGrain
 			assert(stackOffsetCopy == 0);
 #endif
 		}
-		delete[] stack;
 		/* Above is the optimised version of:
 		for(int i = 0; i < stateSize-1; i++)
 		{

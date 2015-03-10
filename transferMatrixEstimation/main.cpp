@@ -6,8 +6,7 @@
 #include <boost/random/uniform_int_distribution.hpp>
 #include "arguments.h"
 #include "constructMatrices.h"
-#include "constructStates.h"
-#include "sortStatesAndVertexCounts.h"
+#include "states.h"
 #include <boost/scoped_array.hpp>
 #include "includeNumerics.h"
 #include "argumentsMPIR.h"
@@ -203,19 +202,18 @@ namespace discreteGermGrain
 
 		bool diagnostics = variableMap["diagnostics"].as<bool>();
 
-		std::vector<unsigned long long> states;
-		std::vector<int> stateVertexCounts;
-
-		constructStates(states, stateVertexCounts, gridDimension);
-		const std::size_t stateSize = states.size();
-		sortStatesAndVertexCounts(states, stateVertexCounts);
+		transferStates states(gridDimension);
+		states.sort();
+		const std::vector<unsigned long long>& allStates = states.getStates();
+		const std::vector<int>& stateVertexCounts = states.getStateVertexCounts();
+		const std::size_t stateSize = allStates.size();
 
 		
 		LargeSparseIntMatrix transitionMatrix;
 		InitialRowVector initial;
 		FinalColumnVector final;
 		std::size_t nonZeroCount = 0;
-		constructMatricesSparse(transitionMatrix, final, initial, gridDimension, states, nonZeroCount);
+		constructMatricesSparse(transitionMatrix, final, initial, states, nonZeroCount);
 
 		if(diagnostics)
 		{
@@ -227,47 +225,48 @@ namespace discreteGermGrain
 		//Instead we simulate the NUMBER of points in the starting distribution, and then draw uniformly from the initial states
 		//with that number of points. 
 		std::vector<int> scratch;
-		std::vector<unsigned long long> possibleStates;
-		std::vector<int> possibleStateVertexCounts;
+		std::vector<unsigned long long> startingStates;
+		std::vector<int> startingStateVertexCounts;
 		for(std::size_t i = 0; i < stateSize; i++)
 		{
 			if(initial(i)) 
 			{
-				possibleStates.push_back(i);
-				possibleStateVertexCounts.push_back(stateVertexCounts[i]);
+				startingStates.push_back(i);
+				startingStateVertexCounts.push_back(stateVertexCounts[i]);
 			}
 		}
-		TransferEstimationData initialEstimationData(possibleStates, possibleStateVertexCounts, scratch, probability, gridDimension);
-
+		TransferEstimationData initialEstimationData(startingStates, startingStateVertexCounts, scratch, probability, gridDimension);
 		//ok, now we have to do the same thing for every possible transition too. 
 		std::vector<TransferEstimationData> estimationData;
+		std::vector<int> destinationStateVertexCounts;
 		for(std::size_t i = 0; i < stateSize; i++)
 		{
-			const std::vector<unsigned long long>& possibleStates = transitionMatrix[i];
-			possibleStateVertexCounts.clear();
-			for(std::size_t j = 0; j < possibleStates.size(); j++)
+			const std::vector<unsigned long long>& destinationStates = transitionMatrix[i];
+			destinationStateVertexCounts.clear();
+			for(std::size_t j = 0; j < destinationStates.size(); j++)
 			{
-				possibleStateVertexCounts.push_back(stateVertexCounts[possibleStates[j]]);
+				destinationStateVertexCounts.push_back(stateVertexCounts[destinationStates[j]]);
 			}
-			estimationData.push_back(TransferEstimationData(possibleStates, possibleStateVertexCounts, scratch, probability, gridDimension));
+			estimationData.push_back(TransferEstimationData(destinationStates, destinationStateVertexCounts, scratch, probability, gridDimension));
 		}
 		//Now the same thing for the final transitions.
 		std::vector<TransferEstimationData> finalEstimationData;
+		std::vector<unsigned long long> destinationStates;
 		for(std::size_t i = 0; i < stateSize; i++)
 		{
 			//all possible transitions, ignoring the fact that many are not allowed in the terminal stage.
-			const std::vector<unsigned long long> allPossibleDestinations = transitionMatrix[i];
-			possibleStates.clear();
-			possibleStateVertexCounts.clear();
+			const std::vector<unsigned long long>& allPossibleDestinations = transitionMatrix[i];
+			destinationStates.clear();
+			destinationStateVertexCounts.clear();
 			for(std::size_t j = 0; j < allPossibleDestinations.size(); j++)
 			{
 				if(final(allPossibleDestinations[j])) 
 				{
-					possibleStateVertexCounts.push_back(stateVertexCounts[allPossibleDestinations[j]]);
-					possibleStates.push_back(allPossibleDestinations[j]);
+					destinationStateVertexCounts.push_back(stateVertexCounts[allPossibleDestinations[j]]);
+					destinationStates.push_back(allPossibleDestinations[j]);
 				}
 			}
-			finalEstimationData.push_back(TransferEstimationData(possibleStates, possibleStateVertexCounts, scratch, probability, gridDimension));
+			finalEstimationData.push_back(TransferEstimationData(destinationStates, destinationStateVertexCounts, scratch, probability, gridDimension));
 		}
 
 		//now for the estimation
