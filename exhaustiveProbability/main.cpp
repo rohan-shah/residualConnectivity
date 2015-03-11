@@ -85,7 +85,7 @@ namespace discreteGermGrain
 			nGraphs = mpz_class(nGraphsString);
 			graphCounts.push_back(nGraphs);
 		}
-		std::cout << "Probability is ";
+		std::cout << "Reliability probability is ";
 
 		mpfr_class total = 0;
 
