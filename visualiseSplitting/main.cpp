@@ -7,7 +7,7 @@
 #include "isSingleComponentWithRadius.h"
 #include <boost/graph/graphml.hpp>
 #include "arguments.h"
-#include "argumentsMPIR.h"
+#include "argumentsMPFR.h"
 #include <QApplication>
 #if defined(_WIN32)
 	#include <Windows.h>

@@ -3,7 +3,6 @@
 #include <boost/program_options/variables_map.hpp>
 #include "Context.h"
 #include <boost/random/mersenne_twister.hpp>
-#include "includeNumerics.h"
 
 #define GRID_GRAPH_OPTION ("gridGraph", boost::program_options::value<int>(), "(int) The dimension of the square grid graph to use. Incompatible with graphFile and torusGraph. ")
 #define GRAPH_FILE_OPTION ("graphFile", boost::program_options::value<std::string>(), "(string) The path to a graphml file. Incompatible with gridGraph and torusGraph. ")
@@ -21,7 +20,6 @@ namespace discreteGermGrain
 {
 	bool readN(boost::program_options::variables_map& map, int& out);
 	bool readGridGraph(boost::program_options::variables_map& variableMap, int& gridDimension, std::string& message);
-	bool readContext(boost::program_options::variables_map& variableMap, Context& out, mpfr_class opProbability, std::string& message);
 	void readSeed(boost::program_options::variables_map& variableMap, boost::mt19937& randomSource);
 	bool readInitialRadius(boost::program_options::variables_map& variableMap, int& out);
 	bool readNGraphs(boost::program_options::variables_map& variableMap, int& out);

@@ -10,6 +10,7 @@
 #include <iomanip>
 #include "Context.h"
 #include "arguments.h"
+#include "argumentsMPFR.h"
 namespace discreteGermGrain
 {
 	int main(int argc, char** argv)

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-set(CppFiles arguments.cpp argumentsMPIR.cpp Context.cpp depth_first_search_restricted.hpp bridges.hpp connected_components_restricted.hpp DiscreteGermGrainObs.cpp DiscreteGermGrainSubObs.cpp isSingleComponentWithRadius.cpp)
-set(HeaderFiles arguments.h argumentsMPIR.h Context.h DiscreteGermGrainObs.h DiscreteGermGrainSubObs.h isSingleComponentWithRadius.h lexographicOrder.h includeNumerics.h)
+set(CppFiles arguments.cpp argumentsMPFR.cpp Context.cpp depth_first_search_restricted.hpp bridges.hpp connected_components_restricted.hpp DiscreteGermGrainObs.cpp DiscreteGermGrainSubObs.cpp isSingleComponentWithRadius.cpp)
+set(HeaderFiles arguments.h argumentsMPFR.h Context.h DiscreteGermGrainObs.h DiscreteGermGrainSubObs.h isSingleComponentWithRadius.h lexographicOrder.h includeNumerics.h)
 if(WIN32)
 	list(APPEND HeaderFiles windowsConsoleOutput.h)
 	list(APPEND CppFiles windowsConsoleOutput.cpp)

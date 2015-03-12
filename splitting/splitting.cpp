@@ -17,7 +17,7 @@
 #endif
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
-#include "argumentsMPIR.h"
+#include "argumentsMPFR.h"
 namespace discreteGermGrain
 {
 	void stepOne(const std::vector<DiscreteGermGrainObs>& observations, std::vector<DiscreteGermGrainObs>& finalObservations, mpfr_class& probabilitySum, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)

@@ -8,7 +8,7 @@
 #include "Context.h"
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
-#include "argumentsMPIR.h"
+#include "argumentsMPFR.h"
 namespace discreteGermGrain
 {
 	int main(int argc, char **argv)

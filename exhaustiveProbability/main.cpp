@@ -9,7 +9,7 @@
 #include <iomanip>
 #include "Context.h"
 #include "arguments.h"
-#include "argumentsMPIR.h"
+#include "argumentsMPFR.h"
 namespace discreteGermGrain
 {
 	inline std::pair<int, int> vertexToPair(int vertex, int gridDimension)

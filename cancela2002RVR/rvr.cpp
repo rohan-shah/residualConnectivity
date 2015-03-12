@@ -1,6 +1,6 @@
 #include "Context.h"
 #include "arguments.h"
-#include "argumentsMPIR.h"
+#include "argumentsMPFR.h"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/program_options.hpp>
 #include <boost/random/uniform_01.hpp>
@@ -102,8 +102,6 @@ namespace discreteGermGrain
 			return 0;
 		}
 		mpfr_class sum = 0;
-		//We want the convert_to method available in gdb 
-		double tmp = sum.convert_to<double>();
 		for(int i = 0; i < n; i++)
 		{
 			iterativeVertexStates.clear();

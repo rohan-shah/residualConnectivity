@@ -31,48 +31,6 @@ namespace discreteGermGrain
 		}
 		return true;
 	}
-	bool readContext(boost::program_options::variables_map& variableMap, Context& out, mpfr_class opProbability, std::string& message)
-	{
-		if(variableMap.count("graphFile") + variableMap.count("gridGraph") + variableMap.count("torusGraph") != 1)
-		{
-			message = "Please enter exactly one of `gridGraph', `graphFile' or `torusGraph'";
-			return false;
-		}
-		else if(variableMap.count("graphFile") == 1)
-		{
-			bool successful;
-			std::string internalMessage;
-			out = Context::fromFile(variableMap["graphFile"].as<std::string>(), opProbability, successful, internalMessage);
-			if(!successful)
-			{
-				message = "Error reading graphml file. " + internalMessage;
-				return false;
-			}
-			return true;
-		}
-		else if(variableMap.count("torusGraph") == 1)
-		{
-			int gridDimension = variableMap["torusGraph"].as<int>();
-			if(gridDimension <= 0)
-			{
-				message = "Input `torusGraph' must be a positive integer";
-				return false;
-			}
-			out = Context::torusContext(gridDimension, opProbability);
-			return true;
-		}
-		else
-		{
-			int gridDimension = variableMap["gridGraph"].as<int>();
-			if(gridDimension <= 0)
-			{
-				message = "Input `gridGraph' must be a positive integer";
-				return false;
-			}
-			out = Context::gridContext(gridDimension, opProbability);
-			return true;
-		}
-	}
 	void readSeed(boost::program_options::variables_map& variableMap, boost::mt19937& randomSource)
 	{
 		if(variableMap.count("seed") > 0)

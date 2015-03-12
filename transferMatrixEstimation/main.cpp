@@ -9,7 +9,7 @@
 #include "states.h"
 #include <boost/scoped_array.hpp>
 #include "includeNumerics.h"
-#include "argumentsMPIR.h"
+#include "argumentsMPFR.h"
 #include <boost/noncopyable.hpp>
 namespace discreteGermGrain
 {
