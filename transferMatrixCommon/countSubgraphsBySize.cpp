@@ -3,7 +3,7 @@
 #include "constructMatrices.h"
 namespace discreteGermGrain
 {
-	void countSubgraphsBySizeMultiThreaded(mpz_class* counts, int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger)
+	void countSubgraphsBySizeMultiThreaded(mpz_class* counts, int gridDimension, TransitionMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger)
 	{
 		if(gridDimension > 32)
 		{
@@ -11,7 +11,7 @@ namespace discreteGermGrain
 		}
 		return countSubgraphsBySizeSingleThreaded(counts, gridDimension, transitionMatrix, nonZeroCount, logger);
 	}
-	void countSubgraphsBySizeSingleThreaded(mpz_class* counts, int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger)
+	void countSubgraphsBySizeSingleThreaded(mpz_class* counts, int gridDimension, TransitionMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger)
 	{
 		if(gridDimension > 32)
 		{

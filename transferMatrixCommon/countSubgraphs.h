@@ -15,7 +15,7 @@ namespace discreteGermGrain
 		virtual void completedMultiplicationStep(int completed, int total){}
 		virtual void endMultiplications(){}
 	};
-
+	void constructMatricesDense(LargeDenseIntMatrix& outputTransitionMatrix, FinalColumnVector& outputFinal, InitialRowVector& outputInitial, const transferStates& states, std::size_t& nonZeroCount);
 	mpz_class countSubgraphsMultiThreaded(int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsLogger* logger);
 	mpz_class countSubgraphsSingleThreaded(int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsLogger* logger);
 }

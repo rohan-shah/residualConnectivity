@@ -112,7 +112,7 @@ namespace discreteGermGrain
 			}
 			boost::scoped_array<mpz_class> counts(new mpz_class[gridDimension*gridDimension+1]);
 			std::size_t nonZeroCount = 0;
-			LargeDenseIntMatrix transitionMatrix;
+			TransitionMatrix transitionMatrix;
 			transferMatrixLogger logger;
 			countSubgraphsBySizeMultiThreaded(counts.get(), gridDimension, transitionMatrix, nonZeroCount, &logger);
 

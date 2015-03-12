@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-set(HeaderFiles constructMatrices.h states.h countSubgraphsBySize.h countSubgraphsCommon.h countSubgraphs.h isConnectedState.h)
-set(CppFiles constructMatrices.cpp states.cpp countSubgraphsBySize.cpp countSubgraphsCommon.cpp countSubgraphs.cpp isConnectedState.cpp subgraphMacros.hpp)
+set(HeaderFiles constructMatrices.h states.h countSubgraphsBySize.h countSubgraphsCommon.h countSubgraphs.h isConnectedState.h customizedEigen.h)
+set(CppFiles constructMatrices.cpp states.cpp countSubgraphsBySize.cpp countSubgraphsCommon.cpp countSubgraphs.cpp isConnectedState.cpp subgraphMacros.hpp customizedEigen.cpp)
 add_library(transferMatrixCommon STATIC ${HeaderFiles} ${CppFiles})
 target_compile_definitions(transferMatrixCommon PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
 target_compile_definitions(transferMatrixCommon PRIVATE USE_OPENMP)

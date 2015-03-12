@@ -1,5 +1,4 @@
 #include "countSubgraphsCommon.h"
-#include "constructMatrices.h"
 #include "states.h"
 #include "countSubgraphs.h"
 #include <stdexcept>

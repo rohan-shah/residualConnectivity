@@ -193,18 +193,18 @@ skipThisState:
 	}
 	struct constructMatricesDense_impl
 	{
-		typedef LargeDenseIntMatrix LargeIntMatrix;
-		static inline void initMatrix(LargeIntMatrix& transitionMatrix, std::size_t stateSize)
+		typedef TransitionMatrix LargeIntMatrix;
+		static inline void initMatrix(TransitionMatrix& transitionMatrix, std::size_t stateSize)
 		{
 			transitionMatrix.resize(stateSize, stateSize);
 			transitionMatrix.fill(0L);
 		}
-		static inline void addTransition(LargeDenseIntMatrix& transitionMatrix, std::size_t first, std::size_t second)
+		static inline void addTransition(TransitionMatrix& transitionMatrix, std::size_t first, std::size_t second)
 		{
 			transitionMatrix(first, second) = 1L;
 		}
 	};
-	void constructMatricesDense(LargeDenseIntMatrix& outputTransitionMatrix, FinalColumnVector& outputFinal, InitialRowVector& outputInitial, const transferStates& states, std::size_t& nonZeroCount)
+	void constructMatricesDense(TransitionMatrix& outputTransitionMatrix, FinalColumnVector& outputFinal, InitialRowVector& outputInitial, const transferStates& states, std::size_t& nonZeroCount)
 	{
 		constructMatricesInternal<constructMatricesDense_impl>(outputTransitionMatrix, outputFinal, outputInitial, states, nonZeroCount);
 	}
@@ -224,5 +224,22 @@ skipThisState:
 	void constructMatricesSparse(LargeSparseIntMatrix& outputTransitionMatrix, FinalColumnVector& outputFinal, InitialRowVector& outputInitial, const transferStates& states, std::size_t& nonZeroCount)
 	{
 		constructMatricesInternal<constructMatricesSparse_impl>(outputTransitionMatrix, outputFinal, outputInitial, states, nonZeroCount);
+	}
+	struct constructMatricesDenseNoCustomEigen_impl
+	{
+		typedef LargeDenseIntMatrix LargeIntMatrix;
+		static inline void initMatrix(LargeDenseIntMatrix& transitionMatrix, std::size_t stateSize)
+		{
+			transitionMatrix.resize(stateSize, stateSize);
+			transitionMatrix.fill(0L);
+		}
+		static inline void addTransition(LargeDenseIntMatrix& transitionMatrix, std::size_t first, std::size_t second)
+		{
+			transitionMatrix(first, second) = 1L;
+		}
+	};
+	void constructMatricesDense(LargeDenseIntMatrix& outputTransitionMatrix, FinalColumnVector& outputFinal, InitialRowVector& outputInitial, const transferStates& states, std::size_t& nonZeroCount)
+	{
+		constructMatricesInternal<constructMatricesDenseNoCustomEigen_impl>(outputTransitionMatrix, outputFinal, outputInitial, states, nonZeroCount);
 	}
 }
