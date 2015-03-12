@@ -53,13 +53,6 @@ namespace discreteGermGrain
 
 		this->state = state;
 	}
-	DiscreteGermGrainObs::DiscreteGermGrainObs(const DiscreteGermGrainObs& other)
-		:context(other.context), state(NULL)
-	{
-		boost::shared_array<vertexState> state(new vertexState[context.nVertices()]);
-		memcpy(state.get(), other.state.get(), sizeof(vertexState)*context.nVertices());
-		this->state = state;
-	}
 	DiscreteGermGrainObs::DiscreteGermGrainObs(DiscreteGermGrainObs&& other)
 		:context(other.context)
 	{
@@ -144,12 +137,5 @@ namespace discreteGermGrain
 	const vertexState* DiscreteGermGrainObs::getState() const
 	{
 		return state.get();
-	}
-	DiscreteGermGrainObs& DiscreteGermGrainObs::operator=(const DiscreteGermGrainObs& other)
-	{
-		if(&context != &(other.context)) throw std::runtime_error("Attempting to mix different Contexts!");
-		state = other.state;
-		subPointsCache = other.subPointsCache;
-		return *this;
 	}
 }

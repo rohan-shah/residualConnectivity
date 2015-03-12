@@ -10,11 +10,12 @@
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>
+#include <boost/noncopyable.hpp>
 #include "Context.h"
 namespace discreteGermGrain
 {
 	class DiscreteGermGrainSubObs;
-	class DiscreteGermGrainObs
+	class DiscreteGermGrainObs : public boost::noncopyable
 	{
 	public:
 		friend class boost::serialization::access;
@@ -23,10 +24,8 @@ namespace discreteGermGrain
 		//A default constructor that fills all numeric members with -1. Somewhat dangerous to leave in here, but problems are due to the use of such invalid objects, it should be fairly obvious. 
 		//DiscreteGermGrainObs(Context const& context);
 		DiscreteGermGrainObs(DiscreteGermGrainObs&& other);
-		DiscreteGermGrainObs(const DiscreteGermGrainObs& other);
 		DiscreteGermGrainObs(Context const& context, boost::shared_array<const vertexState> state);
 		DiscreteGermGrainObs& operator=(DiscreteGermGrainObs&& other);
-		DiscreteGermGrainObs& operator=(const DiscreteGermGrainObs& other);
 		Context const& getContext() const;
 		const vertexState* getState() const;
 		DiscreteGermGrainSubObs getSubObservation(int radius) const;

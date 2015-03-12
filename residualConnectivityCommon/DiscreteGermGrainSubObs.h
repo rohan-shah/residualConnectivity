@@ -5,11 +5,12 @@
 #include <boost/graph/adjacency_list.hpp>
 #include <set>
 #include <boost/shared_ptr.hpp>
+#include <boost/noncopyable.hpp>
 #include "Context.h"
 namespace discreteGermGrain
 {
 	class DiscreteGermGrainObs;
-	class DiscreteGermGrainSubObs
+	class DiscreteGermGrainSubObs : public boost::noncopyable
 	{
 	public:
 		/*
@@ -73,7 +74,6 @@ namespace discreteGermGrain
 		 */
 		void getRandomPointPattern(boost::mt19937& randomSource, vertexState* outputState);
 		//__declspec(noinline) void constructSubgraph(const std::set<int>& subgraphVertexIndices, const std::vector<Config::gridPoint>& allPoints, graph_t& subgraph);
-		DiscreteGermGrainSubObs(DiscreteGermGrainSubObs& other);
 		
 		Context const& context;
 		int currentRadius;

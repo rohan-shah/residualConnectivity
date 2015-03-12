@@ -73,7 +73,6 @@ namespace discreteGermGrain
 #endif
 						, nThisObservation, probability);
 				probabilitySumThisThread += probability;
-				float debug = probability.convert_to<double>();
 				if(probability > 0)
 				{
 					DiscreteGermGrainObs finalObs(context, newState);
