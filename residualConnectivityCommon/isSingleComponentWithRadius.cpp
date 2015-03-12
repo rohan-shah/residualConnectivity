@@ -14,7 +14,7 @@ namespace discreteGermGrain
 
 		for(std::size_t i = 0; i < nVertices; i++)
 		{
-			if(state[i].state & SUBPOINT || state[i].state & FIXED_ON)
+			if(state[i].state & FIXED_ON)
 			{
 				initialPoints.push_back((int)i);
 			}

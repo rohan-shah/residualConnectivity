@@ -204,7 +204,7 @@ namespace discreteGermGrain
 			{
 				unfixedVertices.push_back(i);
 			}
-			if(stateRef[i].state &	(FIXED_ON | SUBPOINT))
+			if(stateRef[i].state &	FIXED_ON)
 			{
 				fixedVertices.push_back(i);
 			}
@@ -377,7 +377,7 @@ namespace discreteGermGrain
 			
 			boost::shared_array<vertexState> newStates(new vertexState[nVertices]);
 			std::fill(newStates.get(), newStates.get()+nVertices, vertexState::fixed_off());
-			for(std::vector<singleComponent::graphType::vertex_descriptor>::iterator i = finalVertices.begin(); i != finalVertices.end(); i++) newStates[*i].state = SUBPOINT;
+			for(std::vector<singleComponent::graphType::vertex_descriptor>::iterator i = finalVertices.begin(); i != finalVertices.end(); i++) newStates[*i].state = FIXED_ON;
 
 			return newStates;
 		}

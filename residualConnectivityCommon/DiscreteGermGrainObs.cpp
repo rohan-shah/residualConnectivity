@@ -88,7 +88,7 @@ namespace discreteGermGrain
 			//is this vertex marked as on, for one reason or another? If so continue from here
 			if((state[sourceVertex].state & ON_MASK) > 0 && newVertexStatesRef[sourceVertex].state == FIXED_OFF)
 			{
-				newVertexStatesRef[sourceVertex].state = SUBPOINT;
+				newVertexStatesRef[sourceVertex].state = FIXED_ON;
 
 				//Do we find another vertex in our search that is marked on, and is far enough away from the source?
 				//If so retain it, it will be our new starting point. 
@@ -104,8 +104,7 @@ namespace discreteGermGrain
 					int previousState = state[sourceVertex].state;
 					if(shortestDistances[copiedSourceVertex + nVertices * sourceVertex] <= radius)
 					{
-						if(previousState == SUBPOINT) newVertexStatesRef[sourceVertex].state = FIXED_ON;
-						else if(previousState & FIXED_MASK) newVertexStatesRef[sourceVertex].state = previousState;
+						if(previousState & FIXED_MASK) newVertexStatesRef[sourceVertex].state = previousState;
 						else newVertexStatesRef[sourceVertex].state = UNFIXED_OFF;
 					}
 					else if(!found && (previousState & ON_MASK) > 0 && newVertexStatesRef[sourceVertex].state == FIXED_OFF)

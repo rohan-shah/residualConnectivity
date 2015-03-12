@@ -22,8 +22,8 @@ namespace discreteGermGrain
 	};
 	enum
 	{
-		UNFIXED_OFF = 1, UNFIXED_ON = 2, FIXED_ON = 4, FIXED_OFF = 8, SUBPOINT = 16, 
-		ON_MASK = 22, FIXED_MASK = 28, UNFIXED_MASK = 3
+		UNFIXED_OFF = 1, UNFIXED_ON = 2, FIXED_ON = 4, FIXED_OFF = 8,
+		ON_MASK = 6, FIXED_MASK = 12, UNFIXED_MASK = 3
 	};
 	struct vertexState
 	{

@@ -120,7 +120,7 @@ namespace discreteGermGrain
 				int newDistance;
 				if((newDistance = abs(i - allPoints[k].first) + abs(j - allPoints[k].second)) < minDistance) minDistance = newDistance;
 			}*/
-			if(state[vertexCounter].state & (SUBPOINT | FIXED_ON))
+			if(state[vertexCounter].state & FIXED_ON)
 			{
 				pen = fixedOnPen;
 				brush = fixedOnBrush;
