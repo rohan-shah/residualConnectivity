@@ -22,7 +22,7 @@ target_compile_definitions(residualConnectivityCommon PUBLIC BOOST_ALL_NO_LIB BO
 if(${Qt5_FOUND})
 	target_link_libraries(residualConnectivityCommon PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets)
 endif()
-target_link_libraries(residualConnectivityCommon PUBLIC mpfr mpir)
+target_link_libraries(residualConnectivityCommon PUBLIC mpfr)
 if(WIN32)
 	set_target_properties(residualConnectivityCommon PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/ PDB_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/)
 else()
