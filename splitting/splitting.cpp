@@ -20,8 +20,9 @@
 #include "argumentsMPIR.h"
 namespace discreteGermGrain
 {
-	void stepOne(const std::vector<DiscreteGermGrainObs>& observations, std::vector<DiscreteGermGrainObs>& finalObservations, std::vector<float>& probabilities, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)
+	void stepOne(const std::vector<DiscreteGermGrainObs>& observations, std::vector<DiscreteGermGrainObs>& finalObservations, mpfr_class& probabilitySum, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)
 	{
+		probabilitySum = 0;
 #ifdef USE_OPENMP
 		boost::mt19937::result_type perThreadSeeds[100];
 		for(int i = 0; i < 100; i++) perThreadSeeds[i] = randomSource();
@@ -37,7 +38,7 @@ namespace discreteGermGrain
 		{
 			//vector of final observations from this thread. Set up this way to keep things deterministic
 			std::vector<DiscreteGermGrainObs> finalObservationsThisThread;
-			std::vector<float> probabilitiesThisThread;
+			mpfr_class probabilitySumThisThread = 0;
 
 			//vector that we re-use to avoid allocations
 			std::vector<int> connectedComponents(boost::num_vertices(context.getGraph()));
@@ -63,7 +64,7 @@ namespace discreteGermGrain
 				//get out the current observation
 				const DiscreteGermGrainObs& currentObs = observations[j];
 				DiscreteGermGrainSubObs subObs = currentObs.getSubObservation(1);
-				float probability;
+				mpfr_class probability;
 				boost::shared_array<const vertexState> newState = subObs.estimateRadius1(
 #ifdef USE_OPENMP
 						perThreadSource
@@ -71,7 +72,8 @@ namespace discreteGermGrain
 						randomSource
 #endif
 						, nThisObservation, probability);
-				probabilitiesThisThread.push_back(probability);
+				probabilitySumThisThread += probability;
+				float debug = probability.convert_to<double>();
 				if(probability > 0)
 				{
 					DiscreteGermGrainObs finalObs(context, newState);
@@ -87,11 +89,12 @@ namespace discreteGermGrain
 					if(j == omp_get_thread_num())
 					{
 						finalObservations.insert(finalObservations.end(), std::make_move_iterator(finalObservationsThisThread.begin()), std::make_move_iterator(finalObservationsThisThread.end()));
-						probabilities.insert(probabilities.end(), std::make_move_iterator(probabilitiesThisThread.begin()), std::make_move_iterator(probabilitiesThisThread.end()));
+						probabilitySum += probabilitySumThisThread;
 					}
 				}
 			}
 #else
+			probabilitySum = probabilitySumThisThread;
 			finalObservations.swap(finalObservationsThisThread);
 #endif
 		}
@@ -336,7 +339,7 @@ namespace discreteGermGrain
 		float crudeMCProbability = ((float)observations.size()) / n;
 		std::cout << "Retaining " << observations.size() << " / " << n << " observations from crude MC step" << std::endl;		
 
-		float finalEstimate;
+		mpfr_class finalEstimate;
 		if(initialRadius != 0)
 		{
 			std::vector<float> logRetainedProportion;
@@ -346,17 +349,13 @@ namespace discreteGermGrain
 			
 			//When the radius is 1 we use a different algorithm
 			std::vector<DiscreteGermGrainObs> finalObservations;
-			std::vector<float> probabilities;
-			stepOne(observations, finalObservations, probabilities, randomSource, initialRadius, context, splittingFactors);
+			mpfr_class probabilitySum = 0;
+			int lastStepObservations = observations.size();
+			stepOne(observations, finalObservations, probabilitySum, randomSource, initialRadius, context, splittingFactors);
 			std::cout << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << finalObservations.size() << " / " << observations.size() << " observations had non-zero probability" << std::endl;
 
-			float averageLastStep;
-			{
-				boost::accumulators::accumulator_set<float, boost::accumulators::stats<boost::accumulators::tag::sum_kahan> > acc;
-				std::for_each(probabilities.begin(), probabilities.end(), std::ref(acc));
-				averageLastStep = boost::accumulators::sum_kahan(acc) / probabilities.size();
-			}
-			std::cout << "Average probability at last step was " << averageLastStep << std::endl;
+			mpfr_class averageLastStep = probabilitySum / lastStepObservations;
+			std::cout << "Average probability at last step was " << averageLastStep.str() << std::endl;
 			float productRetainedProportion;
 			{
 				boost::accumulators::accumulator_set<float, boost::accumulators::stats<boost::accumulators::tag::sum_kahan> > acc;
@@ -396,7 +395,7 @@ namespace discreteGermGrain
 			}
 		}
 		//Take the sum of all the log probabilities, and then take the exponential.
-		std::cout << "Estimated probability was " << finalEstimate << std::endl;
+		std::cout << "Estimated probability was " << finalEstimate.str() << std::endl;
 		return 0;
 	}
 }

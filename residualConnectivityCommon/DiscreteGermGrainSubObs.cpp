@@ -173,7 +173,7 @@ namespace discreteGermGrain
 			}
 		}
 	}
-	boost::shared_array<const vertexState> DiscreteGermGrainSubObs::estimateRadius1(boost::mt19937& randomSource, int nSimulations, float& outputProbability)
+	boost::shared_array<const vertexState> DiscreteGermGrainSubObs::estimateRadius1(boost::mt19937& randomSource, int nSimulations, mpfr_class& outputProbability)
 	{
 		double openProbability = context.getOperationalProbabilityD();
 		boost::bernoulli_distribution<float> bern(openProbability);
@@ -373,7 +373,7 @@ namespace discreteGermGrain
 		{
 			int productComponentSuccess = 1;
 			for(std::size_t i = 0; i < nBiconnectedComponents; i++) productComponentSuccess *= connectedCounters[i];
-			outputProbability = pow(openProbability, nNotAlreadyFixedArticulation) * ((float)(productComponentSuccess + nSuccessfulRemaining) / (float)nSimulations);
+			outputProbability = boost::multiprecision::pow(context.getOperationalProbability(), nNotAlreadyFixedArticulation) * ((float)(productComponentSuccess + nSuccessfulRemaining) / (float)nSimulations);
 			
 			boost::shared_array<vertexState> newStates(new vertexState[nVertices]);
 			std::fill(newStates.get(), newStates.get()+nVertices, vertexState::fixed_off());

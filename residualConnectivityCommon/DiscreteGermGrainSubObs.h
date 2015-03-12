@@ -50,7 +50,7 @@ namespace discreteGermGrain
 		 * @param[out] outputProbability The estimated probability. Can be 0 if nSimulations was -1
 		 * @ret Resulting complete pattern. Can be an invalid object if no suitable pattern was found. Check outputProbability before using. 
 		 */
-		boost::shared_array<const vertexState> estimateRadius1(boost::mt19937& randomSource, int nSimulations, float& outputProbability);
+		boost::shared_array<const vertexState> estimateRadius1(boost::mt19937& randomSource, int nSimulations, mpfr_class& outputProbability);
 		/*
 		 * The graph type used throughout. This is specifically an adjacency_list object, because the adjacency_matrix type is *very* badly suited to a lot of the graph algorithms. 
 		 */
