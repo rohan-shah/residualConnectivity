@@ -2,7 +2,7 @@
 #include <boost/random/mersenne_twister.hpp>
 #include "DiscreteGermGrainObs.h"
 #include <boost/algorithm/string.hpp>
-#include "DiscreteGermGrainSubObs.h"
+#include "DiscreteGermGrainObs.h"
 #include "isSingleComponentWithRadius.h"
 #include "Context.h"
 #include <boost/graph/graphml.hpp>
@@ -60,63 +60,24 @@ namespace discreteGermGrain
 			std::cout << message << std::endl;
 			return 0;
 		}
-		int splitting = 0;
-		if(variableMap.count("splitting") > 0)
-		{
-			splitting = variableMap["splitting"].as<int>();
-		}
-
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
 
 		std::vector<DiscreteGermGrainObs> observations;
 		std::vector<int> scratchMemory;
 		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
-		boost::scoped_array<int> counters(new int[splitting + 1]);
-		memset(counters.get(), 0, sizeof(int)*(splitting+1));
 
 		//The cumulative states, in case we decide to use the --splitting option
 		std::vector<vertexState> cumulativeStates(context.nVertices());
 		for(int i = 0; i < n; i++)
 		{
 			DiscreteGermGrainObs obs(context, randomSource);
-			if(splitting > 0)
-			{
-				std::fill(cumulativeStates.begin(), cumulativeStates.end(), vertexState::unfixed_off());
-				for(int radius = splitting; radius >= 0; radius--)
-				{
-					const vertexState* newState = obs.getSubObservation(radius).getState();
-					for(std::size_t j = 0; j < context.nVertices(); j++)
-					{
-						if(newState[j].state & FIXED_MASK)
-						{
-							cumulativeStates[j] = newState[j];
-						}
-					}
-					if(isSingleComponentPossible(context, &(cumulativeStates[0]), scratchMemory, stack))
-					{
-						counters[radius]++;
-					}
-					//To follow the splitting logic we need to stop at the first radius where it fails
-					else break;
-				}
-			}
 			if(isSingleComponentAllOn(context, obs.getState(), scratchMemory, stack))
 			{
 				observations.push_back(std::move(obs));
 			}
 		}
 		std::cout << observations.size() << " / " << n << " = " << ((float)observations.size() / (float)n) << " had one connected component" << std::endl;
-
-		if(splitting > 0)
-		{
-			std::size_t previousCount = n;
-			for(int radius = splitting; radius >= 0; radius--)
-			{
-				std::cout << "Step " << (splitting - radius) << ", probability " << counters[radius] << " / " << previousCount << " = " << ((double)counters[radius] / (double)previousCount) << std::endl;
-				previousCount = counters[radius];
-			}
-		}
 		return 0;
 	}
 }

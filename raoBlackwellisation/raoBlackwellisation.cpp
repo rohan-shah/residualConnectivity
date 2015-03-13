@@ -9,6 +9,7 @@
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
+#include "subObs/basic.h"
 namespace discreteGermGrain
 {
 	int main(int argc, char **argv)
@@ -107,11 +108,14 @@ namespace discreteGermGrain
 					state[onVertex].state = FIXED_ON;
 				}
 				
-				DiscreteGermGrainObs obs(context, state, randomSource);
+				//represents partial knowledge
+				::discreteGermGrain::subObs::subObs subObs(context, state);
+				//generate complete knowledge
+				::discreteGermGrain::DiscreteGermGrainObs obs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::subObs>::get(subObs, randomSource);
 				const vertexState* obsState = obs.getState();
 				std::fill(connectedComponents.begin(), connectedComponents.end(), -1);
 				
-				std::vector<singleComponent::graphType::vertex_descriptor> specified;
+				std::vector<Context::inputGraph::vertex_descriptor> specified;
 				specified.push_back(onVertex);
 				
 				isSingleComponentAllOn(context, obsState, connectedComponents, stack);

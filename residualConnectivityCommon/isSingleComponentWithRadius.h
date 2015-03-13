@@ -7,12 +7,8 @@
 #include "depth_first_search_restricted.hpp"
 namespace discreteGermGrain
 {
-	namespace singleComponent
-	{
-		typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, boost::no_property, boost::property<boost::edge_index_t, int> > graphType;
-	}
 	bool isSingleComponentPossible(Context const& context, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
 	bool isSingleComponentAllOn(Context const& context, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
-	bool isSingleComponentSpecified(Context const& context, const std::vector<singleComponent::graphType::vertex_descriptor>& specifiedVertices, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
+	bool isSingleComponentSpecified(Context const& context, const std::vector<Context::inputGraph::vertex_descriptor>& specifiedVertices, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
 }
 #endif

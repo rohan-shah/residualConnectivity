@@ -8,7 +8,7 @@ namespace discreteGermGrain
 	{
 		std::size_t nVertices = context.nVertices();
 
-		std::vector<singleComponent::graphType::vertex_descriptor> initialPoints;
+		std::vector<Context::inputGraph::vertex_descriptor> initialPoints;
 		typedef boost::color_traits<boost::default_color_type> Color;
 		std::vector<boost::default_color_type> colorMap(nVertices, Color::black());
 
@@ -30,7 +30,7 @@ namespace discreteGermGrain
 	{
 		std::size_t nVertices = context.nVertices();
 
-		std::vector<singleComponent::graphType::vertex_descriptor> initialPoints;
+		std::vector<Context::inputGraph::vertex_descriptor> initialPoints;
 		typedef boost::color_traits<boost::default_color_type> Color;
 		std::vector<boost::default_color_type> colorMap(nVertices, Color::black());
 
@@ -49,14 +49,14 @@ namespace discreteGermGrain
 		
 		return nComponents <= 1;
 	}
-	bool isSingleComponentSpecified(Context const& context, const std::vector<singleComponent::graphType::vertex_descriptor>& specifiedVertices, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack)
+	bool isSingleComponentSpecified(Context const& context, const std::vector<Context::inputGraph::vertex_descriptor>& specifiedVertices, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack)
 	{
 		std::size_t nVertices = context.nVertices();
 
 		typedef boost::color_traits<boost::default_color_type> Color;
 		std::vector<boost::default_color_type> colorMap(nVertices, Color::black());
 
-		for(std::vector<singleComponent::graphType::vertex_descriptor>::const_iterator i = specifiedVertices.begin(); i != specifiedVertices.end(); i++)
+		for(std::vector<Context::inputGraph::vertex_descriptor>::const_iterator i = specifiedVertices.begin(); i != specifiedVertices.end(); i++)
 		{
 			colorMap[*i] = Color::white();
 		}
