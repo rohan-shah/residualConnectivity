@@ -84,7 +84,7 @@ namespace discreteGermGrain
 				if(binaryEncoding & binaryMasks[i])
 				{
 					memset(&(binaryGroupContinuations[0]), 0, sizeof(unsigned long long)*nGroups);
-					//ok, now to convert the binary data across to 3-bit
+					//binaryGroupContinuations[i] tells us which groups in the `from' state are continued by group i in the `to' state. 
 					for(std::size_t stateGroupMaskCounter = 0; stateGroupMaskCounter < currentStateGroupBinaryMasks.size(); stateGroupMaskCounter++)
 					{
 						int counter = 0;
@@ -97,6 +97,23 @@ namespace discreteGermGrain
 							}
 							currentMask >>= 1;
 							counter++;
+						}
+					}
+					//If one group in the `to' state continues a pair of groups in the `from' state, then any group in the `to' state that continues either of those actually continues both
+					bool shouldContinue = true;
+					while(shouldContinue)
+					{
+						shouldContinue = false;
+						for(int j = 0; j < nGroups; j++)
+						{
+							for(int k = 0; k < nGroups; k++)
+							{
+								if((binaryGroupContinuations[k] & binaryGroupContinuations[j]) && (binaryGroupContinuations[k] ^ binaryGroupContinuations[j]))
+								{
+									binaryGroupContinuations[k] = binaryGroupContinuations[j] = binaryGroupContinuations[k] | binaryGroupContinuations[j];
+									shouldContinue = true;
+								}
+							}
 						}
 					}
 					//now to actually do the conversion

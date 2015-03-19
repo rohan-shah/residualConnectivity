@@ -52,6 +52,7 @@ namespace discreteGermGrain
 			GRID_GRAPH_OPTION
 			("bySize", boost::program_options::bool_switch()->default_value(false), "(flag) Should we attempt to also count the number of vertices for each subgraph?")
 			("outputFile", boost::program_options::value<std::string>(), "(string) File to output count data to")
+			("multithreaded", boost::program_options::value<bool>()->default_value(true)->implicit_value(true), "(flag) Should we use multithreading?")
 			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
@@ -83,6 +84,7 @@ namespace discreteGermGrain
 			return 0;
 		}
 		bool bySize = variableMap["bySize"].as<bool>();
+		bool multithreaded = variableMap["multithreaded"].as<bool>();
 		if(!bySize)
 		{
 			if(variableMap.count("outputFile") > 0)
@@ -114,7 +116,8 @@ namespace discreteGermGrain
 			std::size_t nonZeroCount = 0;
 			TransitionMatrix transitionMatrix;
 			transferMatrixLogger logger;
-			countSubgraphsBySizeMultiThreaded(counts.get(), gridDimension, transitionMatrix, nonZeroCount, &logger);
+			if(multithreaded) countSubgraphsBySizeMultiThreaded(counts.get(), gridDimension, transitionMatrix, nonZeroCount, &logger);
+			else countSubgraphsBySizeSingleThreaded(counts.get(), gridDimension, transitionMatrix, nonZeroCount, &logger);
 
 			outputStream << "Number of connected subgraphs with that number of points" << std::endl;
 			for(int i = 0; i < gridDimension*gridDimension+1; i++)

@@ -12,7 +12,7 @@ namespace discreteGermGrain
 		const std::size_t cachedIndicesSize = ((std::size_t)1) << (2*nGroups);
 		cachedIndices.resize(cachedIndicesSize);
 #ifndef NDEBUG
-		std::fill(cachedIndices.begin(), cachedIndices.end(), (std::size_t)0);
+		std::fill(cachedIndices.begin(), cachedIndices.end(), (std::size_t)-1);
 #endif
 		//set up cache vector
 		for(std::size_t cacheIndex = 0; cacheIndex < cachedIndicesSize; cacheIndex++)

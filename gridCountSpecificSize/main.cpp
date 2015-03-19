@@ -80,7 +80,7 @@ namespace discreteGermGrain
 				{
 					for(int i = 0; i < gridDimension*gridDimension; i++)
 					{
-						if(counter & (1 << i)) state[i].state = FIXED_ON;
+						if(counter & (1ULL << i)) state[i].state = FIXED_ON;
 						else state[i].state = FIXED_OFF;
 					}
 					if(isSingleComponentPossible(context, &(state[0]), connectedComponents, stack))
