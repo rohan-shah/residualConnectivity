@@ -12,14 +12,6 @@
 #include "argumentsMPFR.h"
 namespace discreteGermGrain
 {
-	inline std::pair<int, int> vertexToPair(int vertex, int gridDimension)
-	{
-		return std::make_pair(vertex / gridDimension, vertex % gridDimension);
-	}
-	inline int pairToVertex(int first, int second, int gridDimension)
-	{
-		return (first * gridDimension) + second;
-	}
 	int main(int argc, char** argv)
 	{
 		boost::program_options::options_description options("Usage");
