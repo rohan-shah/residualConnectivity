@@ -5,8 +5,8 @@
 #include <boost/random/mersenne_twister.hpp>
 #include "DiscreteGermGrainObs.h"
 #include "DiscreteGermGrainSubObs.h"
-#include "obs/basic.h"
-#include "subObs/basic.h"
+#include "obs/usingBiconnectedComponents.h"
+#include "subObs/usingBiconnectedComponents.h"
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/random/bernoulli_distribution.hpp>
@@ -21,7 +21,7 @@
 #include "argumentsMPFR.h"
 namespace discreteGermGrain
 {
-	void stepOne(const std::vector<::discreteGermGrain::subObs::basic>& observations, std::vector<::discreteGermGrain::subObs::basic>& finalObservations, mpfr_class& probabilitySum, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)
+	void stepOne(const std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& observations, std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& finalObservations, mpfr_class& probabilitySum, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)
 	{
 		probabilitySum = 0;
 #ifdef USE_OPENMP
@@ -38,14 +38,14 @@ namespace discreteGermGrain
 #endif
 		{
 			//vector of final observations from this thread. Set up this way to keep things deterministic
-			std::vector<::discreteGermGrain::subObs::basic> finalObservationsThisThread;
+			std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> finalObservationsThisThread;
 			mpfr_class probabilitySumThisThread = 0;
 
 			//vector that we re-use to avoid allocations
 			std::vector<int> connectedComponents(context.nVertices());
 			//stack for depth first search
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
-			::discreteGermGrain::subObs::basicConstructorType helper(connectedComponents, stack);
+			::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType helper(connectedComponents, stack);
 			//used to calculate the splitting factor (which is random)
 			boost::random::bernoulli_distribution<float> splittingFactorBernoulli(sptittingFactorRemainder);
 			
@@ -77,7 +77,7 @@ namespace discreteGermGrain
 				probabilitySumThisThread += probability;
 				if(probability > 0)
 				{
-					::discreteGermGrain::subObs::basic finalObs(context, newState, 0, helper);
+					::discreteGermGrain::subObs::usingBiconnectedComponents finalObs(context, newState, 0, helper);
 					finalObservationsThisThread.push_back(std::move(finalObs));
 				}
 			}
@@ -100,7 +100,7 @@ namespace discreteGermGrain
 #endif
 		}
 	}
-	void stepsExceptOne(std::vector<mpfr_class>& retainedProportion, std::vector<::discreteGermGrain::subObs::basic>& observations, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)
+	void stepsExceptOne(std::vector<mpfr_class>& retainedProportion, std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)
 	{
 #ifdef USE_OPENMP
 		//set up per-thread random number generators
@@ -116,7 +116,7 @@ namespace discreteGermGrain
 
 			//The number of sub-observations that were generated - If the splitting factor is not an integer, this will be random so we need to keep track of it. 
 			int generated = 0;
-			std::vector<::discreteGermGrain::subObs::basic> nextSetObservations;
+			std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> nextSetObservations;
 			
 			//loop over the various sample paths
 #ifdef USE_OPENMP
@@ -124,13 +124,13 @@ namespace discreteGermGrain
 #endif
 			{
 				//next set of observations from the current thread. Set up like this to make everything deterministic
-				std::vector<::discreteGermGrain::subObs::basic> nextSetObservationsThisThread;
+				std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> nextSetObservationsThisThread;
 
 				//vector that we re-use to avoid allocations
 				std::vector<int> connectedComponents(context.nVertices());
 				//stack for depth first search
 				boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
-				::discreteGermGrain::subObs::basicConstructorType helper(connectedComponents, stack);
+				::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType helper(connectedComponents, stack);
 				//used to calculate the splitting factor (which is random)
 				boost::random::bernoulli_distribution<float> splittingFactorBernoulli(sptittingFactorRemainder);
 		
@@ -152,17 +152,17 @@ namespace discreteGermGrain
 #endif
 					generated += nThisObservation;
 					//get out the current observation
-					const ::discreteGermGrain::subObs::basic& currentObs = observations[j];
+					const ::discreteGermGrain::subObs::usingBiconnectedComponents& currentObs = observations[j];
 					for(int k = 0; k < nThisObservation; k++)
 					{
-						::discreteGermGrain::obs::basic obs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::basic>::get(currentObs, 
+						::discreteGermGrain::obs::usingBiconnectedComponents obs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::usingBiconnectedComponents>::get(currentObs, 
 #ifdef USE_OPENMP
 								perThreadSource
 #else
 								randomSource
 #endif
 						);
-						::discreteGermGrain::subObs::basic subObs = ::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::basic>::get(obs, initialRadius - i, helper);
+						::discreteGermGrain::subObs::usingBiconnectedComponents subObs = ::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::usingBiconnectedComponents>::get(obs, initialRadius - i, helper);
 						if(subObs.isPotentiallyConnected())
 						{
 							nextSetObservationsThisThread.push_back(std::move(subObs));
@@ -190,7 +190,7 @@ namespace discreteGermGrain
 			observations.swap(nextSetObservations);
 		}
 	}
-	void doCrudeMCStep(std::vector<::discreteGermGrain::subObs::basic>& observations, boost::mt19937& randomSource, Context const& context, int initialRadius, int n)
+	void doCrudeMCStep(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, Context const& context, int initialRadius, int n)
 	{
 #ifdef USE_OPENMP
 		//set up per-thread random number generators
@@ -203,8 +203,8 @@ namespace discreteGermGrain
 			std::vector<int> connectedComponents(context.nVertices());
 			//stack for depth first search
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
-			::discreteGermGrain::subObs::basicConstructorType helper(connectedComponents, stack);
-			std::vector<::discreteGermGrain::subObs::basic> observationsThisThread;
+			::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType helper(connectedComponents, stack);
+			std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> observationsThisThread;
 #ifdef USE_OPENMP
 			//per-thread random number generation
 			boost::mt19937 perThreadSource;
@@ -213,14 +213,14 @@ namespace discreteGermGrain
 #endif
 			for(int i = 0; i < n; i++)
 			{
-				::discreteGermGrain::obs::basic obs(context, 
+				::discreteGermGrain::obs::usingBiconnectedComponents obs(context, 
 #ifdef USE_OPENMP
 						perThreadSource
 #else
 						randomSource
 #endif
 						);
-				::discreteGermGrain::subObs::basic subObs(::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::basic>::get(obs, initialRadius, helper));
+				::discreteGermGrain::subObs::usingBiconnectedComponents subObs(::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::usingBiconnectedComponents>::get(obs, initialRadius, helper));
 				if(subObs.isPotentiallyConnected())
 				{
 					observationsThisThread.push_back(std::move(subObs));
@@ -326,7 +326,7 @@ namespace discreteGermGrain
 		//2. initialRadius = 1, only the crude MC and then one type of algorithm
 		//3. initialRadius >= 2, crude MC and then two types of algorithm
 
-		std::vector<::discreteGermGrain::subObs::basic> observations;
+		std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> observations;
 		doCrudeMCStep(observations, randomSource, context, initialRadius, n);
 		float crudeMCProbability = ((float)observations.size()) / n;
 		std::cout << "Retaining " << observations.size() << " / " << n << " observations from crude MC step" << std::endl;		
@@ -340,7 +340,7 @@ namespace discreteGermGrain
 			
 			
 			//When the radius is 1 we use a different algorithm
-			std::vector<::discreteGermGrain::subObs::basic> finalObservations;
+			std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> finalObservations;
 			mpfr_class probabilitySum = 0;
 			int lastStepObservations = observations.size();
 			stepOne(observations, finalObservations, probabilitySum, randomSource, initialRadius, context, splittingFactors);
@@ -370,7 +370,7 @@ namespace discreteGermGrain
 			{
 				std::cout << "Writing to file..." << std::endl;
 				boost::archive::text_oarchive oarchive(stream);
-				for(std::vector<::discreteGermGrain::subObs::basic>::const_iterator i = observations.begin(); i != observations.end(); i++)
+				for(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>::const_iterator i = observations.begin(); i != observations.end(); i++)
 				{
 					oarchive << *i;
 				}

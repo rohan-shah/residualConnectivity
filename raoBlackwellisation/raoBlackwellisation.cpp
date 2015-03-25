@@ -9,7 +9,7 @@
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
-#include "subObs/basic.h"
+#include "subObs/subObs.h"
 namespace discreteGermGrain
 {
 	int main(int argc, char **argv)

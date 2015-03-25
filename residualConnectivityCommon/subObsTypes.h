@@ -7,16 +7,19 @@ namespace discreteGermGrain
 {
 	namespace obs
 	{
+		struct usingBiconnectedComponentsConstructorType
+		{
+		};
 		struct basicConstructorType
 		{
 		};
 	}
 	namespace subObs
 	{
-		struct basicConstructorType
+		struct usingBiconnectedComponentsConstructorType
 		{
 		public:
-			basicConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
+			usingBiconnectedComponentsConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
 			std::vector<int>& components;
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
 		};

@@ -1,0 +1,167 @@
+#include <boost/graph/connected_components.hpp>
+#include <boost/graph/adjacency_list.hpp>
+#include <boost/graph/adjacency_matrix.hpp>
+#include <boost/program_options.hpp>
+#include <boost/math/special_functions/binomial.hpp>
+#include <boost/accumulators/accumulators.hpp>
+#include <boost/accumulators/statistics/sum_kahan.hpp>
+#include <iostream>
+#include <iomanip>
+#include "Context.h"
+#include "arguments.h"
+#include "argumentsMPFR.h"
+#include <mathlink.h>
+#include <stdio.h>
+namespace discreteGermGrain
+{
+	int main(int argc, char** argv)
+	{
+		boost::program_options::options_description options("Usage");
+		options.add_options()
+			HELP_OPTION;
+
+		boost::program_options::variables_map variableMap;
+		try
+		{
+			boost::program_options::store(boost::program_options::parse_command_line(argc, argv, options), variableMap);
+		}
+		catch(boost::program_options::error& ee)
+		{
+			std::cerr << "Error parsing command line arguments: " << ee.what() << std::endl << std::endl;
+			std::cerr << options << std::endl;
+			return -1;
+		}
+		if(variableMap.count("help") > 0)
+		{
+			std::cout <<
+				"This computes exactly the probability that a random subgraph is connected. The random subgraph uses a vertex percolation model.\n"
+				"It takes the standard output of ExhaustiveSearch as input. Only feasible for small graphs. \n\n"
+				;
+			std::cout << options << std::endl;
+			return 0;
+		}
+	
+		std::vector<std::string> lines;
+		std::string line;
+		while(std::getline(std::cin, line))
+		{
+			lines.push_back(line);
+		}
+		std::size_t nLines = lines.size();
+		std::size_t nVertices = nLines - 2;
+		if(lines[0] != "Number of connected subgraphs with that number of points")
+		{
+			std::cout << "First line was invalid" << std::endl;
+			return 0;
+		}
+		std::vector<mpz_class> graphCounts;
+		for(std::vector<std::string>::iterator i = lines.begin()+1; i!=lines.end(); i++)
+		{
+			std::stringstream ss;
+			ss << *i;
+			int count;
+			ss >> count;
+			std::string colon;
+			ss >> colon;
+			mpz_class nGraphs;
+			std::string nGraphsString;
+			ss >> nGraphsString;
+			nGraphs = mpz_class(nGraphsString);
+			graphCounts.push_back(nGraphs);
+		}
+		MLENV ep =  MLInitialize( (MLParametersPointer)0);
+		if(ep == (MLENV)0)
+		{
+			std::cout << "Error calling MLInitialize" << std::endl;
+			return 0;
+		}
+		int mathematicaArgc = 3;
+		char linkLaunch[] = "-linklaunch\0";
+		char linkName[] = "-linkname\0";
+		//char linkMode[] = "-linkmode\0";
+		//char launch[] = "launch\0";
+		//char mlString[] = "ml\0";
+		char mathematicaKernel[] = "/apps/mathematica/9.0.1/Executables/MathKernel\0";
+		char* mathematicaArgv[] = {linkLaunch, linkName, mathematicaKernel};//{mlString, linkMode, launch, linkName, mathematicaKernel};
+		int err;
+		MLINK ml = MLOpenArgcArgv(ep, mathematicaArgc, mathematicaArgv, &err);
+		if(err)
+		{
+			std::cout << "Error calling MLOpenArgcArgv" << std::endl;
+			return 0;
+		}
+
+		std::string mathematicaCommand = "ToString[Select[x/.NSolve[D[0"; 
+		for(std::vector<mpz_class>::iterator i = graphCounts.begin(); i != graphCounts.end(); i++)
+		{
+			std::size_t power = std::distance(graphCounts.begin(), i);
+			std::size_t complementPower = nVertices - power;
+			mathematicaCommand += "+" + i->str() + "*x^" + boost::lexical_cast<std::string>(power) + " * (1 - x)^" + boost::lexical_cast<std::string>(complementPower);
+		}
+		mathematicaCommand += ", x] == 0, x, WorkingPrecision -> 20],(Element[#1, Reals] && #1 > 0)&]]";
+		MLPutFunction(ml, "EvaluatePacket", 1L);
+			MLPutFunction(ml, "ToExpression", 1L);
+				MLPutString(ml, mathematicaCommand.c_str());
+		MLEndPacket(ml);
+		int pkt;
+		while( (pkt = MLNextPacket(ml), pkt) && pkt != RETURNPKT)
+		{
+			MLNewPacket(ml);
+			if(MLError(ml)) 
+			{
+				std::cout << "Error when calling MLNewPacket" << std::endl;
+				return 0;
+			}
+		}
+		const char* returnedCString;
+		switch(MLGetNext(ml))
+		{
+		case MLTKSTR:
+			MLGetString(ml, &returnedCString);
+			break;
+		default:
+			std::cout << "MLGetNext did not return MLKSTR" << std::endl;
+			return 0;
+		}
+		std::string returnedString = returnedCString;
+		returnedString = returnedString.substr(1, returnedString.size()-2);
+		std::vector<mpfr_class> possibleMinima;
+		while(returnedString.size() != 0)
+		{
+			if(returnedString[0] == ' ' || returnedString[0] == ',')
+			{
+				returnedString = returnedString.substr(1, returnedString.size()-1);
+				continue;
+			}
+			std::size_t finalPos = 0;
+			while(finalPos < returnedString.size() && (isdigit(returnedString[finalPos]) || returnedString[finalPos] == '.'))
+			{
+				finalPos++;
+			}
+			mpfr_class number(returnedString.substr(0, finalPos));
+			if(number > 0 && number < 1) possibleMinima.push_back(number);
+			returnedString = returnedString.substr(finalPos, returnedString.size()-finalPos);
+		}
+		mpfr_class minimumReliability = 2, minimumProbability = -1;
+		for(std::vector<mpfr_class>::iterator i = possibleMinima.begin(); i != possibleMinima.end(); i++)
+		{
+			mpfr_class probabilityValue = *i;
+			mpfr_class reliability = 0;
+			for(std::size_t j = 0; j < nVertices+1; j++)
+			{
+				reliability += graphCounts[j] * boost::multiprecision::pow(probabilityValue, j) * boost::multiprecision::pow(1 - probabilityValue, nVertices - j);
+			}
+			if(reliability < minimumReliability)
+			{
+				minimumProbability = probabilityValue;
+				minimumReliability = reliability;
+			}
+		}
+		std::cout << "Minimum reliability occurs at p = " << minimumProbability << std::endl;
+		return 0;
+	}
+}
+int main(int argc, char** argv)
+{
+	return discreteGermGrain::main(argc, argv);
+}

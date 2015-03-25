@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-set(CppFiles arguments.cpp argumentsMPFR.cpp Context.cpp depth_first_search_restricted.hpp bridges.hpp connected_components_restricted.hpp DiscreteGermGrainObs.cpp isSingleComponentWithRadius.cpp obs/withSub.cpp obs/basic.cpp subObs/basic.cpp subObs/subObs.cpp)
-set(HeaderFiles arguments.h argumentsMPFR.h Context.h DiscreteGermGrainObs.h isSingleComponentWithRadius.h lexographicOrder.h includeNumerics.h obs/withSub.h obs/getSubObservation.hpp subObsTypes.h subObs/getObservation.hpp obs/basic.h subObs/basic.h subObs/subObs.h subObsTypes.cpp)
+set(CppFiles arguments.cpp argumentsMPFR.cpp Context.cpp depth_first_search_restricted.hpp bridges.hpp connected_components_restricted.hpp DiscreteGermGrainObs.cpp isSingleComponentWithRadius.cpp obs/withSub.cpp obs/usingBiconnectedComponents.cpp subObs/usingBiconnectedComponents.cpp subObs/subObs.cpp)
+set(HeaderFiles arguments.h argumentsMPFR.h Context.h DiscreteGermGrainObs.h isSingleComponentWithRadius.h lexographicOrder.h includeNumerics.h obs/withSub.h obs/getSubObservation.hpp subObsTypes.h subObs/getObservation.hpp obs/usingBiconnectedComponents.h subObs/usingBiconnectedComponents.h subObs/subObs.h subObsTypes.cpp)
 if(WIN32)
 	list(APPEND HeaderFiles windowsConsoleOutput.h)
 	list(APPEND CppFiles windowsConsoleOutput.cpp)

@@ -1,4 +1,4 @@
-#include "subObs/basic.h"
+#include "subObs/usingBiconnectedComponents.h"
 #include <boost/random/bernoulli_distribution.hpp>
 #include <boost/graph/biconnected_components.hpp>
 #include "isSingleComponentWithRadius.h"
@@ -6,21 +6,21 @@ namespace discreteGermGrain
 {
 	namespace subObs
 	{
-		basic::basic(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::basicConstructorType& otherData)
+		usingBiconnectedComponents::usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType& otherData)
 			: ::discreteGermGrain::subObs::subObsWithRadius(context, state, radius)
 		{
 			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
 		}
-		bool basic::isPotentiallyConnected() const
+		bool usingBiconnectedComponents::isPotentiallyConnected() const
 		{
 			return potentiallyConnected;
 		}
-		basic::basic(basic&& other)
+		usingBiconnectedComponents::usingBiconnectedComponents(usingBiconnectedComponents&& other)
 			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast<::discreteGermGrain::subObs::subObsWithRadius&&>(other))
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}
-		void basic::constructRadius1Graph(radiusOneGraphType& graph, std::vector<int>& graphVertices) const
+		void usingBiconnectedComponents::constructRadius1Graph(radiusOneGraphType& graph, std::vector<int>& graphVertices) const
 		{
 			if(radius != 1)
 			{
@@ -61,7 +61,7 @@ namespace discreteGermGrain
 				}
 			}
 		}
-		void basic::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&)const
+		void usingBiconnectedComponents::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&)const
 		{
 			boost::random::bernoulli_distribution<float> vertexDistribution(context.getOperationalProbabilityD());
 			std::size_t nVertices = context.nVertices();
@@ -79,7 +79,7 @@ namespace discreteGermGrain
 				}
 			}
 		}
-		boost::shared_array<const vertexState> basic::estimateRadius1(boost::mt19937& randomSource, int nSimulations, mpfr_class& outputProbability) const
+		boost::shared_array<const vertexState> usingBiconnectedComponents::estimateRadius1(boost::mt19937& randomSource, int nSimulations, mpfr_class& outputProbability) const
 		{
 			double openProbability = context.getOperationalProbabilityD();
 			boost::bernoulli_distribution<float> bern(openProbability);
