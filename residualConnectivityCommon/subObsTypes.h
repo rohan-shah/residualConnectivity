@@ -13,13 +13,30 @@ namespace discreteGermGrain
 		struct basicConstructorType
 		{
 		};
+		struct usingCutVerticesConstructorType
+		{
+		};
 	}
 	namespace subObs
 	{
+		struct basicConstructorType
+		{
+		public:
+			basicConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
+			std::vector<int>& components;
+			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
+		};
 		struct usingBiconnectedComponentsConstructorType
 		{
 		public:
 			usingBiconnectedComponentsConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
+			std::vector<int>& components;
+			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
+		};
+		struct usingCutVerticesConstructorType
+		{
+		public:
+			usingCutVerticesConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
 			std::vector<int>& components;
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
 		};

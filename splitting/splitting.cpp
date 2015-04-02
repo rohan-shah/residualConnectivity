@@ -73,7 +73,7 @@ namespace discreteGermGrain
 #else
 						randomSource
 #endif
-						, nThisObservation, probability);
+						, nThisObservation, connectedComponents, stack, probability);
 				probabilitySumThisThread += probability;
 				if(probability > 0)
 				{

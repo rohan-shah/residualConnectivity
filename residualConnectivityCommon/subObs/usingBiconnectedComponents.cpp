@@ -79,7 +79,7 @@ namespace discreteGermGrain
 				}
 			}
 		}
-		boost::shared_array<const vertexState> usingBiconnectedComponents::estimateRadius1(boost::mt19937& randomSource, int nSimulations, mpfr_class& outputProbability) const
+		boost::shared_array<const vertexState> usingBiconnectedComponents::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, mpfr_class& outputProbability) const
 		{
 			double openProbability = context.getOperationalProbabilityD();
 			boost::bernoulli_distribution<float> bern(openProbability);
@@ -224,8 +224,6 @@ namespace discreteGermGrain
 			int nSuccessfulRemaining = 0;
 			//now generate random graphs
 			{
-				std::vector<int> scratchMemory;
-				boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 				for(int i = 0; i < nComponentRuns; i++)
 				{
 					if(i < 0) throw std::runtime_error("Integer overflow!");

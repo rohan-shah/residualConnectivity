@@ -33,10 +33,8 @@ namespace discreteGermGrain
 		}
 		if(variableMap.count("help") > 0)
 		{
-			std::cout <<
-				"This computes exactly the probability that a random subgraph is connected. The random subgraph uses a vertex percolation model.\n"
-				"It takes the standard output of ExhaustiveSearch as input. Only feasible for small graphs. \n\n"
-				;
+			std::cout <<	"This computes exactly the probability which minimisuse the reliability of a grid graph. " << std::endl
+			<<		"It takes no command line options, and takes the standard output of ExhaustiveSearch as standard input. Only feasible for small graphs." << std::endl;
 			std::cout << options << std::endl;
 			return 0;
 		}

@@ -28,6 +28,12 @@ namespace discreteGermGrain
 	struct vertexState
 	{
 		int state;
+		static vertexState fixed_on()
+		{
+			vertexState ret;
+			ret.state = FIXED_ON;
+			return ret;
+		}
 		static vertexState fixed_off()
 		{
 			vertexState ret;
