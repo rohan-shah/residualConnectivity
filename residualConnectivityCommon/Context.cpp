@@ -237,7 +237,7 @@ namespace discreteGermGrain
 
 		return Context(graph, ordering, vertexPositions, opProbability);
 	}
-	mpfr_class Context::getOperationalProbability() const
+	const mpfr_class& Context::getOperationalProbability() const
 	{
 		return opProbability;
 	}

@@ -7,50 +7,15 @@
 #include <boost/noncopyable.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include <boost/archive/text_oarchive.hpp>
+#include <boost/archive/binary_iarchive.hpp>
 #include <boost/graph/adj_list_serialize.hpp>
+#include <boost/serialization/shared_ptr.hpp>
+#include <boost/serialization/vector.hpp>
 #include "includeNumerics.h"
+#include "vertexState.h"
+#include "serializeGMP.hpp"
 namespace discreteGermGrain
 {
-	struct vertexDistanceCache
-	{
-		//index of last vertex which is closer than or equal to some specified distance from current vertex
-		int lastVertex;
-		template<class Archive> void serialize(Archive& ar, const unsigned int version)
-		{
-			ar & lastVertex;
-		}
-	};
-	enum
-	{
-		UNFIXED_OFF = 1, UNFIXED_ON = 2, FIXED_ON = 4, FIXED_OFF = 8,
-		ON_MASK = 6, FIXED_MASK = 12, UNFIXED_MASK = 3
-	};
-	struct vertexState
-	{
-		int state;
-		static vertexState fixed_on()
-		{
-			vertexState ret;
-			ret.state = FIXED_ON;
-			return ret;
-		}
-		static vertexState fixed_off()
-		{
-			vertexState ret;
-			ret.state = FIXED_OFF;
-			return ret;
-		};
-		static vertexState unfixed_off()
-		{
-			vertexState ret;
-			ret.state = UNFIXED_OFF;
-			return ret;
-		};
-		template<class Archive> void serialize(Archive& ar, const unsigned int version)
-		{
-			ar & state;
-		};
-	};
 	class Context : public boost::noncopyable
 	{
 	public:
@@ -59,11 +24,18 @@ namespace discreteGermGrain
 		typedef std::pair<float, float> vertexPosition;
 		Context(boost::shared_ptr<const inputGraph> graph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, mpfr_class opProbability);
 		Context(Context&& other);
-		const std::vector<vertexDistanceCache>& getDistanceCache() const;
+		Context(boost::archive::text_iarchive& ar)
+		{
+			ar >> *this;
+		}
+		Context(boost::archive::binary_iarchive& ar)
+		{
+			ar >> *this;
+		}
 		template<class Archive> void save(Archive& ar, const unsigned int version) const
 		{
-			ar & graph;
-			ar & ordering;
+			ar & *graph;
+			ar & *ordering;
 			ar & opProbability;
 			
 			std::size_t nVertices = boost::num_vertices(*graph);
@@ -71,8 +43,16 @@ namespace discreteGermGrain
 		};
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
-			ar & graph;
-			ar & ordering;
+			{
+				boost::shared_ptr<inputGraph> graph(new inputGraph());
+				ar & *graph;
+				this->graph = graph;
+			}
+			{
+				boost::shared_ptr<std::vector<int> > ordering;(new std::vector<int>());
+				ar & *ordering;
+				this->ordering = ordering;
+			}
 			ar & opProbability;
 			opProbabilityD = opProbability.convert_to<double>();
 
@@ -85,13 +65,12 @@ namespace discreteGermGrain
 		std::size_t nVertices() const;
 		const int* getShortestDistances() const;
 		const inputGraph& getGraph() const;
-		const std::vector<vertexDistanceCache>& getDistanceCache(int scale) const;
 		static Context gridContext(int gridDimension, mpfr_class opProbability);
 		static Context torusContext(int dimension, mpfr_class opProbability);
 		static Context fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message);
 		Context& operator=(Context&& other);
 		const std::vector<vertexPosition>& getVertexPositions() const;
-		mpfr_class getOperationalProbability() const;
+		const mpfr_class& getOperationalProbability() const;
 		double getOperationalProbabilityD() const;
 	private:
 		Context();
