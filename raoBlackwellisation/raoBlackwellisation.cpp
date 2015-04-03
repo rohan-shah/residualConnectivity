@@ -4,7 +4,7 @@
 #include <boost/random/bernoulli_distribution.hpp>
 #include <boost/random/geometric_distribution.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
-#include "DiscreteGermGrainObs.h"
+#include "observation.h"
 #include "Context.h"
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
@@ -111,7 +111,7 @@ namespace discreteGermGrain
 				//represents partial knowledge
 				::discreteGermGrain::subObs::subObs subObs(context, state);
 				//generate complete knowledge
-				::discreteGermGrain::DiscreteGermGrainObs obs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::subObs>::get(subObs, randomSource);
+				::discreteGermGrain::observation obs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::subObs>::get(subObs, randomSource);
 				const vertexState* obsState = obs.getState();
 				std::fill(connectedComponents.begin(), connectedComponents.end(), -1);
 				

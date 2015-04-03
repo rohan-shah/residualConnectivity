@@ -52,17 +52,17 @@ namespace discreteGermGrain
 		}
 	}
 	withSub::withSub(Context const& context, boost::mt19937& randomSource)
-		:DiscreteGermGrainObs(context, randomSource)
+		:observation(context, randomSource)
 	{}
 	withSub::withSub(Context const& context, boost::shared_array<const vertexState> state)
-		:DiscreteGermGrainObs(context, state)
+		:observation(context, state)
 	{}
 	withSub::withSub(withSub&& other)
-		:DiscreteGermGrainObs(static_cast<DiscreteGermGrainObs&&>(other))
+		:observation(static_cast<observation&&>(other))
 	{}
 	withSub& withSub::operator=(withSub&& other)
 	{
-		this->DiscreteGermGrainObs::operator=(static_cast<DiscreteGermGrainObs&&>(other));
+		this->observation::operator=(static_cast<observation&&>(other));
 		return *this;
 	}
 	void withSub::getSubObservation(int radius, vertexState* outputState) const

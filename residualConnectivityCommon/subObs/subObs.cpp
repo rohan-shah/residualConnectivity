@@ -13,10 +13,10 @@ namespace discreteGermGrain
 			radius = other.radius;
 		}
 		subObs::subObs(Context const& context, boost::shared_array<const vertexState> state)
-			: ::discreteGermGrain::DiscreteGermGrainObs(context, state)
+			: ::discreteGermGrain::observation(context, state)
 		{}
 		subObs::subObs(subObs&& other)
-			: ::discreteGermGrain::DiscreteGermGrainObs(static_cast<::discreteGermGrain::DiscreteGermGrainObs&&>(other))
+			: ::discreteGermGrain::observation(static_cast<::discreteGermGrain::observation&&>(other))
 		{}
 		void subObs::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&) const
 		{

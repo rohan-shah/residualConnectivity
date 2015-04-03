@@ -3,8 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include <boost/random/mersenne_twister.hpp>
-#include "DiscreteGermGrainObs.h"
-#include "DiscreteGermGrainSubObs.h"
+#include "observation.h"
 #include "obs/basic.h"
 #include "subObs/basic.h"
 #include <boost/accumulators/statistics/stats.hpp>

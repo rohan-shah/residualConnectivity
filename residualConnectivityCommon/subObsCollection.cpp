@@ -48,7 +48,7 @@ namespace discreteGermGrain
 
 		binaryDataSet2::expand(count, state.get(), currentContext->nVertices());
 	}
-	void subObsCollection::add(const DiscreteGermGrainObs& obs)
+	void subObsCollection::add(const observation& obs)
 	{
 		//Check that certain key variables are the same - Checking by pointer should be sufficient.
 		Context const& obsContext = obs.getContext();

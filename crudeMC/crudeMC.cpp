@@ -1,8 +1,8 @@
 #include <boost/program_options.hpp>
 #include <boost/random/mersenne_twister.hpp>
-#include "DiscreteGermGrainObs.h"
+#include "observation.h"
 #include <boost/algorithm/string.hpp>
-#include "DiscreteGermGrainObs.h"
+#include "observation.h"
 #include "isSingleComponentWithRadius.h"
 #include "Context.h"
 #include <boost/graph/graphml.hpp>
@@ -63,7 +63,7 @@ namespace discreteGermGrain
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
 
-		std::vector<DiscreteGermGrainObs> observations;
+		std::vector<observation> observations;
 		std::vector<int> scratchMemory;
 		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 
@@ -71,7 +71,7 @@ namespace discreteGermGrain
 		std::vector<vertexState> cumulativeStates(context.nVertices());
 		for(int i = 0; i < n; i++)
 		{
-			DiscreteGermGrainObs obs(context, randomSource);
+			observation obs(context, randomSource);
 			if(isSingleComponentAllOn(context, obs.getState(), scratchMemory, stack))
 			{
 				observations.push_back(std::move(obs));

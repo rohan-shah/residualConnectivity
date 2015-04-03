@@ -1,12 +1,12 @@
 #ifndef DISCRETE_GERM_GRAIN_WITH_SUB_HEADER_GUARD
 #define DISCRETE_GERM_GRAIN_WITH_SUB_HEADER_GUARD
-#include "DiscreteGermGrainObs.h"
+#include "observation.h"
 #include "Context.h"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/shared_array.hpp>
 namespace discreteGermGrain
 {
-	class withSub : public ::discreteGermGrain::DiscreteGermGrainObs
+	class withSub : public ::discreteGermGrain::observation
 	{
 	public:
 		static void getSubObservation(int radius, vertexState* newState, const Context& context, const vertexState* oldStatesPtr);

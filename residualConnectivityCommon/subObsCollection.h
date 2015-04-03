@@ -2,7 +2,7 @@
 #define DISCRETE_GERM_GRAIN_SUBOBS_COLLECTION_HEADER_GUARD
 #include "vertexState.h"
 #include "empiricalDistribution.h"
-#include "DiscreteGermGrainObs.h"
+#include "observation.h"
 #include "binaryDataSet.h"
 #include <boost/serialization/access.hpp>
 #include <boost/serialization/split_member.hpp>
@@ -20,7 +20,7 @@ namespace discreteGermGrain
 		subObsCollection(subObsCollection&& other);
 		subObsCollection& operator=(subObsCollection&& other);
 		subObsCollection(const empiricalDistribution& other);
-		void add(const DiscreteGermGrainObs& subObs);
+		void add(const observation& subObs);
 		const Context& getContext() const;
 		void expand(int count, boost::shared_array<vertexState> state) const;
 		double getRadius() const;

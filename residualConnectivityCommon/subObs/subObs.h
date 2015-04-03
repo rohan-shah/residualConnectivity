@@ -2,18 +2,18 @@
 #define DISCRETE_GERM_GRAIN_SUB_OBS_SUB_OBS_HEADER_GUARD
 #include <boost/shared_array.hpp>
 #include "Context.h"
-#include "DiscreteGermGrainObs.h"
+#include "observation.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
 namespace discreteGermGrain
 {
 	namespace subObs
 	{
-		class subObs : public ::discreteGermGrain::DiscreteGermGrainObs
+		class subObs : public ::discreteGermGrain::observation
 		{
 		public:
 			template<class T> friend class ::discreteGermGrain::subObs::getObservation;
-			typedef ::discreteGermGrain::DiscreteGermGrainObs observationType;
+			typedef ::discreteGermGrain::observation observationType;
 			typedef ::discreteGermGrain::obs::basicConstructorType observationConstructorType;
 
 			subObs& operator=(subObs&& other);

@@ -16,26 +16,26 @@
 namespace discreteGermGrain
 {
 	class DiscreteGermGrainSubObs;
-	class DiscreteGermGrainObs : public boost::noncopyable
+	class observation : public boost::noncopyable
 	{
 	public:
 		friend class boost::serialization::access;
 		template<class T> friend class ::discreteGermGrain::subObs::getObservation;
-		DiscreteGermGrainObs(Context const& context, boost::archive::binary_iarchive& archive);
-		DiscreteGermGrainObs(Context const& context, boost::archive::text_iarchive& archive);
-		DiscreteGermGrainObs(Context const&, boost::mt19937& randomSource);
-		DiscreteGermGrainObs(Context const& context, boost::shared_array<const vertexState> state);
+		observation(Context const& context, boost::archive::binary_iarchive& archive);
+		observation(Context const& context, boost::archive::text_iarchive& archive);
+		observation(Context const&, boost::mt19937& randomSource);
+		observation(Context const& context, boost::shared_array<const vertexState> state);
 		//A default constructor that fills all numeric members with -1. Somewhat dangerous to leave in here, but problems are due to the use of such invalid objects, it should be fairly obvious. 
-		//DiscreteGermGrainObs(Context const& context);
-		DiscreteGermGrainObs(DiscreteGermGrainObs&& other);
-		DiscreteGermGrainObs& operator=(DiscreteGermGrainObs&& other);
+		//observation(Context const& context);
+		observation(observation&& other);
+		observation& operator=(observation&& other);
 		Context const& getContext() const;
 		const vertexState* getState() const;
 	protected:
 		Context const& context;
 		boost::shared_array<const vertexState> state;
 	private:
-		DiscreteGermGrainObs(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::basicConstructorType&);
+		observation(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::basicConstructorType&);
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
