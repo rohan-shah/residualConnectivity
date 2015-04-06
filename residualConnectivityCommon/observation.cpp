@@ -67,4 +67,12 @@ namespace discreteGermGrain
 	{
 		return state.get();
 	}
+	const observation& observationWithContext::getObs() const
+	{
+		return *obs.get();
+	}
+	const Context& observationWithContext::getContext() const
+	{
+		return *context.get();
+	}
 }

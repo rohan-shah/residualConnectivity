@@ -15,7 +15,6 @@
 #include "subObs/getObservation.hpp"
 namespace discreteGermGrain
 {
-	class DiscreteGermGrainSubObs;
 	class observation : public boost::noncopyable
 	{
 	public:
@@ -47,6 +46,51 @@ namespace discreteGermGrain
 		{
 			ar & boost::serialization::make_array(state.get(), context.nVertices());
 		}
+	};
+	class observationWithContext
+	{
+	public:
+		observationWithContext(boost::archive::text_iarchive& ar)
+		{
+			ar >> *this;
+		}
+		observationWithContext(boost::archive::binary_iarchive& ar)
+		{
+			ar >> *this;
+		}
+		observationWithContext(observationWithContext& other);
+		friend class boost::serialization::access;
+		const observation& getObs() const;
+		const Context& getContext() const;
+	private:
+		BOOST_SERIALIZATION_SPLIT_MEMBER()
+		template<class Archive> void save(Archive& ar, const unsigned int version) const
+		{
+			std::string typeString = "discreteGermGrainObsWithContext";
+			ar << typeString;
+			ar << obs->getContext();
+			ar << *obs;
+			typeString = "discreteGermGrainObsWithContext_end";
+			ar << typeString;
+		}
+		template<class Archive> void load(Archive& ar, const unsigned int version)
+		{
+			std::string typeString;
+			ar >> typeString;
+			if(typeString != "discreteGermGrainObsWithContext")
+			{
+				throw std::runtime_error("Incorrect type specifier");
+			}
+			context.reset(new Context(ar));
+			obs.reset(new observation(*context.get(), ar));
+			ar >> typeString;
+			if(typeString != "discreteGermGrainObsWithContext_end")
+			{
+				throw std::runtime_error("Incorrect type specifier");
+			}
+		}
+		boost::shared_ptr<const Context> context;
+		boost::shared_ptr<observation> obs;
 	};
 }
 #endif

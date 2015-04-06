@@ -26,7 +26,7 @@ namespace discreteGermGrain
 		friend class boost::serialization::access;
 		empiricalDistribution(empiricalDistribution&& other);
 		empiricalDistribution& operator=(empiricalDistribution&& other);
-		empiricalDistribution(bool isWeighted, std::size_t nEdges, const Context& context);
+		empiricalDistribution(bool isWeighted, std::size_t nVertices, const Context& context);
 		void hintDataCount(std::size_t size);
 		void add(const vertexState* state);
 		void add(const vertexState* state, double weight);
@@ -56,7 +56,7 @@ namespace discreteGermGrain
 				std::string unweighted = "unweighted";
 				ar << unweighted;
 			}
-			ar << nEdges << sampleSize;
+			ar << nVertices << sampleSize;
 			if(_isWeighted)
 			{
 				ar << weights;
@@ -90,7 +90,7 @@ namespace discreteGermGrain
 			{
 				throw std::runtime_error("Distributions file must start with either the string 'weighted' or 'unweighted'");
 			}
-			ar >> nEdges >> sampleSize;
+			ar >> nVertices >> sampleSize;
 			if(_isWeighted) 
 			{
 				ar >> weights;
@@ -106,7 +106,7 @@ namespace discreteGermGrain
 				}
 			}
 			ar >> *static_cast<binaryDataSet1*>(this);
-			std::size_t bitsRequired = nEdges * sampleSize;
+			std::size_t bitsRequired = nVertices * sampleSize;
 			std::size_t wholeIntsRequired = bitsRequired / (sizeof(int)*8);
 			if(data.size() != wholeIntsRequired)
 			{
@@ -132,7 +132,7 @@ namespace discreteGermGrain
 		}
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		empiricalDistribution();
-		std::size_t nEdges;
+		std::size_t nVertices;
 		std::size_t sampleSize;
 		bool _isWeighted;
 		std::vector<double> weights;

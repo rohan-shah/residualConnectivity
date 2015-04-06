@@ -10,16 +10,16 @@
 #include <boost/archive/text_iarchive.hpp>
 namespace discreteGermGrain
 {
-	class subObsCollection : protected binaryDataSet2, public boost::noncopyable
+	class observationCollection : protected binaryDataSet2, public boost::noncopyable
 	{
 	public:
 		friend class boost::serialization::access;
-		subObsCollection(Context const* externalContext, double radius);
-		subObsCollection(boost::archive::binary_iarchive& ar);
-		subObsCollection(boost::archive::text_iarchive& ar);
-		subObsCollection(subObsCollection&& other);
-		subObsCollection& operator=(subObsCollection&& other);
-		subObsCollection(const empiricalDistribution& other);
+		observationCollection(Context const* externalContext, double radius);
+		observationCollection(boost::archive::binary_iarchive& ar);
+		observationCollection(boost::archive::text_iarchive& ar);
+		observationCollection(observationCollection&& other);
+		observationCollection& operator=(observationCollection&& other);
+		observationCollection(const empiricalDistribution& other);
 		void add(const observation& subObs);
 		const Context& getContext() const;
 		void expand(int count, boost::shared_array<vertexState> state) const;

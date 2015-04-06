@@ -1,0 +1,13 @@
+if(Qt5_FOUND)
+	qt5_wrap_cpp(subObservationVisualiser_MOC_SOURCES subObservationVisualiserBase.h subObservationVisualiserSingle.h subObservationVisualiserCollection.h subObservationStatusBar.h subObservationVisualiserTree.h treeVisualiserFrame.h ZoomGraphicsView.h)
+	add_executable(subObservationVisualiser subObservationVisualiserBase.cpp subObservationVisualiserBase.h subObservationVisualiserSingle.h subObservationVisualiserCollection.h subObservationVisualiserSingle.cpp subObservationVisualiserCollection.cpp main.cpp subObservationStatusBar.h subObservationStatusBar.cpp subObservationVisualiserTree.h subObservationVisualiserTree.cpp treeVisualiserFrame.h treeVisualiserFrame.cpp ZoomGraphicsView.h ZoomGraphicsView.cpp ${subObservationVisualiser_MOC_SOURCES})
+	target_link_libraries(subObservationVisualiser PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets ${GRAPHVIZ_LIBRARY})
+	if(WIN32)
+		target_link_libraries(subObservationVisualiser PUBLIC Qt5::WinMain)
+		set_target_properties(subObservationVisualiser PROPERTIES LINK_FLAGS "/SUBSYSTEM:windows" RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/ PDB_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/)
+	endif()
+	target_link_libraries(subObservationVisualiser PUBLIC residualConnectivityCommon mpfr)
+	target_include_directories(subObservationVisualiser PUBLIC ${Boost_INCLUDE_DIRS} ${GRAPHVIZ_INCLUDE_DIR})
+	target_compile_definitions(subObservationVisualiser PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
+endif()
+

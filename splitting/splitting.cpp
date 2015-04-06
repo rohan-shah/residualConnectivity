@@ -2,6 +2,7 @@
 #include <boost/program_options.hpp>
 #include <algorithm>
 #include <iostream>
+#include "empiricalDistribution.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "observation.h"
 #include "obs/usingBiconnectedComponents.h"
@@ -9,6 +10,7 @@
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/random/bernoulli_distribution.hpp>
+#include <boost/archive/binary_oarchive.hpp>
 #include "bridges.hpp"
 #include <fstream>
 #include "obs/getSubObservation.hpp"
@@ -249,7 +251,8 @@ namespace discreteGermGrain
 			INITIAL_RADIUS_OPTION
 			N_OPTION
 			SPLITTING_FACTOR_OPTION
-			OUTPUT_FILE_OPTION
+			OUTPUT_DISTRIBUTION_OPTION
+			OUTPUT_TREE_OPTION
 			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
@@ -361,23 +364,24 @@ namespace discreteGermGrain
 		}
 
 
-		if(variableMap.count("outputFile") > 0)
+		if(variableMap.count("outputDistribution") > 0)
 		{
-			std::string file(variableMap["outputFile"].as<std::string>());
+			std::string file(variableMap["outputDistribution"].as<std::string>());
 			std::ofstream stream(file.c_str());
 			if(stream.is_open())
 			{
-				std::cout << "Writing to file..." << std::endl;
-				boost::archive::text_oarchive oarchive(stream);
-				for(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>::const_iterator i = observations.begin(); i != observations.end(); i++)
+				boost::archive::binary_oarchive oarchive(stream);
+				empiricalDistribution distribution(true, context.nVertices(), context);
+				/*for(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>::const_iterator i = observations.begin(); i != observations.end(); i++)
 				{
-					oarchive << *i;
-				}
+					distribution.add(i->getState(), i->);
+				}*/
+				oarchive << distribution;
 				stream.close();
 			}
 			else
 			{
-				std::cout << "Error writing to file..." << std::endl;
+				std::cout << "Error writing to file " << variableMap["outputDistribution"].as<std::string>() << std::endl;
 			}
 		}
 		std::cout << "Estimated probability was " << finalEstimate.str() << std::endl;

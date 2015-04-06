@@ -28,7 +28,8 @@ namespace discreteGermGrain
 			INITIAL_RADIUS_OPTION
 			N_OPTION
 			SPLITTING_FACTOR_OPTION
-			OUTPUT_FILE_OPTION
+			OUTPUT_DISTRIBUTION_OPTION
+			OUTPUT_TREE_OPTION
 			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;

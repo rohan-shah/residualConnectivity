@@ -12,7 +12,8 @@
 #define INITIAL_RADIUS_OPTION ("initialRadius", boost::program_options::value<int>(), "(int) The initial radius")
 #define N_OPTION ("n", boost::program_options::value<int>(), "(int) The number of graphs initially generated")
 #define SPLITTING_FACTOR_OPTION ("splittingFactor", boost::program_options::value<std::vector<float> >()->multitoken(), "(float) The splitting factor to use at every step")
-#define OUTPUT_FILE_OPTION ("outputFile", boost::program_options::value<std::string>(), "(string, optional) File to output realisations to")
+#define OUTPUT_TREE_OPTION ("outputTree", boost::program_options::value<std::string>(), "(string, optional) File to output tree to")
+#define OUTPUT_DISTRIBUTION_OPTION ("outputDistribution", boost::program_options::value<std::string>(), "(string, optional) File to output realisations to")
 #define HELP_OPTION ("help", "Display this message")
 #define INPUT_GRAPH_OPTION GRID_GRAPH_OPTION GRAPH_FILE_OPTION TORUS_GRAPH_OPTION
 
