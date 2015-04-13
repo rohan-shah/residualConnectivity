@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <iostream>
 #include "empiricalDistribution.h"
+#include "observationTree.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "observation.h"
 #include "obs/usingBiconnectedComponents.h"
@@ -22,9 +23,9 @@
 #include "argumentsMPFR.h"
 namespace discreteGermGrain
 {
-	void stepOne(const std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& observations, std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& finalObservations, mpfr_class& probabilitySum, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)
+	void stepOne(const std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& inputObservations, std::vector<::discreteGermGrain::obs::usingBiconnectedComponents>& outputObservations, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors, long& totalGenerated, observationTree& tree, bool outputTree)
 	{
-		probabilitySum = 0;
+		totalGenerated = 0;
 #ifdef USE_OPENMP
 		boost::mt19937::result_type perThreadSeeds[100];
 		for(int i = 0; i < 100; i++) perThreadSeeds[i] = randomSource();
@@ -39,14 +40,12 @@ namespace discreteGermGrain
 #endif
 		{
 			//vector of final observations from this thread. Set up this way to keep things deterministic
-			std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> finalObservationsThisThread;
-			mpfr_class probabilitySumThisThread = 0;
+			std::vector<::discreteGermGrain::obs::usingBiconnectedComponents> outputObservationsThisThread;
 
 			//vector that we re-use to avoid allocations
 			std::vector<int> connectedComponents(context.nVertices());
 			//stack for depth first search
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
-			::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType helper(connectedComponents, stack);
 			//used to calculate the splitting factor (which is random)
 			boost::random::bernoulli_distribution<float> splittingFactorBernoulli(sptittingFactorRemainder);
 			
@@ -54,9 +53,10 @@ namespace discreteGermGrain
 			//per-thread random number generation
 			boost::mt19937 perThreadSource;
 			perThreadSource.seed(perThreadSeeds[omp_get_thread_num()]);
+			long totalGeneratedThisThread = 0;
 			#pragma omp for
 #endif
-			for(int j = 0; j < (int)observations.size(); j++)
+			for(int j = 0; j < (int)inputObservations.size(); j++)
 			{
 				//number of observations which the current observation is split into
 				int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(
@@ -66,21 +66,19 @@ namespace discreteGermGrain
 						randomSource
 #endif
 						);
-				//get out the current observation
-				mpfr_class probability;
-				boost::shared_array<const vertexState> newState = observations[j].estimateRadius1(
+				//get out the child observations
+				inputObservations[j].estimateRadius1(
 #ifdef USE_OPENMP
 						perThreadSource
 #else
 						randomSource
 #endif
-						, nThisObservation, connectedComponents, stack, probability);
-				probabilitySumThisThread += probability;
-				if(probability > 0)
-				{
-					::discreteGermGrain::subObs::usingBiconnectedComponents finalObs(context, newState, 0, helper);
-					finalObservationsThisThread.push_back(std::move(finalObs));
-				}
+						, nThisObservation, connectedComponents, stack, outputObservationsThisThread);
+#ifdef USE_OPENMP
+				totalThisThreadGenerated += nThisObservation;
+#else
+				totalGenerated += nThisObservation;
+#endif
 			}
 #ifdef USE_OPENMP
 			for(int j = 0; j < omp_get_num_threads(); j++)
@@ -90,18 +88,17 @@ namespace discreteGermGrain
 				{
 					if(j == omp_get_thread_num())
 					{
-						finalObservations.insert(finalObservations.end(), std::make_move_iterator(finalObservationsThisThread.begin()), std::make_move_iterator(finalObservationsThisThread.end()));
-						probabilitySum += probabilitySumThisThread;
+						outputObservations.insert(outputObservations.end(), std::make_move_iterator(outputObservationsThisThread.begin()), std::make_move_iterator(outputObservationsThisThread.end()));
+						totalGenerated += totalGeneratedThisThread;
 					}
 				}
 			}
 #else
-			probabilitySum = probabilitySumThisThread;
-			finalObservations.swap(finalObservationsThisThread);
+			outputObservations.swap(outputObservationsThisThread);
 #endif
 		}
 	}
-	void stepsExceptOne(std::vector<mpfr_class>& retainedProportion, std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors)
+	void stepsExceptOne(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, int initialRadius, Context const& context, const std::vector<float>& splittingFactors, observationTree& tree, bool outputTree)
 	{
 #ifdef USE_OPENMP
 		//set up per-thread random number generators
@@ -131,10 +128,11 @@ namespace discreteGermGrain
 				std::vector<int> connectedComponents(context.nVertices());
 				//stack for depth first search
 				boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
-				::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType helper(connectedComponents, stack);
 				//used to calculate the splitting factor (which is random)
 				boost::random::bernoulli_distribution<float> splittingFactorBernoulli(sptittingFactorRemainder);
-		
+
+				::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType getSubObsHelper(connectedComponents, stack);
+				::discreteGermGrain::obs::usingBiconnectedComponentsConstructorType getObsHelper;
 #ifdef USE_OPENMP
 				//per-thread random number generation
 				boost::mt19937 perThreadSource;
@@ -162,8 +160,8 @@ namespace discreteGermGrain
 #else
 								randomSource
 #endif
-						);
-						::discreteGermGrain::subObs::usingBiconnectedComponents subObs = ::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::usingBiconnectedComponents>::get(obs, initialRadius - i, helper);
+						, getObsHelper);
+						::discreteGermGrain::subObs::usingBiconnectedComponents subObs = ::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::usingBiconnectedComponents>::get(obs, initialRadius - i, getSubObsHelper);
 						if(subObs.isPotentiallyConnected())
 						{
 							nextSetObservationsThisThread.push_back(std::move(subObs));
@@ -187,11 +185,10 @@ namespace discreteGermGrain
 #endif
 			}
 			std::cout << "Finished splitting step " << i << " / " << initialRadius << ", " << nextSetObservations.size() << " / " << generated << " observations continuing" << std::endl;
-			retainedProportion.push_back((mpfr_class)nextSetObservations.size() / (mpfr_class)generated);
 			observations.swap(nextSetObservations);
 		}
 	}
-	void doCrudeMCStep(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, Context const& context, int initialRadius, int n)
+	void doCrudeMCStep(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, Context const& context, int initialRadius, int n, observationTree& tree, bool outputTree)
 	{
 #ifdef USE_OPENMP
 		//set up per-thread random number generators
@@ -222,6 +219,7 @@ namespace discreteGermGrain
 #endif
 						);
 				::discreteGermGrain::subObs::usingBiconnectedComponents subObs(::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::usingBiconnectedComponents>::get(obs, initialRadius, helper));
+				if(outputTree) tree.add(subObs, 0, -1, subObs.isPotentiallyConnected());
 				if(subObs.isPotentiallyConnected())
 				{
 					observationsThisThread.push_back(std::move(subObs));
@@ -321,6 +319,8 @@ namespace discreteGermGrain
 			std::cout << "Wrong number of values entered for input splittingFactor" << std::endl;
 			return 0;
 		}
+		observationTree tree(&context, initialRadius);
+		bool outputTree = variableMap.count("outputTree");
 
 
 		//There are three distinct cases here.
@@ -329,34 +329,35 @@ namespace discreteGermGrain
 		//3. initialRadius >= 2, crude MC and then two types of algorithm
 
 		std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> observations;
-		doCrudeMCStep(observations, randomSource, context, initialRadius, n);
+		std::vector<::discreteGermGrain::obs::usingBiconnectedComponents> finalObservations;
+		doCrudeMCStep(observations, randomSource, context, initialRadius, n, tree, outputTree);
 		float crudeMCProbability = ((float)observations.size()) / n;
 		std::cout << "Retaining " << observations.size() << " / " << n << " observations from crude MC step" << std::endl;		
 
 		mpfr_class finalEstimate;
 		if(initialRadius != 0)
 		{
-			std::vector<mpfr_class> retainedProportion;
+			long totalGenerated = 0;
 			//This does nothing for the case initialRadius = 1
-			stepsExceptOne(retainedProportion, observations, randomSource, initialRadius, context, splittingFactors);
+			stepsExceptOne(observations, randomSource, initialRadius, context, splittingFactors, tree, outputTree);
 			
 			
 			//When the radius is 1 we use a different algorithm
-			std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> finalObservations;
-			mpfr_class probabilitySum = 0;
-			int lastStepObservations = observations.size();
-			stepOne(observations, finalObservations, probabilitySum, randomSource, initialRadius, context, splittingFactors);
-			std::cout << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << finalObservations.size() << " / " << observations.size() << " observations had non-zero probability" << std::endl;
+			stepOne(observations, finalObservations, randomSource, initialRadius, context, splittingFactors, totalGenerated, tree, outputTree);
+			std::cout << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << finalObservations.size() << " / " << totalGenerated  << " observations had non-zero probability" << std::endl;
 
-			mpfr_class averageLastStep = probabilitySum / lastStepObservations;
+			mpfr_class probabilitySum = 0;
+			for(std::vector<::discreteGermGrain::obs::usingBiconnectedComponents>::iterator i = finalObservations.begin(); i != finalObservations.end(); i++)
+			{
+				probabilitySum += i->getWeight();
+			}
+			mpfr_class averageLastStep = probabilitySum / totalGenerated;
 			std::cout << "Average probability at last step was " << averageLastStep.str() << std::endl;
-			mpfr_class productRetainedProportion = 1;
-			for(std::vector<mpfr_class>::iterator i = retainedProportion.begin(); i != retainedProportion.end(); i++) productRetainedProportion *= *i;
-			finalEstimate = crudeMCProbability * productRetainedProportion;
-			finalEstimate *= averageLastStep;
+			mpfr_class totalSampleSize = n;
+			for(std::vector<float>::iterator i = splittingFactors.begin(); i != splittingFactors.end(); i++) totalSampleSize *= *i;
+			finalEstimate = probabilitySum / totalSampleSize;
 			//Swap the vectors over, so that the results are always stored in finalObservations. Just in case we want to 
 			//revert back to using the allExceptOne algorithm for all the steps. 
-			observations.swap(finalObservations);
 		}
 		else
 		{
@@ -372,16 +373,42 @@ namespace discreteGermGrain
 			{
 				boost::archive::binary_oarchive oarchive(stream);
 				empiricalDistribution distribution(true, context.nVertices(), context);
-				/*for(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>::const_iterator i = observations.begin(); i != observations.end(); i++)
+				if(initialRadius == 0)
 				{
-					distribution.add(i->getState(), i->);
-				}*/
+					for(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>::const_iterator i = observations.begin(); i != observations.end(); i++)
+					{
+						distribution.add(i->getState());
+					}
+				}
+				else
+				{
+					for(std::vector<::discreteGermGrain::obs::usingBiconnectedComponents>::const_iterator i = finalObservations.begin(); i != finalObservations.end(); i++)
+					{
+						distribution.add(i->getState());
+					}
+
+				}
 				oarchive << distribution;
 				stream.close();
 			}
 			else
 			{
 				std::cout << "Error writing to file " << variableMap["outputDistribution"].as<std::string>() << std::endl;
+			}
+		}
+		if(outputTree)
+		{
+			std::string file(variableMap["outputTree"].as<std::string>());
+			std::ofstream stream(file.c_str());
+			if(stream.is_open())
+			{
+				boost::archive::binary_oarchive oarchive(stream);
+				oarchive << tree;
+				stream.close();
+			}
+			else
+			{
+				std::cout << "Error writing to file " << variableMap["outputTree"].as<std::string>() << std::endl;
 			}
 		}
 		std::cout << "Estimated probability was " << finalEstimate.str() << std::endl;

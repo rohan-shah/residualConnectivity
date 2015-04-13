@@ -3,8 +3,8 @@ namespace discreteGermGrain
 {
 	namespace obs
 	{
-		usingCutVertices::usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::usingCutVerticesConstructorType&)
-			: ::discreteGermGrain::withSub(context, state)
+		usingCutVertices::usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::usingCutVerticesConstructorType& otherData)
+			: ::discreteGermGrain::withSub(context, state), weight(otherData.weight)
 		{}
 		usingCutVertices::usingCutVertices(Context const& context, boost::mt19937& randomSource)
 			: ::discreteGermGrain::withSub(context, randomSource)

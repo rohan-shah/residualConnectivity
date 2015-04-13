@@ -21,6 +21,16 @@ namespace discreteGermGrain
 					typename T::observationType returnVal(input.getContext(), state, otherData);
 					return returnVal;
 				}
+				template<typename U> static typename T::observationType get(const T& input, boost::random::mt19937& randomSource, U& aux)
+				{
+					const Context& context = input.getContext();
+					std::size_t nVertices = context.nVertices();
+					boost::shared_array<vertexState> state(new vertexState[nVertices]);
+					typename T::observationConstructorType otherData(aux);
+					input.getObservation(state.get(), randomSource, otherData);
+					typename T::observationType returnVal(input.getContext(), state, otherData);
+					return returnVal;
+				}
 			private:
 				getObservation();
 		};

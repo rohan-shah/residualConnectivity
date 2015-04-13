@@ -149,15 +149,15 @@ namespace discreteGermGrain
 		if(externalContext) return *externalContext;
 		return *containedContext;
 	}
-	observationTree::observationTree(Context const* externalContext, const std::vector<double>& thresholds)
-		:externalContext(externalContext), thresholds(thresholds)
+	observationTree::observationTree(Context const* externalContext, int initialRadius)
+		:externalContext(externalContext), initialRadius(initialRadius)
 	{
-		std::size_t nLevels = thresholds.size();
+		std::size_t nLevels = initialRadius+1;
 		parentData.resize(nLevels);
 		potentiallyDisconnected.resize(nLevels);
 		for(unsigned int i = 0; i < nLevels; i++)
 		{
-			observationCollection currentLevelData(externalContext, thresholds[i]);
+			observationCollection currentLevelData(externalContext, initialRadius-i);
 			levelData.push_back(std::move(currentLevelData));
 		}
 	}
@@ -233,10 +233,6 @@ namespace discreteGermGrain
 			potentiallyDisconnected[level][(*treeGraph)[*current].index] = (*treeGraph)[*current].potentiallyDisconnected;
 		}
 		perLevelVertexIdsFromGraph();
-	}
-	const std::vector<double>& observationTree::getThresholds() const
-	{
-		return thresholds;
 	}
 	const observationTree::treeGraphType& observationTree::getTreeGraph() const
 	{

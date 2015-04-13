@@ -26,12 +26,13 @@ namespace discreteGermGrain
 			typedef ::discreteGermGrain::subObs::usingCutVerticesConstructorType subObservationConstructorType;
 
 			usingCutVertices(Context const& context, boost::mt19937& randomSource);
-			usingCutVertices(Context const& context, boost::shared_array<const vertexState> state);
+			usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::usingCutVerticesConstructorType& otherData);
 			usingCutVertices(usingCutVertices&& other);
 			usingCutVertices& operator=(usingCutVertices&& other);
+			const mpfr_class& getWeight() const;
 		private:
 			void getSubObservation(vertexState* newState, int radius, subObservationConstructorType& other) const;
-			usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::usingCutVerticesConstructorType&);
+			mpfr_class weight;
 		};
 	}
 }

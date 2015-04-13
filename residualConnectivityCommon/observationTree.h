@@ -37,7 +37,7 @@ namespace discreteGermGrain
 		typedef boost::adjacency_list< > laidOutBoostGraph;
 		friend class boost::serialization::access;
 		//The levels go 0, 1, ..., nLevels - 1, with level 0 being the topmost level of the tree
-		observationTree(Context const* externalContext, const std::vector<double>& thresholds);
+		observationTree(Context const* externalContext, int initialRadius);
 		void reserve(std::size_t reservePerLevel);
 		observationTree(boost::archive::binary_iarchive& ar);
 		observationTree(boost::archive::text_iarchive& ar);
@@ -49,14 +49,13 @@ namespace discreteGermGrain
 		const treeGraphType& getTreeGraph() const;
 		bool layout() const;
 		const std::vector<std::vector<int > >& getPerLevelVertexIds() const;
-		const std::vector<double>& getThresholds() const;
 	private:
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		template<class Archive> void save(Archive& ar, const unsigned int version) const
 		{
 			std::string typeString = "observationTree";
 			ar << typeString;
-			ar << thresholds;
+			ar << initialRadius;
 			if(containedContext)
 			{
 				ar << *containedContext.get();
@@ -93,7 +92,7 @@ namespace discreteGermGrain
 			{
 				throw std::runtime_error("Incorrect type specifier");
 			}
-			ar >> thresholds;
+			ar >> initialRadius;
 			containedContext.reset(new Context(ar));
 			std::size_t levelDataSize;
 			ar >> levelDataSize;
@@ -142,7 +141,7 @@ namespace discreteGermGrain
 		mutable std::vector<std::vector<int> > perLevelVertexIds;
 		std::shared_ptr<Context> containedContext;
 		Context const* externalContext;
-		std::vector<double> thresholds;
+		int initialRadius;
 		mutable std::shared_ptr<treeGraphType> treeGraph;
 	};
 }

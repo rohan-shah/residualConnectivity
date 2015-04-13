@@ -26,12 +26,13 @@ namespace discreteGermGrain
 			typedef ::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType subObservationConstructorType;
 
 			usingBiconnectedComponents(Context const& context, boost::mt19937& randomSource);
-			usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state);
 			usingBiconnectedComponents(usingBiconnectedComponents&& other);
 			usingBiconnectedComponents& operator=(usingBiconnectedComponents&& other);
+			usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::usingBiconnectedComponentsConstructorType&);
+			const mpfr_class& getWeight() const;
 		private:
 			void getSubObservation(vertexState* newState, int radius, subObservationConstructorType& other) const;
-			usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::usingBiconnectedComponentsConstructorType&);
+			mpfr_class weight;
 		};
 	}
 }

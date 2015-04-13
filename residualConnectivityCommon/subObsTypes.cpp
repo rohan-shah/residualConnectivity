@@ -13,4 +13,11 @@ namespace discreteGermGrain
 			:components(components), stack(stack)
 		{}
 	}
+	namespace obs
+	{
+		usingBiconnectedComponentsConstructorType::usingBiconnectedComponentsConstructorType()
+		{}
+		usingCutVerticesConstructorType::usingCutVerticesConstructorType()
+		{}
+	}
 }

@@ -9,12 +9,18 @@ namespace discreteGermGrain
 	{
 		struct usingBiconnectedComponentsConstructorType
 		{
+		public:
+			usingBiconnectedComponentsConstructorType();
+			mpfr_class weight;
 		};
 		struct basicConstructorType
 		{
 		};
 		struct usingCutVerticesConstructorType
 		{
+		public:
+			usingCutVerticesConstructorType();
+			mpfr_class weight;
 		};
 	}
 	namespace subObs
@@ -32,6 +38,7 @@ namespace discreteGermGrain
 			usingBiconnectedComponentsConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
 			std::vector<int>& components;
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
+			mpfr_class weight;
 		};
 		struct usingCutVerticesConstructorType
 		{

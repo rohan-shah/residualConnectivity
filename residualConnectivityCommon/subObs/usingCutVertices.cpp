@@ -5,6 +5,7 @@
 #include <boost/random/binomial_distribution.hpp>
 #include <boost/range/algorithm/random_shuffle.hpp>
 #include <boost/random/random_number_generator.hpp>
+#include "obs/usingCutVertices.h"
 namespace discreteGermGrain
 {
 	namespace subObs
@@ -82,7 +83,7 @@ namespace discreteGermGrain
 				}
 			}
 		}
-		boost::shared_array<const vertexState> usingCutVertices::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, mpfr_class& outputProbability) const
+		void usingCutVertices::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
 		{
 			double openProbability = context.getOperationalProbabilityD();
 			boost::bernoulli_distribution<float> bern(openProbability);
@@ -105,31 +106,6 @@ namespace discreteGermGrain
 
 			const vertexState* stateRef = state.get();
 			std::size_t nVertices = context.nVertices();
-			bool anyNotFixedOff = false;
-			for(std::size_t i = 0; i < nVertices; i++)
-			{
-				if(stateRef[i].state != FIXED_OFF) 
-				{
-					anyNotFixedOff = true;
-					break;
-				}
-			}
-			//if everything is fixed at OFF, then we must have a connected graph
-			if(!anyNotFixedOff)
-			{
-				outputProbability = 1;
-				return this->state;
-			}
-			if(boost::num_vertices(graph) == 1)
-			{
-				boost::shared_array<vertexState> newStates(new vertexState[1]);
-				newStates[0] = vertexState::fixed_off();
-				if(bern(randomSource)) newStates[0] = vertexState::fixed_on();
-
-				outputProbability = 1;
-				return newStates;
-			}
-
 			//get out biconnected components of helper graph
 			typedef std::vector<boost::graph_traits<radiusOneGraphType>::edges_size_type> component_storage_t;
 			typedef boost::iterator_property_map<component_storage_t::iterator, boost::property_map<radiusOneGraphType, boost::edge_index_t>::type> component_map_t;
@@ -166,31 +142,38 @@ namespace discreteGermGrain
 					fixedVertices.push_back(i);
 				}
 			}
-
-			std::size_t nFixedVertices = fixedVertices.size();
-
 			boost::random::binomial_distribution<> extraVertexCountDistribution(unfixedVertices.size(), openProbability);
 			boost::random_number_generator<boost::mt19937> generator(randomSource);
-			boost::shared_array<vertexState> returnValue;
-			int simulationsConnectedCount = 0;
+		
+			mpfr_class opProbability = context.getOperationalProbability();
+			mpfr_class weight = boost::multiprecision::pow(opProbability, nNotAlreadyFixedArticulation);
+			::discreteGermGrain::obs::usingCutVerticesConstructorType weightObject;
 			for(int simulationCounter = 0; simulationCounter < nSimulations; simulationCounter++)
 			{
-				fixedVertices.resize(nFixedVertices);
+				boost::shared_array<vertexState> observationState(new vertexState[nVertices]);
 				boost::range::random_shuffle(unfixedVertices, generator);
 				int extraVertexCount = extraVertexCountDistribution(randomSource);
-				fixedVertices.insert(fixedVertices.end(), unfixedVertices.begin(), unfixedVertices.begin() + extraVertexCount);
-
-				bool currentSimulationConnected = isSingleComponentSpecified(context, fixedVertices, scratchMemory, stack);
-				if(currentSimulationConnected) simulationsConnectedCount++;
-				if(!returnValue && currentSimulationConnected)
+				memcpy(observationState.get(), state.get(), sizeof(vertexState)*nVertices);
+				for(std::vector<int>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
 				{
-					returnValue.reset(new vertexState[nVertices]);
-					std::fill(returnValue.get(), returnValue.get() + nVertices, vertexState::fixed_off());
-					for(std::vector<Context::inputGraph::vertex_descriptor>::iterator fixedVertexIterator = fixedVertices.begin(); fixedVertexIterator != fixedVertices.end(); fixedVertexIterator++) returnValue[*fixedVertexIterator] = vertexState::fixed_on();
+					observationState[*i].state = FIXED_ON;
+				}
+				for(int i = 0; i < extraVertexCount; i++)
+				{
+					observationState[unfixedVertices[i]].state = FIXED_ON;
+				}
+				for(std::size_t i = extraVertexCount++; i < nVertices; i++)
+				{
+					observationState[unfixedVertices[i]].state = FIXED_OFF;
+				}
+
+				bool currentSimulationConnected = isSingleComponentAllOn(context, observationState.get(), scratchMemory, stack);
+				weightObject.weight = weight;
+				if(currentSimulationConnected)
+				{
+					observationType obs(context, observationState, weightObject);
 				}
 			}
-			outputProbability = boost::multiprecision::pow(context.getOperationalProbability(), nNotAlreadyFixedArticulation) * simulationsConnectedCount/(double)nSimulations;
-			return returnValue;
 		}
 	}
 }
