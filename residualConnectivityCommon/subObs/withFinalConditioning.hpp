@@ -3,49 +3,13 @@
 #include <boost/graph/biconnected_components.hpp>
 #include "isSingleComponentWithRadius.h"
 #include "subObs/usingBiconnectedComponents.h"
+#include "constructSubGraph.h"
 namespace discreteGermGrain
 {
 	namespace subObs
 	{
 		namespace withFinalConditioning
 		{
-			typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, boost::no_property, boost::property<boost::edge_index_t, int> > radiusOneGraphType;
-			void constructRadius1Graph(radiusOneGraphType& graph, std::vector<int>& graphVertices, const Context& context, const vertexState* stateRef)
-			{
-				graphVertices.clear();
-				std::size_t nVertices = context.nVertices();
-
-				//graphVertices[i] is the vertex in the global graph that corresponds to vertex i in the returned graph
-				//inverse is the inverse mapping, with 0's everywhere else. 
-				int* inverse = (int*)alloca(nVertices * sizeof(int));
-				//0 is used to identify a point which is not going to be contained within the returned graph
-				memset(inverse, 0, sizeof(int)*nVertices);
-
-				for(std::size_t i = 0; i < nVertices; i++)
-				{
-					if(stateRef[i].state & (UNFIXED_MASK | ON_MASK))
-					{
-						graphVertices.push_back((int)i);
-						inverse[i] = (int)graphVertices.size();
-					}
-				}
-
-				graph = radiusOneGraphType(graphVertices.size());
-				const Context::inputGraph& originalGraph = context.getGraph();
-				for(std::size_t i = 0; i < graphVertices.size(); i++)
-				{
-					Context::inputGraph::out_edge_iterator start, end;
-					boost::tie(start, end) = boost::out_edges(graphVertices[i], originalGraph);
-					while(start != end)
-					{
-						if(inverse[start->m_target] > 0 && (int)i < inverse[start->m_target] - 1)
-						{
-							boost::add_edge((int)i, inverse[start->m_target] - 1, graph);
-						}
-						start++;
-					}
-				}
-			}
 			template <class T> void estimateRadius1(const T& object, boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<typename T::observationType>& outputObservations)
 			{
 				if(nSimulations <= 0)
@@ -54,20 +18,20 @@ namespace discreteGermGrain
 				}
 				if(object.getRadius() != 1)
 				{
-					throw std::runtime_error("Radius must be 1 to call constructRadius1Graph");
+					throw std::runtime_error("Radius must be 1 to call estimateRadius1");
 				}
 				const Context& context = object.getContext();
 				double openProbability = context.getOperationalProbabilityD();
 				boost::bernoulli_distribution<float> bern(openProbability);
 				//Construct helper graph, containing everything except FIXED_OFF vertices. This is because in order to compute the biconnected components / articulation vertices, we need an actual graph object, not just a state vector
-				radiusOneGraphType graph;
+				subGraphType graph;
 				std::vector<int> graphVertices;
 				{
-					constructRadius1Graph(graph, graphVertices, context, object.getState());
+					constructSubGraph(graph, graphVertices, context, object.getState());
 					//assign edge indices
-					radiusOneGraphType::edge_iterator start, end;
+					subGraphType::edge_iterator start, end;
 					int edgeIndex = 0;
-					boost::property_map<radiusOneGraphType, boost::edge_index_t>::type edgePropertyMap = boost::get(boost::edge_index, graph);
+					boost::property_map<subGraphType, boost::edge_index_t>::type edgePropertyMap = boost::get(boost::edge_index, graph);
 					boost::tie(start, end) = boost::edges(graph);
 					for(; start != end; start++) boost::put(edgePropertyMap, *start, edgeIndex++);
 				}
@@ -105,8 +69,8 @@ namespace discreteGermGrain
 				}
 
 				//get out biconnected components of helper graph (which has different vertex ids, remember)
-				typedef std::vector<boost::graph_traits<radiusOneGraphType>::edges_size_type> component_storage_t;
-				typedef boost::iterator_property_map<component_storage_t::iterator, boost::property_map<radiusOneGraphType, boost::edge_index_t>::type> component_map_t;
+				typedef std::vector<boost::graph_traits<subGraphType>::edges_size_type> component_storage_t;
+				typedef boost::iterator_property_map<component_storage_t::iterator, boost::property_map<subGraphType, boost::edge_index_t>::type> component_map_t;
 				component_storage_t biconnectedIds(boost::num_edges(graph));
 				component_map_t componentMap(biconnectedIds.begin(), boost::get(boost::edge_index, graph));
 				std::vector<int> articulationVertices;
@@ -131,8 +95,8 @@ namespace discreteGermGrain
 				std::vector<std::set<int> > biConnectedSets(nBiconnectedComponents);
 				//Add to each set the indices of the vertices that are contained in this biconnected component
 				{
-					radiusOneGraphType::edge_iterator start, end;
-					boost::property_map<radiusOneGraphType, boost::edge_index_t>::type edgePropertyMap = boost::get(boost::edge_index, graph);
+					subGraphType::edge_iterator start, end;
+					boost::property_map<subGraphType, boost::edge_index_t>::type edgePropertyMap = boost::get(boost::edge_index, graph);
 					boost::tie(start, end) = boost::edges(graph);
 					for(; start != end; start++)
 					{
