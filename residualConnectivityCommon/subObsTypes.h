@@ -3,6 +3,7 @@
 #include <vector>
 #include "depth_first_search_restricted.hpp"
 #include "Context.h"
+#include "constructSubGraph.h"
 namespace discreteGermGrain
 {
 	namespace obs
@@ -29,9 +30,10 @@ namespace discreteGermGrain
 		struct withWeightConstructorType
 		{
 		public:
-			withWeightConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
+			withWeightConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack);
 			std::vector<int>& components;
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
+			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack;
 			mpfr_class weight;
 		};
 	}
