@@ -127,7 +127,7 @@ namespace discreteGermGrain
 		{
 			for(int j = 0; j < gridDimension; j++)
 			{
-				(*vertexPositions)[i + j * gridDimension] = vertexPosition((float)i, (float)j);
+				(*vertexPositions)[i + j * gridDimension] = vertexPosition((float)i*100, (float)j*100);
 
 				if(i != gridDimension - 1) boost::add_edge(i + j*gridDimension, i + 1 +j*gridDimension, *graph);
 				if(j != gridDimension - 1) boost::add_edge(i + j*gridDimension, i + (j+1)*gridDimension, *graph);

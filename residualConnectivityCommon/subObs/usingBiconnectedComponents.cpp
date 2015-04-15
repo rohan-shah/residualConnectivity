@@ -235,6 +235,7 @@ namespace discreteGermGrain
 				while(true)
 				{
 					boost::shared_array<vertexState> newState(new vertexState[nVertices]);
+					std::fill(newState.get(), newState.get()+nVertices, vertexState::fixed_off());
 					for(std::size_t j = 0; j < nBiconnectedComponents; j++)
 					{
 						int observationIndexThisComponent = *currentPosition[j];

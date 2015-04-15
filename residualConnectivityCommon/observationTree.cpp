@@ -35,7 +35,8 @@ namespace discreteGermGrain
 
 		//Set vertex properties, and also add edges
 		treeGraphType::vertex_descriptor currentVertex = *(boost::vertices(*treeGraph).first);
-		std::ptrdiff_t cumulativeVertices = -(std::ptrdiff_t)levelData[0].getSampleSize();
+		std::ptrdiff_t cumulativeVertices = 0, previousCumulativeVertices = 0;
+		//-(std::ptrdiff_t)levelData[0].getSampleSize();
 		for(std::size_t currentLevel = 0; currentLevel < nLevels; currentLevel++)
 		{
 			std::size_t currentLevelSize = levelData[currentLevel].getSampleSize();
@@ -46,10 +47,11 @@ namespace discreteGermGrain
 				(*treeGraph)[currentVertex].index = (int)currentLevelIndex;
 				if(parentData[currentLevel][currentLevelIndex] >= 0)
 				{
-					boost::add_edge(cumulativeVertices + parentData[currentLevel][currentLevelIndex], currentVertex, *treeGraph);
+					boost::add_edge(previousCumulativeVertices + parentData[currentLevel][currentLevelIndex], currentVertex, *treeGraph);
 				}
 				currentVertex++;
 			}
+			previousCumulativeVertices = cumulativeVertices;
 			cumulativeVertices += currentLevelSize;
 		}
 

@@ -11,6 +11,7 @@
 #include <boost/graph/adj_list_serialize.hpp>
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/vector.hpp>
+#include <boost/serialization/utility.hpp>
 #include "includeNumerics.h"
 #include "vertexState.h"
 #include "serializeGMP.hpp"
@@ -40,6 +41,8 @@ namespace discreteGermGrain
 			
 			std::size_t nVertices = boost::num_vertices(*graph);
 			ar & boost::serialization::make_array(shortestDistances.get(), nVertices * nVertices);
+
+			ar & *vertexPositions.get();
 		};
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
@@ -49,7 +52,7 @@ namespace discreteGermGrain
 				this->graph = graph;
 			}
 			{
-				boost::shared_ptr<std::vector<int> > ordering;(new std::vector<int>());
+				boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>());
 				ar & *ordering;
 				this->ordering = ordering;
 			}
@@ -57,9 +60,15 @@ namespace discreteGermGrain
 			opProbabilityD = opProbability.convert_to<double>();
 
 			std::size_t nVertices = boost::num_vertices(*graph);
-			boost::shared_array<int> shortestDistances(new int[nVertices * nVertices]);
-			ar & boost::serialization::make_array(shortestDistances.get(), nVertices * nVertices);
-			this->shortestDistances = shortestDistances;
+			{
+				boost::shared_array<int> shortestDistances(new int[nVertices * nVertices]);
+				ar & boost::serialization::make_array(shortestDistances.get(), nVertices * nVertices);
+				this->shortestDistances = shortestDistances;
+			}
+			{
+				vertexPositions.reset(new std::vector<vertexPosition>());
+				ar & *vertexPositions;
+			}
 		};
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		std::size_t nVertices() const;

@@ -41,6 +41,7 @@ namespace discreteGermGrain
 		{}
 		std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& subObservations;
 		std::vector<::discreteGermGrain::obs::usingBiconnectedComponents>& observations;
+		std::vector<int> potentiallyConnectedIndices;
 		boost::mt19937& randomSource;
 		observationTree& tree;
 		long totalGenerated;
@@ -55,15 +56,13 @@ namespace discreteGermGrain
 
 		float sptittingFactorRemainder = inputs.splittingFactors[inputs.initialRadius-1] - floor(inputs.splittingFactors[inputs.initialRadius-1]);
 		int splittingFactorInteger = (int)floor(inputs.splittingFactors[inputs.initialRadius-1]);
-
 		//The number of sub-observations that were generated - If the splitting factor is not an integer, this will be random so we need to keep track of it. 
 #ifdef USE_OPENMP
 		#pragma omp parallel
 #endif
 		{
-			//vector of final observations from this thread. Set up this way to keep things deterministic
 			std::vector<::discreteGermGrain::obs::usingBiconnectedComponents> observationsThisThread;
-
+			std::vector<int> parentIndicesThisThread;
 			//vector that we re-use to avoid allocations
 			std::vector<int> connectedComponents(inputs.context.nVertices());
 			//stack for depth first search
@@ -88,6 +87,7 @@ namespace discreteGermGrain
 						outputs.randomSource
 #endif
 						);
+				int previousLength = observationsThisThread.size();
 				//get out the child observations
 				outputs.subObservations[j].estimateRadius1(
 #ifdef USE_OPENMP
@@ -96,6 +96,8 @@ namespace discreteGermGrain
 						outputs.randomSource
 #endif
 						, nThisObservation, connectedComponents, stack, observationsThisThread);
+				int newLength = observationsThisThread.size();
+				parentIndicesThisThread.insert(parentIndicesThisThread.end(), newLength - previousLength, outputs.potentiallyConnectedIndices[j]);
 #ifdef USE_OPENMP
 				totalThisThreadGenerated += nThisObservation;
 #else
@@ -110,12 +112,26 @@ namespace discreteGermGrain
 				{
 					if(j == omp_get_thread_num())
 					{
+						if(inputs.outputTree)
+						{
+							for(int k = 0; k < observationsThisThread.size(); k++)
+							{
+								outputs.tree.add(observationsThisThread[k], initialRadius, parentIndicesThisThread[k], true);
+							}
+						}
 						output.observations.insert(output.observations.end(), std::make_move_iterator(observationsThisThread.begin()), std::make_move_iterator(observationsThisThread.end()));
 						outputs.totalGenerated += totalGeneratedThisThread;
 					}
 				}
 			}
 #else
+			if(inputs.outputTree)
+			{
+				for(std::size_t k = 0; k < observationsThisThread.size(); k++)
+				{
+					outputs.tree.add(observationsThisThread[k], inputs.initialRadius, parentIndicesThisThread[k], true);
+				}
+			}
 			outputs.observations.swap(observationsThisThread);
 #endif
 		}
@@ -127,7 +143,8 @@ namespace discreteGermGrain
 		boost::mt19937::result_type perThreadSeeds[100];
 		for(int j = 0; j < 100; j++) perThreadSeeds[j] = outputs.randomSource();
 #endif
-
+		std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> nextSetObservations;
+		std::vector<int> nextStepPotentiallyConnectedIndices;
 		//Loop over the splitting steps (the different nested events)
 		for(int i = 1; i < inputs.initialRadius/*+1*/; i++)
 		{
@@ -135,17 +152,15 @@ namespace discreteGermGrain
 			int splittingFactorInteger = (int)floor(inputs.splittingFactors[i-1]);
 
 			//The number of sub-observations that were generated - If the splitting factor is not an integer, this will be random so we need to keep track of it. 
-			int generated = 0;
-			std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> nextSetObservations;
+			int generated = -1;
+			nextSetObservations.clear();
+			nextStepPotentiallyConnectedIndices.clear();
 			
 			//loop over the various sample paths
 #ifdef USE_OPENMP
 			#pragma omp parallel
 #endif
 			{
-				//next set of observations from the current thread. Set up like this to make everything deterministic
-				std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> nextSetObservationsThisThread;
-
 				//vector that we re-use to avoid allocations
 				std::vector<int> connectedComponents(inputs.context.nVertices());
 				//stack for depth first search
@@ -167,11 +182,9 @@ namespace discreteGermGrain
 					//number of observations which the current observation is split into
 #ifdef USE_OPENMP
 					int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(perThreadSource);
-					#pragma omp atomic
 #else
 					int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(outputs.randomSource);
 #endif
-					generated += nThisObservation;
 					//get out the current observation
 					const ::discreteGermGrain::subObs::usingBiconnectedComponents& currentObs = outputs.subObservations[j];
 					for(int k = 0; k < nThisObservation; k++)
@@ -184,34 +197,29 @@ namespace discreteGermGrain
 #endif
 						, getObsHelper);
 						::discreteGermGrain::subObs::usingBiconnectedComponents subObs = ::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::usingBiconnectedComponents>::get(obs, inputs.initialRadius - i, getSubObsHelper);
-						if(subObs.isPotentiallyConnected())
-						{
-							nextSetObservationsThisThread.push_back(std::move(subObs));
-						}
-					}
-				}
 #ifdef USE_OPENMP
-				for(int j = 0; j < omp_get_num_threads(); j++)
-				{
-					#pragma omp barrier 
-					#pragma omp critical
-					{
-						if(j == omp_get_thread_num()) 
+						#pragma omp critical
+#endif
 						{
-							nextSetObservations.insert(nextSetObservations.end(), std::make_move_iterator(nextSetObservationsThisThread.begin()), std::make_move_iterator(nextSetObservationsThisThread.end()));
+							if(inputs.outputTree) outputs.tree.add(subObs, i, outputs.potentiallyConnectedIndices[j], subObs.isPotentiallyConnected());
+							generated++;
+							if(subObs.isPotentiallyConnected())
+							{
+								nextSetObservations.push_back(std::move(subObs));
+								nextStepPotentiallyConnectedIndices.push_back(generated);
+							}
 						}
 					}
 				}
-#else
-				nextSetObservations.swap(nextSetObservationsThisThread);
-#endif
 			}
-			std::cout << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated << " observations continuing" << std::endl;
+			std::cout << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated+1 << " observations continuing" << std::endl;
 			outputs.subObservations.swap(nextSetObservations);
+			outputs.potentiallyConnectedIndices.swap(nextStepPotentiallyConnectedIndices);
 		}
 	}
 	void doCrudeMCStep(stepInputs& inputs, stepOutputs& outputs)
 	{
+		int generated = -1;
 #ifdef USE_OPENMP
 		//set up per-thread random number generators
 		boost::mt19937::result_type perThreadSeeds[100];
@@ -224,7 +232,6 @@ namespace discreteGermGrain
 			//stack for depth first search
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 			::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType helper(connectedComponents, stack);
-			std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> subObservationsThisThread;
 #ifdef USE_OPENMP
 			//per-thread random number generation
 			boost::mt19937 perThreadSource;
@@ -241,24 +248,19 @@ namespace discreteGermGrain
 #endif
 						);
 				::discreteGermGrain::subObs::usingBiconnectedComponents subObs(::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::usingBiconnectedComponents>::get(obs, inputs.initialRadius, helper));
-				if(inputs.outputTree) outputs.tree.add(subObs, 0, -1, subObs.isPotentiallyConnected());
-				if(subObs.isPotentiallyConnected())
-				{
-					subObservationsThisThread.push_back(std::move(subObs));
-				}
-			}
 #ifdef USE_OPENMP
-			for(int j = 0; j < omp_get_num_threads(); j++)
-			{
-				#pragma omp barrier 
 				#pragma omp critical
+#endif
 				{
-					if(omp_get_thread_num() == j) outputs.subObservations.insert(outputs.subObservations.end(), std::make_move_iterator(subObservationsThisThread.begin()), std::make_move_iterator(subObservationsThisThread.end()));
+					if(inputs.outputTree) outputs.tree.add(subObs, 0, -1, subObs.isPotentiallyConnected());
+					generated++;
+					if(subObs.isPotentiallyConnected())
+					{
+						outputs.subObservations.push_back(std::move(subObs));
+						outputs.potentiallyConnectedIndices.push_back(generated);
+					}
 				}
 			}
-#else
-			outputs.subObservations.swap(subObservationsThisThread);
-#endif
 		}
 	}
 	int main(int argc, char **argv)
@@ -425,17 +427,25 @@ namespace discreteGermGrain
 		}
 		if(outputTree)
 		{
-			std::string file(variableMap["outputTree"].as<std::string>());
-			std::ofstream stream(file.c_str());
-			if(stream.is_open())
+			std::cout << "Beginning tree layout....";
+			std::cout.flush();
+			bool success  = tree.layout();
+			if(!success) std::cout << "Unable to lay out tree. Was graphviz support enabled? " << std::endl;
+			else 
 			{
-				boost::archive::binary_oarchive oarchive(stream);
-				oarchive << tree;
-				stream.close();
-			}
-			else
-			{
-				std::cout << "Error writing to file " << variableMap["outputTree"].as<std::string>() << std::endl;
+				std::cout << "Done" << std::endl;
+				std::string file(variableMap["outputTree"].as<std::string>());
+				std::ofstream stream(file.c_str());
+				if(stream.is_open())
+				{
+					boost::archive::binary_oarchive oarchive(stream);
+					oarchive << tree;
+					stream.close();
+				}
+				else
+				{
+					std::cout << "Error writing to file " << variableMap["outputTree"].as<std::string>() << std::endl;
+				}
 			}
 		}
 		std::cout << "Estimated probability was " << finalEstimate.str() << std::endl;
