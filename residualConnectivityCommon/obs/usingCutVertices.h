@@ -23,10 +23,10 @@ namespace discreteGermGrain
 			template<class T> friend class ::discreteGermGrain::subObs::getObservation;
 
 			typedef ::discreteGermGrain::subObs::usingCutVertices subObservationType;
-			typedef ::discreteGermGrain::subObs::usingCutVerticesConstructorType subObservationConstructorType;
+			typedef ::discreteGermGrain::subObs::withWeightConstructorType subObservationConstructorType;
 
 			usingCutVertices(Context const& context, boost::mt19937& randomSource);
-			usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::usingCutVerticesConstructorType& otherData);
+			usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::withWeightConstructorType& otherData);
 			usingCutVertices(usingCutVertices&& other);
 			usingCutVertices& operator=(usingCutVertices&& other);
 			const mpfr_class& getWeight() const;

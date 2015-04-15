@@ -7,8 +7,8 @@ namespace discreteGermGrain
 {
 	namespace subObs
 	{
-		usingBiconnectedComponents::usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::usingBiconnectedComponentsConstructorType& otherData)
-			: ::discreteGermGrain::subObs::subObsWithRadius(context, state, radius), weight(otherData.weight)
+		usingBiconnectedComponents::usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::withWeightConstructorType& otherData)
+			: ::discreteGermGrain::subObs::withWeight(context, state, radius, otherData.weight)
 		{
 			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
 		}
@@ -17,7 +17,7 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		usingBiconnectedComponents::usingBiconnectedComponents(usingBiconnectedComponents&& other)
-			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast<::discreteGermGrain::subObs::subObsWithRadius&&>(other)), weight(other.weight)
+			: ::discreteGermGrain::subObs::withWeight(static_cast<::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}
@@ -126,7 +126,7 @@ namespace discreteGermGrain
 			{
 				if(potentiallyConnected)
 				{
-					::discreteGermGrain::obs::usingBiconnectedComponentsConstructorType weightType;
+					::discreteGermGrain::obs::withWeightConstructorType weightType;
 					weightType.weight = weight;
 					for(int i = 0; i < nSimulations;i++)
 					{

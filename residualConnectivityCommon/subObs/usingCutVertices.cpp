@@ -10,7 +10,7 @@ namespace discreteGermGrain
 {
 	namespace subObs
 	{
-		usingCutVertices::usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::usingCutVerticesConstructorType& otherData)
+		usingCutVertices::usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::withWeightConstructorType& otherData)
 			: ::discreteGermGrain::subObs::subObsWithRadius(context, state, radius)
 		{
 			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
@@ -147,7 +147,7 @@ namespace discreteGermGrain
 		
 			mpfr_class opProbability = context.getOperationalProbability();
 			mpfr_class weight = boost::multiprecision::pow(opProbability, nNotAlreadyFixedArticulation);
-			::discreteGermGrain::obs::usingCutVerticesConstructorType weightObject;
+			::discreteGermGrain::obs::withWeightConstructorType weightObject;
 			for(int simulationCounter = 0; simulationCounter < nSimulations; simulationCounter++)
 			{
 				boost::shared_array<vertexState> observationState(new vertexState[nVertices]);

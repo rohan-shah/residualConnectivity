@@ -7,19 +7,13 @@ namespace discreteGermGrain
 {
 	namespace obs
 	{
-		struct usingBiconnectedComponentsConstructorType
-		{
-		public:
-			usingBiconnectedComponentsConstructorType();
-			mpfr_class weight;
-		};
 		struct basicConstructorType
 		{
 		};
-		struct usingCutVerticesConstructorType
+		struct withWeightConstructorType
 		{
 		public:
-			usingCutVerticesConstructorType();
+			withWeightConstructorType();
 			mpfr_class weight;
 		};
 	}
@@ -32,20 +26,13 @@ namespace discreteGermGrain
 			std::vector<int>& components;
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
 		};
-		struct usingBiconnectedComponentsConstructorType
+		struct withWeightConstructorType
 		{
 		public:
-			usingBiconnectedComponentsConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
+			withWeightConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
 			std::vector<int>& components;
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
 			mpfr_class weight;
-		};
-		struct usingCutVerticesConstructorType
-		{
-		public:
-			usingCutVerticesConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
-			std::vector<int>& components;
-			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
 		};
 	}
 }

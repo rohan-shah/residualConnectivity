@@ -3,7 +3,7 @@ namespace discreteGermGrain
 {
 	namespace obs
 	{
-		usingBiconnectedComponents::usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::usingBiconnectedComponentsConstructorType& otherData)
+		usingBiconnectedComponents::usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::withWeightConstructorType& otherData)
 			: ::discreteGermGrain::withSub(context, state), weight(otherData.weight)
 		{}
 		usingBiconnectedComponents::usingBiconnectedComponents(Context const& context, boost::mt19937& randomSource)
