@@ -26,6 +26,10 @@ namespace discreteGermGrain
 		{
 		public:
 			subObsWithRadius& operator=(subObsWithRadius&& other);
+			int getRadius() const
+			{
+				return radius;
+			}
 		protected:
 			subObsWithRadius(const Context& context, boost::shared_array<const vertexState> state, int radius);
 			subObsWithRadius(subObsWithRadius&& other);
