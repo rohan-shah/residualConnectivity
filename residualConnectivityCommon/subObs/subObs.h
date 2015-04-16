@@ -19,6 +19,8 @@ namespace discreteGermGrain
 			subObs& operator=(subObs&& other);
 			subObs(const Context& context, boost::shared_array<const vertexState> state);
 			subObs(subObs&& other);
+		protected:
+			subObs(const subObs& other);
 		private:
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
 		};
@@ -33,6 +35,7 @@ namespace discreteGermGrain
 		protected:
 			subObsWithRadius(const Context& context, boost::shared_array<const vertexState> state, int radius);
 			subObsWithRadius(subObsWithRadius&& other);
+			subObsWithRadius(const subObsWithRadius& other);
 			int radius;
 		};
 	}

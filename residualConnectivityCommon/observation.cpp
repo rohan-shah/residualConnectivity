@@ -44,6 +44,9 @@ namespace discreteGermGrain
 		:context(context), state(state)
 	{
 	}
+	observation::observation(const observation& other)
+		: context(other.context), state(other.state)
+	{}
 	observation::observation(Context const& context, boost::shared_array<const vertexState> state)
 		: context(context), state(state)
 	{

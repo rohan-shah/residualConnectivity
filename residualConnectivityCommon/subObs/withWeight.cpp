@@ -13,5 +13,12 @@ namespace discreteGermGrain
 		{
 			return weight;
 		}
+		withWeight::withWeight(const withWeight& other)
+			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast<const ::discreteGermGrain::subObs::subObsWithRadius&>(other)), weight(other.weight)
+		{}
+		withWeight::withWeight(const withWeight& other, mpfr_class newWeight)
+			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast<const ::discreteGermGrain::subObs::subObsWithRadius&>(other)), weight(newWeight)
+		{}
+
 	}
 }

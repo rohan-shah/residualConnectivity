@@ -28,7 +28,11 @@ namespace discreteGermGrain
 			bool isPotentiallyConnected() const;
 			usingMultipleLevelsConditioning(Context const& context, boost::shared_array<vertexState> state, int radius, ::discreteGermGrain::subObs::withWeightConstructorType &);
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
+			usingMultipleLevelsConditioning copyWithWeight(mpfr_class weight) const;
+		protected:
+			usingMultipleLevelsConditioning(const usingMultipleLevelsConditioning& other, mpfr_class weight);
 		private:
+			usingMultipleLevelsConditioning(const usingMultipleLevelsConditioning& other);
 			bool potentiallyConnected;
 		};
 	}

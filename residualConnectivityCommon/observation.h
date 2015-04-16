@@ -31,6 +31,7 @@ namespace discreteGermGrain
 		Context const& getContext() const;
 		const vertexState* getState() const;
 	protected:
+		observation(const observation& other);
 		Context const& context;
 		boost::shared_array<const vertexState> state;
 	private:
@@ -58,7 +59,7 @@ namespace discreteGermGrain
 		{
 			ar >> *this;
 		}
-		observationWithContext(observationWithContext& other);
+		observationWithContext(const observationWithContext& other);
 		friend class boost::serialization::access;
 		const observation& getObs() const;
 		const Context& getContext() const;

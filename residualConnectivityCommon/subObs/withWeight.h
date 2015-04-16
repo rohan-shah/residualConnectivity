@@ -16,6 +16,8 @@ namespace discreteGermGrain
 			withWeight(Context const& context, boost::shared_array<const vertexState> state, int radius, mpfr_class weight);
 			const mpfr_class& getWeight() const;
 		protected:
+			withWeight(const withWeight& other);
+			withWeight(const withWeight& other, mpfr_class weight);
 			mpfr_class weight;
 		};
 	}
