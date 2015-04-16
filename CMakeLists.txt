@@ -22,6 +22,7 @@ if((${CMAKE_BUILD_TYPE} STREQUAL "Release") OR (${CMAKE_BUILD_TYPE} STREQUAL "Re
 endif()
 
 find_package(Mathematica)
+find_package(aliasMethod REQUIRED)
 
 if(WIN32)
 	find_package(mpfr)
@@ -47,3 +48,5 @@ add_subdirectory(gridCountSpecificSize2)
 add_subdirectory(getMinimumReliability)
 add_subdirectory(splittingBasic)
 add_subdirectory(subObservationVisualiser)
+add_subdirectory(usingMultipleLevelsSplitting)
+add_subdirectory(usingMultipleLevelsResampling)
