@@ -17,10 +17,10 @@ namespace discreteGermGrain
 		const vertexState* state;
 		std::vector<int>& graphVertices;
 	};
-	void conditionArticulation(boost::shared_array<vertexState> state, mpfr_class& weight, const Context& context, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack)
+	void conditionArticulation(boost::shared_array<vertexState> state, mpfr_class& weight, const Context& context, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& graph)
 	{
 		//construct subgraph
-		subGraphType graph;
+		graph.clear();
 		//Reuse components vector here
 		std::vector<int>& graphVertices = scratch;
 		{
@@ -69,5 +69,6 @@ namespace discreteGermGrain
 				}
 			}
 		}
+		weight *= boost::multiprecision::pow(context.getOperationalProbability(), nImportanceVertices);
 	}
 }

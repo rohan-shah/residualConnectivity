@@ -7,6 +7,6 @@
 #include "constructSubGraph.h"
 namespace discreteGermGrain
 {
-	void conditionArticulation(boost::shared_array<vertexState> state, mpfr_class& weight, const Context& context, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack);
+	void conditionArticulation(boost::shared_array<vertexState> state, mpfr_class& weight, const Context& context, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph);
 }
 #endif

@@ -1,9 +1,9 @@
-#include "subObs/usingMultipleLevelsConditioning.h"
+#include "subObs/usingMultipleLevelsForResampling.h"
 #include <boost/random/bernoulli_distribution.hpp>
 #include <boost/graph/biconnected_components.hpp>
 #include "isSingleComponentWithRadius.h"
-#include "subObs/usingMultipleLevelsConditioning.h"
-#include "obs/usingMultipleLevelsConditioning.h"
+#include "subObs/usingMultipleLevelsForResampling.h"
+#include "obs/usingMultipleLevelsForResampling.h"
 #include "constructSubGraph.h"
 #include "subObs/withFinalConditioning.hpp"
 #include "conditionArticulation.h"
@@ -11,25 +11,25 @@ namespace discreteGermGrain
 {
 	namespace subObs
 	{
-		usingMultipleLevelsConditioning::usingMultipleLevelsConditioning(Context const& context, boost::shared_array<vertexState> state, int radius, ::discreteGermGrain::subObs::withWeightConstructorType& otherData)
+		usingMultipleLevelsForResampling::usingMultipleLevelsForResampling(Context const& context, boost::shared_array<vertexState> state, int radius, ::discreteGermGrain::subObs::usingMultipleLevelsForResamplingConstructorType& otherData)
 			: ::discreteGermGrain::subObs::withWeight(context, state, radius, otherData.weight)
 		{
 			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
-			if(radius != 1 && potentiallyConnected)
+			if(potentiallyConnected && otherData.useConditioning)
 			{
 				conditionArticulation(state, weight, context, otherData.components, otherData.subGraphStack, otherData.subGraph);
 			}
 		}
-		bool usingMultipleLevelsConditioning::isPotentiallyConnected() const
+		bool usingMultipleLevelsForResampling::isPotentiallyConnected() const
 		{
 			return potentiallyConnected;
 		}
-		usingMultipleLevelsConditioning::usingMultipleLevelsConditioning(usingMultipleLevelsConditioning&& other)
+		usingMultipleLevelsForResampling::usingMultipleLevelsForResampling(usingMultipleLevelsForResampling&& other)
 			: ::discreteGermGrain::subObs::withWeight(static_cast<::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}
-		void usingMultipleLevelsConditioning::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData)const
+		void usingMultipleLevelsForResampling::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData)const
 		{
 			boost::random::bernoulli_distribution<float> vertexDistribution(context.getOperationalProbabilityD());
 			std::size_t nVertices = context.nVertices();
@@ -48,22 +48,14 @@ namespace discreteGermGrain
 			}
 			otherData.weight = weight;
 		}
-		void usingMultipleLevelsConditioning::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
+		usingMultipleLevelsForResampling usingMultipleLevelsForResampling::copyWithWeight(mpfr_class weight) const
 		{
-			if(radius != 1)
-			{
-				throw std::runtime_error("Radius must be 1 to call constructRadius1Graph");
-			}
-			withFinalConditioning::estimateRadius1<usingMultipleLevelsConditioning>(*this, randomSource, nSimulations, scratchMemory, stack, outputObservations);
+			return usingMultipleLevelsForResampling(*this, weight);
 		}
-		usingMultipleLevelsConditioning usingMultipleLevelsConditioning::copyWithWeight(mpfr_class weight) const
-		{
-			return usingMultipleLevelsConditioning(*this, weight);
-		}
-		usingMultipleLevelsConditioning::usingMultipleLevelsConditioning(const usingMultipleLevelsConditioning& other, mpfr_class weight)
+		usingMultipleLevelsForResampling::usingMultipleLevelsForResampling(const usingMultipleLevelsForResampling& other, mpfr_class weight)
 			: ::discreteGermGrain::subObs::withWeight(static_cast<const ::discreteGermGrain::subObs::withWeight&>(other), weight), potentiallyConnected(other.potentiallyConnected)
 		{}
-		usingMultipleLevelsConditioning::usingMultipleLevelsConditioning(const usingMultipleLevelsConditioning& other)
+		usingMultipleLevelsForResampling::usingMultipleLevelsForResampling(const usingMultipleLevelsForResampling& other)
 			: ::discreteGermGrain::subObs::withWeight(static_cast<const ::discreteGermGrain::subObs::withWeight&>(other)), potentiallyConnected(other.potentiallyConnected)
 		{}
 	}
