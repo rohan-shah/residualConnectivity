@@ -7,8 +7,8 @@
 #include "observationTree.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "observation.h"
-#include "obs/usingMultipleLevelsForResampling.h"
-#include "subObs/usingMultipleLevelsForResampling.h"
+#include "obs/articulationConditioningForResampling.h"
+#include "subObs/articulationConditioningForResampling.h"
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/random/bernoulli_distribution.hpp>
@@ -36,11 +36,11 @@ namespace discreteGermGrain
 	};
 	struct stepOutputs
 	{
-		stepOutputs(std::vector<::discreteGermGrain::subObs::usingMultipleLevelsForResampling>& subObservations, std::vector<::discreteGermGrain::obs::usingMultipleLevelsForResampling>& observations, boost::mt19937& randomSource, observationTree& tree)
+		stepOutputs(std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling>& subObservations, std::vector<::discreteGermGrain::obs::articulationConditioningForResampling>& observations, boost::mt19937& randomSource, observationTree& tree)
 			:subObservations(subObservations), observations(observations), randomSource(randomSource), tree(tree)
 		{}
-		std::vector<::discreteGermGrain::subObs::usingMultipleLevelsForResampling>& subObservations;
-		std::vector<::discreteGermGrain::obs::usingMultipleLevelsForResampling>& observations;
+		std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling>& subObservations;
+		std::vector<::discreteGermGrain::obs::articulationConditioningForResampling>& observations;
 		std::vector<int> potentiallyConnectedIndices;
 		boost::mt19937& randomSource;
 		observationTree& tree;
@@ -55,7 +55,7 @@ namespace discreteGermGrain
 		boost::mt19937::result_type perThreadSeeds[100];
 		for(int j = 0; j < 100; j++) perThreadSeeds[j] = outputs.randomSource();
 #endif
-		std::vector<::discreteGermGrain::subObs::usingMultipleLevelsForResampling> nextSetObservations;
+		std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling> nextSetObservations;
 		std::vector<int> nextStepPotentiallyConnectedIndices;
 		//Loop over the splitting steps (the different nested events)
 		for(int i = 1; i < inputs.initialRadius+1; i++)
@@ -76,7 +76,7 @@ namespace discreteGermGrain
 				boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 				boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
 
-				::discreteGermGrain::subObs::usingMultipleLevelsForResamplingConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack);
+				::discreteGermGrain::subObs::articulationConditioningForResamplingConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack);
 				getSubObsHelper.useConditioning = true;
 				::discreteGermGrain::obs::withWeightConstructorType getObsHelper;
 #ifdef USE_OPENMP
@@ -89,15 +89,15 @@ namespace discreteGermGrain
 				for(int j = 0; j < (int)outputs.subObservations.size(); j++)
 				{
 					//get out the current observation
-					const ::discreteGermGrain::subObs::usingMultipleLevelsForResampling& currentObs = outputs.subObservations[j];
-					::discreteGermGrain::obs::usingMultipleLevelsForResampling obs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::usingMultipleLevelsForResampling>::get(currentObs, 
+					const ::discreteGermGrain::subObs::articulationConditioningForResampling& currentObs = outputs.subObservations[j];
+					::discreteGermGrain::obs::articulationConditioningForResampling obs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::articulationConditioningForResampling>::get(currentObs, 
 #ifdef USE_OPENMP
 							perThreadSource
 #else
 							outputs.randomSource
 #endif
 					, getObsHelper);
-					::discreteGermGrain::subObs::usingMultipleLevelsForResampling subObs = ::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::usingMultipleLevelsForResampling>::get(obs, inputs.initialRadius - i, getSubObsHelper);
+					::discreteGermGrain::subObs::articulationConditioningForResampling subObs = ::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::articulationConditioningForResampling>::get(obs, inputs.initialRadius - i, getSubObsHelper);
 #ifdef USE_OPENMP
 					#pragma omp critical
 #endif
@@ -117,7 +117,7 @@ namespace discreteGermGrain
 			outputs.potentiallyConnectedIndices.clear();
 			mpfr_class sum = 0;
 			resamplingProbabilities.clear();
-			for(std::vector<::discreteGermGrain::subObs::usingMultipleLevelsForResampling>::iterator j = nextSetObservations.begin(); j != nextSetObservations.end(); j++)
+			for(std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling>::iterator j = nextSetObservations.begin(); j != nextSetObservations.end(); j++)
 			{
 				sum += j->getWeight();
 				resamplingProbabilities.push_back(j->getWeight().convert_to<double>());
@@ -147,7 +147,7 @@ namespace discreteGermGrain
 			//stack for depth first search
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
-			::discreteGermGrain::subObs::usingMultipleLevelsForResamplingConstructorType helper(connectedComponents, stack, subGraphStack);
+			::discreteGermGrain::subObs::articulationConditioningForResamplingConstructorType helper(connectedComponents, stack, subGraphStack);
 			helper.useConditioning = false;
 #ifdef USE_OPENMP
 			//per-thread random number generation
@@ -157,14 +157,14 @@ namespace discreteGermGrain
 #endif
 			for(int i = 0; i < inputs.n; i++)
 			{
-				::discreteGermGrain::obs::usingMultipleLevelsForResampling obs(inputs.context, 
+				::discreteGermGrain::obs::articulationConditioningForResampling obs(inputs.context, 
 #ifdef USE_OPENMP
 						perThreadSource
 #else
 						outputs.randomSource
 #endif
 						);
-				::discreteGermGrain::subObs::usingMultipleLevelsForResampling subObs(::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::usingMultipleLevelsForResampling>::get(obs, inputs.initialRadius, helper));
+				::discreteGermGrain::subObs::articulationConditioningForResampling subObs(::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::articulationConditioningForResampling>::get(obs, inputs.initialRadius, helper));
 #ifdef USE_OPENMP
 				#pragma omp critical
 #endif
@@ -181,7 +181,7 @@ namespace discreteGermGrain
 		}
 		std::vector<double> resamplingProbabilities;
 		mpfr_class sum = 0;
-		for(std::vector<::discreteGermGrain::subObs::usingMultipleLevelsForResampling>::iterator i = outputs.subObservations.begin(); i != outputs.subObservations.end(); i++)
+		for(std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling>::iterator i = outputs.subObservations.begin(); i != outputs.subObservations.end(); i++)
 		{
 			sum += i->getWeight();
 			resamplingProbabilities.push_back(i->getWeight().convert_to<double>());
@@ -189,7 +189,7 @@ namespace discreteGermGrain
 		mpfr_class averageWeight = sum / inputs.n;
 		aliasMethod::aliasMethod alias(resamplingProbabilities, sum.convert_to<double>(), outputs.aliasMethodTemporary1, outputs.aliasMethodTemporary2, outputs.aliasMethodTemporary3);
 		std::vector<int> nextPotentiallyConnectedIndices;
-		std::vector<::discreteGermGrain::subObs::usingMultipleLevelsForResampling> nextSubObservations;
+		std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling> nextSubObservations;
 		for(int i = 0; i < inputs.n; i++)
 		{
 			int index = (int)alias(outputs.randomSource);
@@ -266,8 +266,8 @@ namespace discreteGermGrain
 		bool outputTree = variableMap.count("outputTree");
 
 
-		std::vector<::discreteGermGrain::subObs::usingMultipleLevelsForResampling> subObservations;
-		std::vector<::discreteGermGrain::obs::usingMultipleLevelsForResampling> observations;
+		std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling> subObservations;
+		std::vector<::discreteGermGrain::obs::articulationConditioningForResampling> observations;
 
 		stepInputs inputs(context);
 		inputs.initialRadius = initialRadius;
@@ -281,7 +281,7 @@ namespace discreteGermGrain
 		stepsExceptFirst(inputs, outputs);
 
 		mpfr_class probabilitySum = 0;
-		for(std::vector<::discreteGermGrain::subObs::usingMultipleLevelsForResampling>::iterator i = subObservations.begin(); i != subObservations.end(); i++)
+		for(std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling>::iterator i = subObservations.begin(); i != subObservations.end(); i++)
 		{
 			probabilitySum += i->getWeight();
 		}
@@ -298,14 +298,14 @@ namespace discreteGermGrain
 				empiricalDistribution distribution(true, context.nVertices(), context);
 				if(initialRadius == 0)
 				{
-					for(std::vector<::discreteGermGrain::subObs::usingMultipleLevelsForResampling>::const_iterator i = subObservations.begin(); i != subObservations.end(); i++)
+					for(std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling>::const_iterator i = subObservations.begin(); i != subObservations.end(); i++)
 					{
 						distribution.add(i->getState());
 					}
 				}
 				else
 				{
-					for(std::vector<::discreteGermGrain::obs::usingMultipleLevelsForResampling>::const_iterator i = observations.begin(); i != observations.end(); i++)
+					for(std::vector<::discreteGermGrain::obs::articulationConditioningForResampling>::const_iterator i = observations.begin(); i != observations.end(); i++)
 					{
 						distribution.add(i->getState());
 					}
