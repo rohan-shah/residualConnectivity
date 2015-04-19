@@ -122,6 +122,7 @@ namespace discreteGermGrain
 				sum += j->getWeight();
 				resamplingProbabilities.push_back(j->getWeight().convert_to<double>());
 			}
+			if(sum == 0) return;
 			mpfr_class averageWeight = sum / inputs.n;
 			aliasMethod::aliasMethod alias(resamplingProbabilities, sum.convert_to<double>(), outputs.aliasMethodTemporary1, outputs.aliasMethodTemporary2, outputs.aliasMethodTemporary3);
 			for(int j = 0; j < inputs.n; j++)
