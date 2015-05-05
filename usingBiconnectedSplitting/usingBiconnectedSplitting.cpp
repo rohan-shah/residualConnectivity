@@ -166,10 +166,11 @@ namespace discreteGermGrain
 				//stack for depth first search
 				boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 				boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
+				subGraphType subGraph;
 				//used to calculate the splitting factor (which is random)
 				boost::random::bernoulli_distribution<float> splittingFactorBernoulli(sptittingFactorRemainder);
 
-				::discreteGermGrain::subObs::withWeightConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack);
+				::discreteGermGrain::subObs::withWeightConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack, subGraph);
 				::discreteGermGrain::obs::withWeightConstructorType getObsHelper;
 #ifdef USE_OPENMP
 				//per-thread random number generation
@@ -233,7 +234,8 @@ namespace discreteGermGrain
 			//stack for depth first search
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
-			::discreteGermGrain::subObs::withWeightConstructorType helper(connectedComponents, stack, subGraphStack);
+			subGraphType subGraph;
+			::discreteGermGrain::subObs::withWeightConstructorType helper(connectedComponents, stack, subGraphStack, subGraph);
 #ifdef USE_OPENMP
 			//per-thread random number generation
 			boost::mt19937 perThreadSource;

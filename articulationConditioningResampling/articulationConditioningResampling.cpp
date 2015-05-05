@@ -75,8 +75,9 @@ namespace discreteGermGrain
 				//stack for depth first search
 				boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 				boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
+				subGraphType subGraph;
 
-				::discreteGermGrain::subObs::articulationConditioningForResamplingConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack);
+				::discreteGermGrain::subObs::articulationConditioningForResamplingConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack, subGraph);
 				getSubObsHelper.useConditioning = true;
 				::discreteGermGrain::obs::withWeightConstructorType getObsHelper;
 #ifdef USE_OPENMP
@@ -148,7 +149,8 @@ namespace discreteGermGrain
 			//stack for depth first search
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
-			::discreteGermGrain::subObs::articulationConditioningForResamplingConstructorType helper(connectedComponents, stack, subGraphStack);
+			subGraphType subGraph;
+			::discreteGermGrain::subObs::articulationConditioningForResamplingConstructorType helper(connectedComponents, stack, subGraphStack, subGraph);
 			helper.useConditioning = false;
 #ifdef USE_OPENMP
 			//per-thread random number generation

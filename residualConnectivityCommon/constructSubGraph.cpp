@@ -20,8 +20,8 @@ namespace discreteGermGrain
 				inverse[i] = (int)graphVertices.size();
 			}
 		}
-
-		graph = subGraphType(graphVertices.size());
+		graph.clear();
+		//graph = subGraphType(graphVertices.size());
 		const Context::inputGraph& originalGraph = context.getGraph();
 		for(std::size_t i = 0; i < graphVertices.size(); i++)
 		{
