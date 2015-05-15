@@ -73,7 +73,7 @@ namespace discreteGermGrain
 				typedef boost::iterator_property_map<component_storage_t::iterator, boost::property_map<subGraphType, boost::edge_index_t>::type> component_map_t;
 				component_storage_t biconnectedIds(boost::num_edges(graph));
 				component_map_t componentMap(biconnectedIds.begin(), boost::get(boost::edge_index, graph));
-				std::vector<int> articulationVertices;
+				std::vector<std::size_t> articulationVertices;
 				boost::biconnected_components(graph, componentMap, std::back_inserter(articulationVertices));
 
 				//Count the number of biconnected components. I believe these are guaranteed to be contiguous....
@@ -82,7 +82,7 @@ namespace discreteGermGrain
 				//convert list of articulation vertices across to a bitset
 				std::vector<bool> isArticulationVertex(nVertices, false);
 				//Mark off each articulation point in the above vector, and count the number of extra points that we're fixing.
-				for(std::vector<int>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
+				for(std::vector<std::size_t>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
 				{
 					isArticulationVertex[graphVertices[*i]] = true;
 					if(stateRef[graphVertices[*i]].state & UNFIXED_MASK) 
@@ -136,7 +136,7 @@ namespace discreteGermGrain
 				{
 					boost::shared_array<vertexState> obsState(new vertexState[nVertices]);
 					object.getObservation(obsState.get(), randomSource, observationInput);
-					for(std::vector<int>::iterator j = articulationVertices.begin(); j != articulationVertices.end(); j++)
+					for(std::vector<std::size_t>::iterator j = articulationVertices.begin(); j != articulationVertices.end(); j++)
 					{
 						obsState[graphVertices[*j]].state = FIXED_ON;
 					}
@@ -212,7 +212,7 @@ namespace discreteGermGrain
 				{
 					boost::shared_array<vertexState> obsState(new vertexState[nVertices]);
 					object.getObservation(obsState.get(), randomSource, observationInput);
-					for(std::vector<int>::iterator j = articulationVertices.begin(); j != articulationVertices.end(); j++)
+					for(std::vector<std::size_t>::iterator j = articulationVertices.begin(); j != articulationVertices.end(); j++)
 					{
 						obsState[graphVertices[*j]].state = FIXED_ON;
 					}

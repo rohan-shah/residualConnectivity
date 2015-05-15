@@ -58,7 +58,7 @@ namespace discreteGermGrain
 			//Construct the possibleDestination data, sorted by the vertex count data.
 			possibleDestinations.resize(nDestinations);
 			//what's the first index with this vertex count?
-			int previousStart = 0;
+			std::size_t previousStart = 0;
 			
 			possibleDestinations[0] = unsortedPossibleDestinations[scratch[0]];
 			int extraCount = destinationVertexCounts[scratch[0]];

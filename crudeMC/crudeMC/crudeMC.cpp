@@ -59,7 +59,7 @@ namespace discreteGermGrain
 		readSeed(variableMap, args.randomSource);
 		args.n = n;
 
-		int connected = crudeMC(args);
+		std::size_t connected = crudeMC(args);
 		std::cout << connected << " / " << n << " = " << ((float)connected / (float)n) << " had one connected component" << std::endl;
 		return 0;
 	}

@@ -67,7 +67,7 @@ namespace discreteGermGrain
 		}
 		void usingCutVertices::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&)const
 		{
-			boost::random::bernoulli_distribution<float> vertexDistribution(context.getOperationalProbabilityD());
+			boost::random::bernoulli_distribution<double> vertexDistribution(context.getOperationalProbabilityD());
 			std::size_t nVertices = context.nVertices();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 
@@ -86,7 +86,7 @@ namespace discreteGermGrain
 		void usingCutVertices::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
 		{
 			double openProbability = context.getOperationalProbabilityD();
-			boost::bernoulli_distribution<float> bern(openProbability);
+			boost::bernoulli_distribution<double> bern(openProbability);
 			if(radius != 1)
 			{
 				throw std::runtime_error("Radius must be 1 to call constructRadius1Graph");
@@ -113,7 +113,7 @@ namespace discreteGermGrain
 			component_storage_t biconnectedIds(boost::num_edges(graph));
 			component_map_t componentMap(biconnectedIds.begin(), boost::get(boost::edge_index, graph));
 
-			std::vector<int> articulationVertices;
+			std::vector<std::size_t> articulationVertices;
 			boost::biconnected_components(graph, componentMap, std::back_inserter(articulationVertices));
 
 			int nNotAlreadyFixedArticulation = 0;
@@ -123,7 +123,7 @@ namespace discreteGermGrain
 			
 			std::vector<bool> isArticulationVertex(nVertices, false);
 			//Mark off each articulation point in the above vector, and count the number of extra points that we're fixing.
-			for(std::vector<int>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
+			for(std::vector<std::size_t>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
 			{
 				isArticulationVertex[graphVertices[*i]] = true;
 				if(stateRef[graphVertices[*i]].state & UNFIXED_MASK) 
@@ -142,7 +142,7 @@ namespace discreteGermGrain
 					fixedVertices.push_back(i);
 				}
 			}
-			boost::random::binomial_distribution<> extraVertexCountDistribution(unfixedVertices.size(), openProbability);
+			boost::random::binomial_distribution<> extraVertexCountDistribution((int)unfixedVertices.size(), openProbability);
 			boost::random_number_generator<boost::mt19937> generator(randomSource);
 		
 			mpfr_class opProbability = context.getOperationalProbability();
@@ -154,7 +154,7 @@ namespace discreteGermGrain
 				boost::range::random_shuffle(unfixedVertices, generator);
 				int extraVertexCount = extraVertexCountDistribution(randomSource);
 				memcpy(observationState.get(), state.get(), sizeof(vertexState)*nVertices);
-				for(std::vector<int>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
+				for(std::vector<std::size_t>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
 				{
 					observationState[*i].state = FIXED_ON;
 				}

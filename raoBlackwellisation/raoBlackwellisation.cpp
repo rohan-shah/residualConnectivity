@@ -67,7 +67,7 @@ namespace discreteGermGrain
 		readSeed(variableMap, randomSource);
 
 		std::size_t nVertices = boost::num_vertices(context.getGraph());
-		boost::random::geometric_distribution<int, float> numberOffVertices(probability.convert_to<double>());
+		boost::random::geometric_distribution<int, double> numberOffVertices(probability.convert_to<double>());
 
 		mpfr_class total = 0;
 		mpfr_class q = 1 - probability;

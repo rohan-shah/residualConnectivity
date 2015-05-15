@@ -87,7 +87,7 @@ namespace discreteGermGrain
 						outputs.randomSource
 #endif
 						);
-				int previousLength = observationsThisThread.size();
+				std::size_t previousLength = observationsThisThread.size();
 				//get out the child observations
 				outputs.subObservations[j].estimateRadius1(
 #ifdef USE_OPENMP
@@ -96,7 +96,7 @@ namespace discreteGermGrain
 						outputs.randomSource
 #endif
 						, nThisObservation, connectedComponents, stack, observationsThisThread);
-				int newLength = observationsThisThread.size();
+				std::size_t newLength = observationsThisThread.size();
 				parentIndicesThisThread.insert(parentIndicesThisThread.end(), newLength - previousLength, outputs.potentiallyConnectedIndices[j]);
 #ifdef USE_OPENMP
 				totalThisThreadGenerated += nThisObservation;

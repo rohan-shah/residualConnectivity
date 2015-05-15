@@ -31,7 +31,7 @@ namespace discreteGermGrain
 		}
 		void articulationConditioningForResampling::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData)const
 		{
-			boost::random::bernoulli_distribution<float> vertexDistribution(context.getOperationalProbabilityD());
+			boost::random::bernoulli_distribution<double> vertexDistribution(context.getOperationalProbabilityD());
 			std::size_t nVertices = context.nVertices();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 

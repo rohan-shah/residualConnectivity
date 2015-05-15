@@ -33,7 +33,7 @@ namespace discreteGermGrain
 			for(; start != end; start++) boost::put(edgePropertyMap, *start, edgeIndex++);
 		}
 		//get out biconnected components of helper graph (which has different vertex ids, remember)
-		std::vector<int> articulationVertices;
+		std::vector<std::size_t> articulationVertices;
 		boost::articulation_points(graph, std::back_inserter(articulationVertices));
 		int nImportanceVertices = 0;
 	
@@ -41,7 +41,7 @@ namespace discreteGermGrain
 		std::vector<boost::default_color_type> colorMap(boost::num_vertices(graph), Color::white());
 		findFixedOnVisitor fixedVisitor(state.get(), graphVertices);
 
-		for(std::vector<int>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
+		for(std::vector<std::size_t>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
 		{
 			if(state[graphVertices[*i]].state != FIXED_ON)
 			{
@@ -53,7 +53,7 @@ namespace discreteGermGrain
 				int nComponentsWithFixedOnVertices = 0;
 				for(; current != end; current++)
 				{
-					int otherVertex = current->m_target;
+					std::size_t otherVertex = current->m_target;
 					if(colorMap[otherVertex] != Color::black())
 					{
 						fixedVisitor.found = false;

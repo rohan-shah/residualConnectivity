@@ -6,7 +6,7 @@ namespace discreteGermGrain
 		std::size_t nVertices = context.nVertices();
 		const int* shortestDistances = context.getShortestDistances();
 
-		int sourceVertex = 0;
+		std::size_t sourceVertex = 0;
 
 		std::fill(newState, newState+nVertices, vertexState::fixed_off());
 
