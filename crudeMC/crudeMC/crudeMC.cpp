@@ -1,11 +1,6 @@
 #include <boost/program_options.hpp>
 #include <boost/random/mersenne_twister.hpp>
-#include "observation.h"
-#include <boost/algorithm/string.hpp>
-#include "observation.h"
-#include "isSingleComponentWithRadius.h"
-#include "Context.h"
-#include <boost/graph/graphml.hpp>
+#include "crudeMCLib.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
 namespace discreteGermGrain
@@ -60,24 +55,12 @@ namespace discreteGermGrain
 			std::cout << message << std::endl;
 			return 0;
 		}
-		boost::mt19937 randomSource;
-		readSeed(variableMap, randomSource);
+		crudeMCArgs args(context);
+		readSeed(variableMap, args.randomSource);
+		args.n = n;
 
-		std::vector<observation> observations;
-		std::vector<int> scratchMemory;
-		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
-
-		//The cumulative states, in case we decide to use the --splitting option
-		std::vector<vertexState> cumulativeStates(context.nVertices());
-		for(int i = 0; i < n; i++)
-		{
-			observation obs(context, randomSource);
-			if(isSingleComponentAllOn(context, obs.getState(), scratchMemory, stack))
-			{
-				observations.push_back(std::move(obs));
-			}
-		}
-		std::cout << observations.size() << " / " << n << " = " << ((float)observations.size() / (float)n) << " had one connected component" << std::endl;
+		int connected = crudeMC(args);
+		std::cout << connected << " / " << n << " = " << ((float)connected / (float)n) << " had one connected component" << std::endl;
 		return 0;
 	}
 }

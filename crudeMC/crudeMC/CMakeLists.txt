@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.1)
+add_executable(crudeMC crudeMC.cpp)
+target_link_libraries(crudeMC PUBLIC residualConnectivityCommon crudeMCLib)
+target_compile_definitions(crudeMC PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
+if(WIN32)
+	set_target_properties(crudeMC PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/ PDB_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/)
+endif()
