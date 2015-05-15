@@ -39,13 +39,13 @@ namespace discreteGermGrain
 			{
 				std::size_t end = std::min(start + increment, maxValue);
 				#pragma omp for schedule(static, 1) 
-				for(std::size_t counter = start; counter < end; counter++)
+				for(std::ptrdiff_t counter = (std::ptrdiff_t)start; counter < (std::ptrdiff_t)end; counter++)
 				{
-					if(countSetBits(counter) == size)
+					if(countSetBits((std::size_t)counter) == size)
 					{
 						for(int i = 0; i < gridDimension*gridDimension; i++)
 						{
-							if(counter & (1ULL << i)) state[i].state = FIXED_ON;
+							if(((std::size_t)counter) & (1ULL << i)) state[i].state = FIXED_ON;
 							else state[i].state = FIXED_OFF;
 						}
 						if(isSingleComponentPossible(context, &(state[0]), connectedComponents, stack))

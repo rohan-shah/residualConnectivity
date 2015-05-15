@@ -69,7 +69,7 @@ namespace discreteGermGrain
 			}
 			if(!treeGraph) layout();
 			//Even after we try and lay it out, it might not be laid out due to no graphviz available. 
-			bool hasTree = treeGraph;
+			bool hasTree = treeGraph.get();
 			ar << hasTree;
 			if(hasTree)
 			{

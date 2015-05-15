@@ -13,5 +13,8 @@ namespace discreteGermGrain
 		{
 			::discreteGermGrain::withSub::getSubObservation(radius, newState);
 		}
+		basic::basic(basic&& other)
+			: ::discreteGermGrain::withSub(static_cast<::discreteGermGrain::withSub&&>(other))
+		{}
 	}
 }

@@ -2,7 +2,11 @@
 #include "states.h"
 #include <boost/scoped_array.hpp>
 #include "subgraphMacros.hpp"
-#include <alloca.h>
+#ifdef _MSC_VER
+	#include <malloc.h>
+#else
+	#include <alloca.h>
+#endif
 namespace discreteGermGrain
 {
 	void generateCachedIndices(unsigned long long binaryEncoding, std::vector<std::size_t>& cachedIndices, int nGroups, const transferStates& states)

@@ -20,15 +20,15 @@ namespace discreteGermGrain
 		archive >> *this;
 	}
 	observation::observation(Context const& context, boost::mt19937& randomSource)
-		: context(context), state(NULL)
-	{
+		: context(context), state((vertexState*)NULL)
+{
 		std::size_t nVertices = context.nVertices();
 
 		boost::shared_array<vertexState> state(new vertexState[nVertices]);
 		this->state = state;
 
 		double openProbability = context.getOperationalProbabilityD();
-		boost::random::bernoulli_distribution<float> vertexDistribution(openProbability);
+		boost::random::bernoulli_distribution<double> vertexDistribution(openProbability);
 		
 		//Get out which vertices are present, and the count of the total number of present vertices
 		for(std::size_t i = 0; i < nVertices; i++)

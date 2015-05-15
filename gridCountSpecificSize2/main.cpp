@@ -10,6 +10,9 @@
 #include <boost/graph/connected_components.hpp>
 #include "depth_first_search_restricted.hpp"
 #include "connected_components_restricted.hpp"
+#ifdef _MSC_VER
+	#include <intrin.h>
+#endif
 namespace discreteGermGrain
 {
 	mpz_class countSubgraphsBySize(int gridDimension, int size, const Context& context)
@@ -47,7 +50,13 @@ namespace discreteGermGrain
 			}
 			if(currentPermutation == lastPermutation) break;
 			std::size_t t = currentPermutation | (currentPermutation-1);
+#ifdef _MSC_VER
+			unsigned long index;
+			_BitScanForward64(&index, currentPermutation);
+			currentPermutation = (t + 1) | (((~t & -~t) - 1) >> (index + 1));
+#else
 			currentPermutation =(t + 1) | (((~t & -~t) - 1) >> (__builtin_ctzll(currentPermutation) + 1));
+#endif
 		}
 		while(true);
 		return connected;

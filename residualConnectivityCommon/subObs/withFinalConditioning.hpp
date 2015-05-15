@@ -22,7 +22,7 @@ namespace discreteGermGrain
 				}
 				const Context& context = object.getContext();
 				double openProbability = context.getOperationalProbabilityD();
-				boost::bernoulli_distribution<float> bern(openProbability);
+				boost::bernoulli_distribution<double> bern(openProbability);
 				//Construct helper graph, containing everything except FIXED_OFF vertices. This is because in order to compute the biconnected components / articulation vertices, we need an actual graph object, not just a state vector
 				subGraphType graph;
 				std::vector<int> graphVertices;

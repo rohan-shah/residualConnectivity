@@ -1,0 +1,11 @@
+Package: residualConnectivity
+Type: Package
+Title: Monte Carlo methods for residual network connectivity
+Version: 0.1
+Date: 2015-05-14
+Author: Rohan Shah
+Maintainer: Rohan Shah <cran@bookshah.com>
+Description: This package provides Monte Carlo methods for estimating the residual network connectivity
+License: GPL v3
+Collate:
+   'onLoad.R'

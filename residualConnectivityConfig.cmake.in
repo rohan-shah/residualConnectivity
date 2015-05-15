@@ -1,0 +1,7 @@
+cmake_minimum_required(VERSION 3.1)
+set(residualConnectivity_INCLUDE_DIRS @PROJECT_SOURCE_DIR@/residualConnectivityCommon)
+if(WIN32)
+	set(residualConnectivity_LIBRARY_DIR @PROJECT_SOURCE_DIR@/x64/)
+else()
+	set(residualConnectivity_LIBRARIES @RESIDUAL_CONNECTIVITY_COMMON_LIBRARY@)
+endif()

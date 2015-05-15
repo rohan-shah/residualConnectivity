@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 if(${Mathematica_MathLink_FOUND})
-	configure_file(${CMAKE_CURRENT_LIST_DIR}/main.cpp.in ${CMAKE_CURRENT_LIST_DIR}/main.cpp @only)
+	configure_file(${CMAKE_CURRENT_LIST_DIR}/main.cpp.in ${CMAKE_CURRENT_LIST_DIR}/main.cpp @ONLY)
 	add_executable(getMinimumReliability main.cpp)
 	target_link_libraries(getMinimumReliability PUBLIC residualConnectivityCommon ${Mathematica_MathLink_LIBRARY})
 	target_include_directories(getMinimumReliability PUBLIC ${Mathematica_MathLink_INCLUDE_DIR})

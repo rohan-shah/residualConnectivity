@@ -1,7 +1,9 @@
 cmake_minimum_required(VERSION 3.1)
 add_executable(exhaustiveSearch exhaustiveSearch.cpp)
 target_link_libraries(exhaustiveSearch PUBLIC residualConnectivityCommon)
-target_link_libraries(exhaustiveSearch PRIVATE ${OpenMP_CXX_FLAGS})
+if(NOT WIN32)
+	target_link_libraries(exhaustiveSearch PRIVATE ${OpenMP_CXX_FLAGS})
+endif()
 
 target_compile_options(exhaustiveSearch PRIVATE ${OpenMP_CXX_FLAGS})
 
