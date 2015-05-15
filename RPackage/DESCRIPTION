@@ -7,5 +7,6 @@ Author: Rohan Shah
 Maintainer: Rohan Shah <cran@bookshah.com>
 Description: This package provides Monte Carlo methods for estimating the residual network connectivity
 License: GPL v3
+Suggests: graph, igraph, rbgl
 Collate:
    'onLoad.R'
