@@ -100,9 +100,7 @@ set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}")
 
 find_package(Qt5 COMPONENTS Widgets Core Gui REQUIRED)
 add_subdirectory(Rcpp)
-add_subdirectory(residualConnectivityRPackage)
+add_subdirectory(residualConnectivity)
 
-if(NOT WIN32)
-	add_custom_target(residualConnectivityRPackage_install ALL COMMAND ${CMAKE_COMMAND} -P "${CMAKE_BINARY_DIR}/cmake_install.cmake")
-	add_dependencies(residualConnectivityRPackage_install residualConnectivityRPackage)
-endif()
+add_custom_target(residualConnectivityRPackage_install ALL COMMAND ${CMAKE_COMMAND} -P "${CMAKE_BINARY_DIR}/cmake_install.cmake")
+add_dependencies(residualConnectivityRPackage_install residualConnectivity)
