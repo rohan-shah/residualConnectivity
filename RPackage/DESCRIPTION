@@ -10,3 +10,4 @@ License: GPL v3
 Suggests: graph, igraph, rbgl
 Collate:
    'onLoad.R'
+   'crudeMC.R'

@@ -75,7 +75,7 @@ namespace Rcpp{
         /**
          * Does this object inherit from a given class
          */
-        inline bool inherits(const char* clazz) const { return ::Rf_inherits( m_sexp, clazz) ; }
+        inline bool inherits(const char* clazz) const { return ::Rf_inherits( m_sexp, clazz) !=0; }
     
         /* attributes */
 
@@ -210,7 +210,7 @@ namespace Rcpp{
         /**
          * is this object NULL
          */
-        inline bool isNULL() const{ return Rf_isNull(m_sexp) ; }
+        inline bool isNULL() const{ return Rf_isNull(m_sexp) !=0; }
 
         /**
          * The SEXP typeof, calls TYPEOF on the underlying SEXP
@@ -225,12 +225,12 @@ namespace Rcpp{
         /**
          * Tests if the SEXP has the object bit set
          */
-        inline bool isObject() const { return ::Rf_isObject(m_sexp) ;}
+        inline bool isObject() const { return ::Rf_isObject(m_sexp) !=0;}
 
         /**
          * Tests if the SEXP is an S4 object
          */
-        inline bool isS4() const { return ::Rf_isS4(m_sexp) ; }
+        inline bool isS4() const { return ::Rf_isS4(m_sexp) !=0; }
 
         /**
          * Indicates if this S4 object has the given slot

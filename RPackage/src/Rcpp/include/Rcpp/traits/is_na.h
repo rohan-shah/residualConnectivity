@@ -38,12 +38,12 @@ namespace traits{
 	
 	template <> 
 	inline bool is_na<REALSXP>( double x ){
-		return R_IsNA(x) ;
+		return R_IsNA(x) != 0;
 	}
 	
 	template <> 
 	inline bool is_na<CPLXSXP>( Rcomplex x ){
-		return R_IsNA(x.r) || R_IsNA(x.i) ;
+		return R_IsNA(x.r) != 0 || R_IsNA(x.i) != 0;
 	}
 	
 	template <>

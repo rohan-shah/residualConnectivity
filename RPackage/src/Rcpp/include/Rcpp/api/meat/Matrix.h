@@ -95,7 +95,7 @@ namespace Rcpp{
     
     template <int RTYPE>
     inline typename Matrix<RTYPE>::Proxy Matrix<RTYPE>::operator()( const size_t& i, const size_t& j) {
-        return static_cast< Vector<RTYPE>* >( this )->operator[]( offset( i, j ) ) ;
+        return static_cast< Vector<RTYPE>* >( this )->operator[]( (int)offset( i, j ) ) ;
     }
     
     template <int RTYPE>

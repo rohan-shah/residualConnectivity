@@ -36,12 +36,12 @@ namespace traits{
 	
 	template <> 
 	inline bool is_finite<REALSXP>( double x ){
-		return R_finite(x) ;
+		return R_finite(x) != 0;
 	}
 	
 	template <> 
 	inline bool is_finite<CPLXSXP>( Rcomplex x ){
-		return !( !R_finite(x.r) || !R_finite(x.i) );
+		return !( R_finite(x.r) == 0 || R_finite(x.i) == 0);
 	}
 	
 	template <>

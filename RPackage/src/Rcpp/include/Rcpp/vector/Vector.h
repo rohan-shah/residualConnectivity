@@ -263,7 +263,7 @@ public:
     inline const_Proxy operator[]( int i ) const { return cache.ref(i) ; }
     
     inline Proxy operator()( const size_t& i) {
-        return cache.ref( offset(i) ) ;
+        return cache.ref( (int)offset(i) ) ;
     }
     inline const_Proxy operator()( const size_t& i) const {
         return cache.ref( offset(i) ) ;
