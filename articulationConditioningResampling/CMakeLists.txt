@@ -3,5 +3,5 @@ add_executable(articulationConditioningResampling articulationConditioningResamp
 target_link_libraries(articulationConditioningResampling PUBLIC residualConnectivityCommon aliasMethod)
 target_compile_definitions(articulationConditioningResampling PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
 if(WIN32)
-	set_target_properties(articulationConditioningResampling PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/ PDB_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/)
+	set_target_properties(articulationConditioningResampling PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()

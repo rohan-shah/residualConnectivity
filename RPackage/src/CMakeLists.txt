@@ -4,6 +4,7 @@ list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake")
 
 find_package(R REQUIRED)
 find_package(residualConnectivity REQUIRED)
+find_package(Rcpp REQUIRED)
 
 set(Boost_USE_STATIC_LIBS	OFF)
 set(Boost_USE_MULTITHREADED	ON)
@@ -99,7 +100,8 @@ endif()
 set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}")
 
 find_package(Qt5 COMPONENTS Widgets Core Gui REQUIRED)
-add_subdirectory(Rcpp)
+
+#Ok, configuration is mostly done. Now actually building the shared library
 add_subdirectory(residualConnectivity)
 
 add_custom_target(residualConnectivityRPackage_install ALL COMMAND ${CMAKE_COMMAND} -P "${CMAKE_BINARY_DIR}/cmake_install.cmake")

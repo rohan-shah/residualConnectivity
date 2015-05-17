@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 set(residualConnectivity_INCLUDE_DIRS @PROJECT_SOURCE_DIR@/residualConnectivityCommon @PROJECT_SOURCE_DIR@/crudeMC/crudeMCLib)
 if(WIN32)
-	set(residualConnectivity_LIBRARY_DIR @PROJECT_SOURCE_DIR@/x64/)
+	set(residualConnectivity_LIBRARY_DIR @PROJECT_BINARY_DIR@)
 else()
 	set(residualConnectivity_LIBRARIES @RESIDUAL_CONNECTIVITY_COMMON_LIBRARY@ @RESIDUAL_CONNECTIVITY_CRUDEMC_LIBRARY@)
 endif()

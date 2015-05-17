@@ -3,5 +3,5 @@ add_executable(articulationConditioningSplitting articulationConditioningSplitti
 target_link_libraries(articulationConditioningSplitting PUBLIC residualConnectivityCommon)
 target_compile_definitions(articulationConditioningSplitting PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
 if(WIN32)
-	set_target_properties(articulationConditioningSplitting PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/ PDB_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/x64/)
+	set_target_properties(articulationConditioningSplitting PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
 endif()
