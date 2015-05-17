@@ -1,6 +1,6 @@
 project(residualConnectivity)
 cmake_minimum_required(VERSION 3.1)
-add_library(residualConnectivity SHARED loadQt.cpp loadQt.h register.cpp crudeMC_igraph.cpp crudeMCInterfaces.h)
+add_library(residualConnectivity SHARED loadQt.cpp loadQt.h register.cpp crudeMC_igraph.cpp crudeMCInterfaces.h igraphInterface.h igraphInterface.cpp)
 target_include_directories(residualConnectivity PUBLIC "${residualConnectivity_INCLUDE_DIRS}" "${Boost_INCLUDE_DIRS}")
 target_link_libraries(residualConnectivity PUBLIC mpfr)
 target_compile_definitions(residualConnectivity PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
