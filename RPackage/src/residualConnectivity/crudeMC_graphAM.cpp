@@ -2,7 +2,7 @@
 #include "Rcpp.h"
 #include "crudeMCInterfaces.h"
 #include "graphAMInterface.h"
-SEXP crudeMC_graphAM(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP seed_sexp)
+SEXP crudeMC_graphAM(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP seed_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -33,7 +33,7 @@ BEGIN_RCPP
 		throw std::runtime_error("Input seed must be an integer");
 	}
 
-	discreteGermGrain::Context context = graphAMInterface(graph_sexp, probability_sexp);
+	discreteGermGrain::Context context = graphAMInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp);
 	discreteGermGrain::crudeMCArgs args(context);
 	args.n = n;
 	args.randomSource.seed(1);

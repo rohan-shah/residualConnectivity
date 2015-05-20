@@ -1,5 +1,5 @@
 #include "graphAMInterface.h"
-discreteGermGrain::Context graphAMInterface(SEXP graph_sexp, SEXP probability_sexp)
+discreteGermGrain::Context graphAMInterface(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp)
 {
 	//Convert probability
 	double probability;

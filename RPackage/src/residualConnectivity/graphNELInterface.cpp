@@ -1,5 +1,5 @@
 #include "graphNELInterface.h"
-discreteGermGrain::Context graphNELInterface(SEXP graph_sexp, SEXP probability_sexp)
+discreteGermGrain::Context graphNELInterface(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp)
 {
 	//Convert probability
 	double probability;

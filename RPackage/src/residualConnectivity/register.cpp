@@ -10,8 +10,8 @@ R_CallMethodDef callMethods[] =
 {
 	{"loadQT", (DL_FUNC)&loadQT, 0},
 	{"crudeMC_igraph", (DL_FUNC)&crudeMC_igraph, 5},
-	{"crudeMC_graphNEL", (DL_FUNC)&crudeMC_graphNEL, 4},
-	{"crudeMC_graphAM", (DL_FUNC)&crudeMC_graphAM, 4},
+	{"crudeMC_graphNEL", (DL_FUNC)&crudeMC_graphNEL, 5},
+	{"crudeMC_graphAM", (DL_FUNC)&crudeMC_graphAM, 5},
 	{NULL, NULL, 0}
 };
 extern "C" void R_init_Rcpp(DllInfo* info);
