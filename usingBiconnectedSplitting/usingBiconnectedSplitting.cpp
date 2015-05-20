@@ -50,7 +50,7 @@ namespace discreteGermGrain
 	{
 		outputs.totalGenerated = 0;
 #ifdef USE_OPENMP
-		boost::mt19937::result_type perThreadSeeds[100];
+		boost::mt19937 perThreadSeeds[100];
 		for(int i = 0; i < 100; i++) perThreadSeeds[i] = outputs.randomSource();
 #endif
 
@@ -140,7 +140,7 @@ namespace discreteGermGrain
 	{
 #ifdef USE_OPENMP
 		//set up per-thread random number generators
-		boost::mt19937::result_type perThreadSeeds[100];
+		boost::mt19937 perThreadSeeds[100];
 		for(int j = 0; j < 100; j++) perThreadSeeds[j] = outputs.randomSource();
 #endif
 		std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents> nextSetObservations;
@@ -224,7 +224,7 @@ namespace discreteGermGrain
 		int generated = -1;
 #ifdef USE_OPENMP
 		//set up per-thread random number generators
-		boost::mt19937::result_type perThreadSeeds[100];
+		boost::mt19937 perThreadSeeds[100];
 		for(int i = 0; i < 100; i++) perThreadSeeds[i] = outputs.randomSource();
 		#pragma omp parallel
 #endif
