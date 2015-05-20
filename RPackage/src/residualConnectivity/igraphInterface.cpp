@@ -13,6 +13,10 @@ discreteGermGrain::Context igraphInterface(SEXP graph_sexp, SEXP vertexCoordinat
 	}
 	int nVertices = Rcpp::as<int>(graph(0));
 	bool directed = Rcpp::as<bool>(graph(1));
+	if(directed)
+	{
+		throw std::runtime_error("Input graph must be undirected");
+	}
 
 	//Convert probability
 	double probability;

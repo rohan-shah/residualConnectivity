@@ -59,7 +59,7 @@ discreteGermGrain::Context graphNELInterface(SEXP graph_sexp, SEXP vertexCoordin
 		std::vector<std::string> uniqueNodeNames = Rcpp::as<std::vector<std::string> >(nodeNames);
 		std::sort(uniqueNodeNames.begin(), uniqueNodeNames.end());
 		uniqueNodeNames.erase(std::unique(uniqueNodeNames.begin(), uniqueNodeNames.end()), uniqueNodeNames.end());
-		if(uniqueNodeNames.size() != nodeNames.size())
+		if((std::size_t)uniqueNodeNames.size() != (std::size_t)nodeNames.size())
 		{
 			throw std::runtime_error("Node names of input graph were not unique");
 		}

@@ -36,7 +36,7 @@ BEGIN_RCPP
 	discreteGermGrain::Context context = graphNELInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp);
 	discreteGermGrain::crudeMCArgs args(context);
 	args.n = n;
-	args.randomSource.seed(1);
+	args.randomSource.seed(seed);
 
 	std::size_t result = discreteGermGrain::crudeMC(args);
 	return Rcpp::wrap((int)result);

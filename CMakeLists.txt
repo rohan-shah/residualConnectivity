@@ -66,5 +66,5 @@ if(NOT DEFINED ${CMAKE_FIND_LIBRARY_PREFIXES})
 endif()
 find_package(R REQUIRED)
 
-add_custom_target(build_package ALL COMMAND ${R_COMMAND} CMD INSTALL RPackage WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} DEPENDS residualConnectivityCommon)
+add_custom_target(build_package ALL COMMAND ${R_COMMAND} CMD INSTALL RPackage WORKING_DIRECTORY ${PROJECT_SOURCE_DIR} DEPENDS residualConnectivityCommon crudeMCLib)
 execute_process(COMMAND "${R_COMMAND} CMD INSTALL RPackage" WORKING_DIRECTORY ${PROJECT_SOURCE_DIR})

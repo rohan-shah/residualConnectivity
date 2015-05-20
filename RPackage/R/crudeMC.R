@@ -18,6 +18,10 @@ crudeMC <- function(graph, probability, n, seed=1)
 	}
 	if(class(graph) == "igraph")
 	{
+		if(is.directed(graph))
+		{
+			stop("Input `graph' must be undirected")
+		}
 		vertexCoordinates <- layout.auto(graph)
 		result <- .Call("crudeMC_igraph", graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
 		return(result / n)

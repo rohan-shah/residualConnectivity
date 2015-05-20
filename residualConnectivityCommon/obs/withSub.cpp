@@ -10,7 +10,7 @@ namespace discreteGermGrain
 
 		std::fill(newState, newState+nVertices, vertexState::fixed_off());
 
-		while(sourceVertex < (int)nVertices)
+		while(sourceVertex < nVertices)
 		{
 			//is this vertex marked as on, for one reason or another? If so continue from here
 			if((oldStatesPtr[sourceVertex].state & ON_MASK) > 0 && newState[sourceVertex].state == FIXED_OFF)
@@ -26,7 +26,7 @@ namespace discreteGermGrain
 				std::size_t copiedSourceVertex = sourceVertex;
 				//we want to begin on the NEXT vertex
 				sourceVertex++;
-				while(sourceVertex <= (int)nVertices)
+				while(sourceVertex <= nVertices)
 				{
 					int previousState = oldStatesPtr[sourceVertex].state;
 					if(shortestDistances[copiedSourceVertex + nVertices * sourceVertex] <= radius)

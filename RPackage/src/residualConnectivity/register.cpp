@@ -5,7 +5,7 @@
 	#undef RcppExport
 	#define RcppExport extern "C" __declspec(dllexport)
 #endif
-extern "C" char* package_name = "residualConnectivity";
+extern "C" const char* package_name = "residualConnectivity";
 R_CallMethodDef callMethods[] = 
 {
 	{"loadQT", (DL_FUNC)&loadQT, 0},
