@@ -20,6 +20,7 @@ namespace discreteGermGrain
 			PROBABILITY_OPTION
 			N_OPTION
 			SEED_OPTION
+			EXPECTED_UP_NUMBER_OPTION
 			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
@@ -62,6 +63,7 @@ namespace discreteGermGrain
 			std::cout << message << std::endl;
 			return 0;
 		}
+		bool outputExpectedUpNumber = variableMap["expectedUpNumber"].as<bool>();
 		
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
@@ -70,6 +72,7 @@ namespace discreteGermGrain
 		boost::random::geometric_distribution<int, double> numberOffVertices(probability.convert_to<double>());
 
 		mpfr_class total = 0;
+		mpfr_class numeratorExpectedUpNumber = 0;
 		mpfr_class q = 1 - probability;
 
 		std::vector<int> connectedComponents(nVertices);
@@ -160,10 +163,17 @@ namespace discreteGermGrain
 				nBoundaryPoints = 0;
 			}
 			int power = ((int)nVertices - nOff) - componentSize - nBoundaryPoints;
-			total += boost::multiprecision::pow(q, power);
+			mpfr_class connectedProbability = boost::multiprecision::pow(q, power);
+			total += connectedProbability;
+			numeratorExpectedUpNumber += componentSize * connectedProbability;
 		}
-		double estimate = mpfr_class(total /n).convert_to<double>();
-		std::cout << "Connectivity estimate is " << estimate << std::endl;
+		mpfr_class estimate = total /n;
+		std::cout << "Connectivity estimate is " << estimate.convert_to<double>() << std::endl;
+		if(outputExpectedUpNumber)
+		{
+			mpfr_class expectedUpNumber = numeratorExpectedUpNumber / total;
+			std::cout << "Expected number of up vertices conditional on having a connected graph was " << expectedUpNumber.convert_to<double>() << std::endl;
+		}
 		return 0;
 	}
 }

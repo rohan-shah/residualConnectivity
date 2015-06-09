@@ -213,6 +213,7 @@ namespace discreteGermGrain
 			N_OPTION
 			OUTPUT_DISTRIBUTION_OPTION
 			OUTPUT_TREE_OPTION
+			EXPECTED_UP_NUMBER_OPTION
 			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
@@ -265,9 +266,12 @@ namespace discreteGermGrain
 		{
 			return 0;
 		}
+
+		bool outputExpectedUpNumber = variableMap["expectedUpNumber"].as<bool>();
+
 		observationTree tree(&context, initialRadius);
 		bool outputTree = variableMap.count("outputTree");
-
+		const std::size_t nVertices = context.nVertices();
 
 		std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling> subObservations;
 		std::vector<::discreteGermGrain::obs::articulationConditioningForResampling> observations;
@@ -280,16 +284,23 @@ namespace discreteGermGrain
 
 		doCrudeMCStep(inputs, outputs);
 
-		mpfr_class finalEstimate;
 		stepsExceptFirst(inputs, outputs);
 
 		mpfr_class probabilitySum = 0;
+		mpfr_class numeratorExpectedUpNumber = 0;
 		for(std::vector<::discreteGermGrain::subObs::articulationConditioningForResampling>::iterator i = subObservations.begin(); i != subObservations.end(); i++)
 		{
 			probabilitySum += i->getWeight();
+			const vertexState* statePtr = i->getState();
+			int onCounter = 0;
+			for(std::size_t j = 0; j < nVertices; j++)
+			{
+				if(statePtr[j].state & ON_MASK) onCounter++;
+			}
+			numeratorExpectedUpNumber += i->getWeight() * onCounter;
 		}
-		finalEstimate = probabilitySum / n;
-
+		mpfr_class finalEstimate = probabilitySum / n;
+		mpfr_class expectedUpNumber = numeratorExpectedUpNumber / (n * finalEstimate);
 
 /*		if(variableMap.count("outputDistribution") > 0)
 		{
@@ -346,6 +357,10 @@ namespace discreteGermGrain
 			}
 		}*/
 		std::cout << "Estimated probability was " << finalEstimate.str() << std::endl;
+		if(outputExpectedUpNumber)
+		{
+			std::cout << "Expected number of up vertices conditional on having a connected graph was " << expectedUpNumber.convert_to<double>() << std::endl;
+		}
 		return 0;
 	}
 }

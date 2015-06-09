@@ -14,6 +14,7 @@
 #define SPLITTING_FACTOR_OPTION ("splittingFactor", boost::program_options::value<std::vector<float> >()->multitoken(), "(float) The splitting factor to use at every step")
 #define OUTPUT_TREE_OPTION ("outputTree", boost::program_options::value<std::string>(), "(string, optional) File to output tree to")
 #define OUTPUT_DISTRIBUTION_OPTION ("outputDistribution", boost::program_options::value<std::string>(), "(string, optional) File to output realisations to")
+#define EXPECTED_UP_NUMBER_OPTION ("expectedUpNumber", boost::program_options::value<bool>()->default_value(false)->implicit_value(true), "(flag) Should we estimate the expected number of UP vertices?")
 #define HELP_OPTION ("help", "Display this message")
 #define INPUT_GRAPH_OPTION GRID_GRAPH_OPTION GRAPH_FILE_OPTION TORUS_GRAPH_OPTION
 
