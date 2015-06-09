@@ -45,7 +45,7 @@ discreteGermGrain::Context igraphInterface(SEXP graph_sexp, SEXP vertexCoordinat
 	vertexCoordinatesRef.reserve(vertexCoordinates_matrix.nrow());
 	for(int i = 0; i < nVertices; i++)
 	{
-		vertexCoordinatesRef.push_back(discreteGermGrain::Context::vertexPosition(vertexCoordinates_matrix(i, 0), vertexCoordinates_matrix(i, 1)));
+		vertexCoordinatesRef.push_back(discreteGermGrain::Context::vertexPosition((discreteGermGrain::Context::vertexPosition::first_type)vertexCoordinates_matrix(i, 0), (discreteGermGrain::Context::vertexPosition::second_type)vertexCoordinates_matrix(i, 1)));
 	}
 
 	Rcpp::IntegerVector edgesVertex1 = Rcpp::as<Rcpp::IntegerVector>(graph(2));
