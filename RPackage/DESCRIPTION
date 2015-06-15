@@ -11,3 +11,5 @@ Suggests: graph, igraph, rbgl
 Collate:
    'onLoad.R'
    'crudeMC.R'
+   'conditionalMC.R'
+   'simpleMC.R'

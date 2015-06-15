@@ -1,13 +1,13 @@
-#ifndef RAO_BLACKWELLISATION_LIB_HEADER_GUARD
-#define RAO_BLACKWELLISATION_LIB_HEADER_GUARD
+#ifndef CONDITIONALMC_LIB_HEADER_GUARD
+#define CONDITIONALMC_LIB_HEADER_GUARD
 #include "Context.h"
 #include <boost/random/mersenne_twister.hpp>
 namespace discreteGermGrain
 {
-	struct raoBlackwellisationArgs
+	struct conditionalMCArgs
 	{
 	public:
-		raoBlackwellisationArgs(const Context& context, boost::mt19937& randomSource)
+		conditionalMCArgs(const Context& context, boost::mt19937& randomSource)
 			:context(context), randomSource(randomSource)
 		{}
 		const Context& context;
@@ -16,6 +16,6 @@ namespace discreteGermGrain
 		mpfr_class probability;
 		mpfr_class estimate, expectedUpNumber;
 	};
-	void raoBlackwellisation(raoBlackwellisationArgs& args);
+	void conditionalMC(conditionalMCArgs& args);
 }
 #endif

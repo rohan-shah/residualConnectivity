@@ -1,4 +1,4 @@
-#include "raoBlackwellisationLib.h"
+#include "conditionalMCLib.h"
 #include <boost/random/bernoulli_distribution.hpp>
 #include <boost/random/geometric_distribution.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
@@ -7,7 +7,7 @@
 #include "isSingleComponentWithRadius.h"
 namespace discreteGermGrain
 {	
-	void raoBlackwellisation(raoBlackwellisationArgs& args)
+	void conditionalMC(conditionalMCArgs& args)
 	{
 		std::size_t nVertices = boost::num_vertices(args.context.getGraph());
 		boost::random::geometric_distribution<int, double> numberOffVertices(args.probability.convert_to<double>());

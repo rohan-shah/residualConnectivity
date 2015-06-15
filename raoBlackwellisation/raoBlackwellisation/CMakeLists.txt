@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 3.1)
-add_executable(raoBlackwellisation raoBlackwellisation.cpp)
-target_link_libraries(raoBlackwellisation PUBLIC residualConnectivityCommon raoBlackwellisationLib)
-target_compile_definitions(raoBlackwellisation PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
-if(WIN32)
-	set_target_properties(raoBlackwellisation PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
-endif()

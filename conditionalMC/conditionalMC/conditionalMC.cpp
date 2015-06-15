@@ -10,7 +10,7 @@
 #include "arguments.h"
 #include "argumentsMPFR.h"
 #include "subObs/subObs.h"
-#include "raoBlackwellisationLib.h"
+#include "conditionalMCLib.h"
 namespace discreteGermGrain
 {
 	int main(int argc, char **argv)
@@ -69,10 +69,10 @@ namespace discreteGermGrain
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
 
-		raoBlackwellisationArgs args(context, randomSource);
+		conditionalMCArgs args(context, randomSource);
 		args.n = n;
 		args.probability = probability;
-		raoBlackwellisation(args);
+		conditionalMC(args);
 
 		std::cout << "Connectivity estimate is " << args.estimate.convert_to<double>() << std::endl;
 		if(outputExpectedUpNumber)
