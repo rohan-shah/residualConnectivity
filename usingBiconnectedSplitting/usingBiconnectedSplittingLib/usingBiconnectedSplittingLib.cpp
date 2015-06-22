@@ -1,10 +1,8 @@
 #include <boost/archive/basic_archive.hpp>
-#include <boost/program_options.hpp>
+#include "usingBiconnectedSplittingLib.h"
 #include <algorithm>
 #include <iostream>
 #include "empiricalDistribution.h"
-#include "observationTree.h"
-#include <boost/random/mersenne_twister.hpp>
 #include "observation.h"
 #include "obs/usingBiconnectedComponents.h"
 #include "subObs/usingBiconnectedComponents.h"
@@ -12,7 +10,7 @@
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/random/bernoulli_distribution.hpp>
 #include <boost/archive/binary_oarchive.hpp>
-#include "bridges.hpp"
+//#include "bridges.hpp"
 #include <fstream>
 #include "obs/getSubObservation.hpp"
 #ifdef USE_OPENMP
@@ -214,7 +212,7 @@ namespace discreteGermGrain
 					}
 				}
 			}
-			std::cout << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated+1 << " observations continuing" << std::endl;
+			std::cout << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated+1 << " observations continuing" << outputObject::endl;
 			outputs.subObservations.swap(nextSetObservations);
 			outputs.potentiallyConnectedIndices.swap(nextStepPotentiallyConnectedIndices);
 		}
@@ -267,90 +265,18 @@ namespace discreteGermGrain
 			}
 		}
 	}
-	int main(int argc, char **argv)
+	void usingBiconnectedSplitting(usingBiconnectedSplittingArgs& args)
 	{
-		boost::program_options::options_description options("Usage");
-		options.add_options()
-			INPUT_GRAPH_OPTION
-			PROBABILITY_OPTION
-			SEED_OPTION
-			INITIAL_RADIUS_OPTION
-			N_OPTION
-			SPLITTING_FACTOR_OPTION
-			OUTPUT_DISTRIBUTION_OPTION
-			OUTPUT_TREE_OPTION
-			HELP_OPTION;
-
-		boost::program_options::variables_map variableMap;
-		try
-		{
-			boost::program_options::store(boost::program_options::parse_command_line(argc, argv, options), variableMap);
-		}
-		catch(boost::program_options::error& ee)
-		{
-			std::cerr << "Error parsing command line arguments: " << ee.what() << std::endl << std::endl;
-			std::cerr << options << std::endl;
-			return -1;
-		}
-		if(variableMap.count("help") > 0)
-		{
-			std::cout <<
-				"This uses a splitting approach to estimate the probability that a random subgraph is connected. The random subgraph uses a vertex percolation model."
-				"\n\n"
-			;
-			std::cout << options << std::endl;
-			return 0;
-		}
-
-		std::string message;
-		mpfr_class probability;
-		if(!readProbabilityString(variableMap, probability, message))
-		{
-			std::cout << message << std::endl;
-			return 0;
-		}
-		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, probability, message))
-		{
-			std::cout << message << std::endl;
-			return 0;
-		}
-
-		boost::mt19937 randomSource;
-		readSeed(variableMap, randomSource);
-
-		int initialRadius;
-		if(!readInitialRadius(variableMap, initialRadius))
-		{
-			return 0;
-		}
-
-
-		int n;
-		if(!readN(variableMap, n))
-		{
-			return 0;
-		}
-		//can input a single splitting factor, or one for each level
-		if(variableMap.count("splittingFactor") != 1)
-		{
-			std::cout << "Please enter option splittingFactor once" << std::endl;
-			return 0;
-		}
-		std::vector<float> splittingFactors = variableMap["splittingFactor"].as<std::vector<float> >();
-		if(splittingFactors.size() == 1)
-		{
-			splittingFactors.insert(splittingFactors.end(), initialRadius - 1, splittingFactors[0]);
-		}
-		if((int)splittingFactors.size() != initialRadius)
-		{
-			std::cout << "Wrong number of values entered for input splittingFactor" << std::endl;
-			return 0;
-		}
-		observationTree tree(&context, initialRadius);
-		bool outputTree = variableMap.count("outputTree");
-
-
+		int n = args.n;
+		std::vector<float>& splittingFactors = args.splittingFactors;
+		Context const& context = args.context;
+		int initialRadius = args.initialRadius;
+		bool outputTree = args.outputTree;
+		boost::mt19937& randomSource = args.randomSource;
+		observationTree& tree = args.tree;
+		bool outputDistribution = args.outputDistribution;
+		std::string outputDistributionFile = args.outputDistributionFile;
+		std::string outputTreeFile = args.outputTreeFile;
 		//There are three distinct cases here.
 		//1. initialRadius = 0, only crude MC step
 		//2. initialRadius = 1, only the crude MC and then one type of algorithm
@@ -362,14 +288,14 @@ namespace discreteGermGrain
 		inputs.initialRadius = initialRadius;
 		inputs.outputTree = outputTree;
 		inputs.n = n;
+
 		stepOutputs outputs(subObservations, observations, randomSource, tree);
 		outputs.totalGenerated = 0;
 
 		doCrudeMCStep(inputs, outputs);
 		float crudeMCProbability = ((float)observations.size()) / n;
-		std::cout << "Retaining " << subObservations.size() << " / " << n << " observations from crude MC step" << std::endl;		
+		args.outputStream << "Retaining " << subObservations.size() << " / " << n << " observations from crude MC step" << outputObject::endl;
 
-		mpfr_class finalEstimate;
 		if(initialRadius != 0)
 		{
 			//This does nothing for the case initialRadius = 1
@@ -377,7 +303,7 @@ namespace discreteGermGrain
 			
 			//When the radius is 1 we use a different algorithm
 			stepOne(inputs, outputs);
-			std::cout << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << observations.size() << " / " << outputs.totalGenerated  << " observations had non-zero probability" << std::endl;
+			args.outputStream << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << observations.size() << " / " << outputs.totalGenerated  << " observations had non-zero probability" << outputObject::endl;
 
 			mpfr_class probabilitySum = 0;
 			for(std::vector<::discreteGermGrain::obs::usingBiconnectedComponents>::iterator i = observations.begin(); i != observations.end(); i++)
@@ -385,23 +311,22 @@ namespace discreteGermGrain
 				probabilitySum += i->getWeight();
 			}
 			mpfr_class averageLastStep = probabilitySum / outputs.totalGenerated;
-			std::cout << "Average probability at last step was " << averageLastStep.str() << std::endl;
+			args.outputStream << "Average probability at last step was " << averageLastStep.str() << outputObject::endl;
 			mpfr_class totalSampleSize = n;
 			for(std::vector<float>::iterator i = splittingFactors.begin(); i != splittingFactors.end(); i++) totalSampleSize *= *i;
-			finalEstimate = probabilitySum / totalSampleSize;
+			args.estimate = probabilitySum / totalSampleSize;
 			//Swap the vectors over, so that the results are always stored in finalObservations. Just in case we want to 
 			//revert back to using the allExceptOne algorithm for all the steps. 
 		}
 		else
 		{
-			finalEstimate = crudeMCProbability;
+			args.estimate = crudeMCProbability;
 		}
 
 
-		if(variableMap.count("outputDistribution") > 0)
+		if(outputDistribution)
 		{
-			std::string file(variableMap["outputDistribution"].as<std::string>());
-			std::ofstream stream(file.c_str());
+			std::ofstream stream(outputDistributionFile.c_str());
 			if(stream.is_open())
 			{
 				boost::archive::binary_oarchive oarchive(stream);
@@ -426,20 +351,18 @@ namespace discreteGermGrain
 			}
 			else
 			{
-				std::cout << "Error writing to file " << variableMap["outputDistribution"].as<std::string>() << std::endl;
+				args.outputStream << "Error writing to file " << outputDistributionFile << outputObject::endl;
 			}
 		}
 		if(outputTree)
 		{
-			std::cout << "Beginning tree layout....";
-			std::cout.flush();
+			args.outputStream << "Beginning tree layout....";
 			bool success  = tree.layout();
-			if(!success) std::cout << "Unable to lay out tree. Was graphviz support enabled? " << std::endl;
+			if(!success) args.outputStream << "Unable to lay out tree. Was graphviz support enabled? " << outputObject::endl;
 			else 
 			{
-				std::cout << "Done" << std::endl;
-				std::string file(variableMap["outputTree"].as<std::string>());
-				std::ofstream stream(file.c_str());
+				args.outputStream << "Done" << outputObject::endl;
+				std::ofstream stream(outputTreeFile.c_str());
 				if(stream.is_open())
 				{
 					boost::archive::binary_oarchive oarchive(stream);
@@ -448,15 +371,9 @@ namespace discreteGermGrain
 				}
 				else
 				{
-					std::cout << "Error writing to file " << variableMap["outputTree"].as<std::string>() << std::endl;
+					args.outputStream << "Error writing to file " << outputTreeFile << outputObject::endl;
 				}
 			}
 		}
-		std::cout << "Estimated probability was " << finalEstimate.str() << std::endl;
-		return 0;
 	}
-}
-int main(int argc, char **argv)
-{
-	return discreteGermGrain::main(argc, argv);
 }
