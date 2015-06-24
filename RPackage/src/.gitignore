@@ -2,3 +2,8 @@
 /*.dll
 Makefile.win
 /build
+/CMakeCache.txt
+/install_manifest.txt
+/CMakeFiles
+/Makefile
+/cmake_install.cmake
