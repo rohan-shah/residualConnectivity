@@ -19,11 +19,12 @@ namespace discreteGermGrain
 	{
 		Q_OBJECT
 	public:
-		subObservationVisualiserTree(const observationTree& tree, float pointSize);
+		subObservationVisualiserTree(const observationTree& tree, float graphPointSize, float treePointSize);
 		~subObservationVisualiserTree();
 		bool eventFilter(QObject* object, QEvent *event);
 	public slots:
-		void positionChanged(double x, double y);
+		void treePositionChanged(double x, double y);
+		void graphPositionChanged(double x, double y);
 		void observationLeft();
 		void observationRight();
 		void observationUp();

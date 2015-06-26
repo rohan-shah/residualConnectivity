@@ -22,6 +22,7 @@ namespace discreteGermGrain
 		void observationUp();
 		void observationDown();
 		void vertexSelected(int vertex);
+		void positionChanged(double x, double y);
 	private:
 		double pointSize;
 		QHBoxLayout* layout;

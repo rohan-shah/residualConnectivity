@@ -34,8 +34,8 @@ namespace discreteGermGrain
 	};
 	struct stepOutputs
 	{
-		stepOutputs(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& subObservations, std::vector<::discreteGermGrain::obs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, observationTree& tree)
-			:subObservations(subObservations), observations(observations), randomSource(randomSource), tree(tree)
+		stepOutputs(std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& subObservations, std::vector<::discreteGermGrain::obs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, observationTree& tree, outputObject& outputStream)
+			:subObservations(subObservations), observations(observations), randomSource(randomSource), tree(tree), outputStream(outputStream)
 		{}
 		std::vector<::discreteGermGrain::subObs::usingBiconnectedComponents>& subObservations;
 		std::vector<::discreteGermGrain::obs::usingBiconnectedComponents>& observations;
@@ -43,6 +43,7 @@ namespace discreteGermGrain
 		boost::mt19937& randomSource;
 		observationTree& tree;
 		long totalGenerated;
+		outputObject& outputStream;
 	};
 	void stepOne(const stepInputs& inputs, stepOutputs& outputs)
 	{
@@ -212,7 +213,7 @@ namespace discreteGermGrain
 					}
 				}
 			}
-			std::cout << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated+1 << " observations continuing" << outputObject::endl;
+			outputs.outputStream << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated+1 << " observations continuing" << outputObject::endl;
 			outputs.subObservations.swap(nextSetObservations);
 			outputs.potentiallyConnectedIndices.swap(nextStepPotentiallyConnectedIndices);
 		}
@@ -289,7 +290,7 @@ namespace discreteGermGrain
 		inputs.outputTree = outputTree;
 		inputs.n = n;
 
-		stepOutputs outputs(subObservations, observations, randomSource, tree);
+		stepOutputs outputs(subObservations, observations, randomSource, tree, args.outputStream);
 		outputs.totalGenerated = 0;
 
 		doCrudeMCStep(inputs, outputs);
@@ -356,9 +357,9 @@ namespace discreteGermGrain
 		}
 		if(outputTree)
 		{
-			args.outputStream << "Beginning tree layout....";
+			args.outputStream << "Beginning tree layout...." << outputObject::flush;
 			bool success  = tree.layout();
-			if(!success) args.outputStream << "Unable to lay out tree. Was graphviz support enabled? " << outputObject::endl;
+			if(!success) args.outputStream << "Unable to lay out tree graph! " << outputObject::endl;
 			else 
 			{
 				args.outputStream << "Done" << outputObject::endl;

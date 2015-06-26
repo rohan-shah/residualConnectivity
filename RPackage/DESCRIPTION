@@ -13,3 +13,4 @@ Collate:
    'crudeMC.R'
    'conditionalMC.R'
    'simpleMC.R'
+   'Rcpp_exceptions.R'

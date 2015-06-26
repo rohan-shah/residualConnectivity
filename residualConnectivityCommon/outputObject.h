@@ -16,6 +16,10 @@ namespace discreteGermGrain
 		{
 			return obj.internalEndl();
 		}
+		static outputObject& flush(outputObject& obj)
+		{
+			return obj.internalFlush();
+		}
 		outputObject& operator<<(manipulatorType manipulator)
 		{
 			return manipulator(*this);
@@ -23,6 +27,7 @@ namespace discreteGermGrain
 	protected:
 		outputObject();
 		virtual outputObject& internalEndl()=0;
+		virtual outputObject& internalFlush()=0;
 	};
 	struct commandLineOutput : public outputObject
 	{
@@ -57,6 +62,11 @@ namespace discreteGermGrain
 		virtual outputObject& internalEndl()
 		{
 			std::cout << std::endl;
+			return *this;
+		}
+		virtual outputObject& internalFlush()
+		{
+			std::cout << std::flush;
 			return *this;
 		}
 	};

@@ -123,22 +123,22 @@ namespace discreteGermGrain
 			if(state[vertexCounter].state == FIXED_OFF)
 			{
 				newItem->setBrush(noBrush);
-				newItem->setPen(redPen);
+				newItem->setPen(blackPen);
 			}
 			else if(state[vertexCounter].state == FIXED_ON)
 			{
-				newItem->setBrush(redBrush);
-				newItem->setPen(redPen);
+				newItem->setBrush(blackBrush);
+				newItem->setPen(blackPen);
 			}
 			else if(state[vertexCounter].state == UNFIXED_OFF)
 			{
 				newItem->setBrush(noBrush);
-				newItem->setPen(blackPen);
+				newItem->setPen(redPen);
 			}
 			else if(state[vertexCounter].state == UNFIXED_ON)
 			{
-				newItem->setBrush(blackBrush);
-				newItem->setPen(blackPen);
+				newItem->setBrush(redBrush);
+				newItem->setPen(redPen);
 			}
 			else
 			{

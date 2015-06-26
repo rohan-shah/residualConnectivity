@@ -93,7 +93,10 @@ namespace discreteGermGrain
 		args.initialRadius = initialRadius;
 		args.estimate = 0;
 		args.outputDistribution = variableMap.count("outputDistribution");
-		args.outputDistributionFile = variableMap["outputDistribution"].as<std::string>();
+		if(args.outputDistribution)
+		{
+			args.outputDistributionFile = variableMap["outputDistribution"].as<std::string>();
+		}
 
 		readSeed(variableMap, args.randomSource);
 		usingBiconnectedSplitting(args);

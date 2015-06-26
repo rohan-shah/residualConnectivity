@@ -1,29 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(residualConnectivityRPackage)
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/../../cmake")
-
-find_package(R REQUIRED)
-find_package(residualConnectivity REQUIRED)
-find_package(Rcpp REQUIRED)
-
-set(Boost_USE_STATIC_LIBS	OFF)
-set(Boost_USE_MULTITHREADED	ON)
-set(Boost_USE_STATIC_RUNTIME	OFF)
-if(CMAKE_COMPILER_IS_GNUCC)
-	add_definitions("-Wall")
-endif()
-
-if(WIN32)
-	find_package(mpfr)
-	find_package(mpir)
-else()
-	#mpfr needs to be listed as an imported target so that we can use target_link_librarie later on. If we don't have this then it just adds a -lmpfr which probably picks up the wrong thing. 
-	find_library(mpfr_LIBRARY mpfr)
-	add_library(mpfr SHARED IMPORTED)
-	set_target_properties(mpfr PROPERTIES IMPORTED_LOCATION ${mpfr_LIBRARY})
-endif()
-
-find_package(Boost 1.53.0 COMPONENTS graph program_options system serialization filesystem regex REQUIRED)
+project(residualConnectivity)
 
 if(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 	#R does not appear to tell us whether a debug build was selected, so just build a release build every time 
@@ -96,13 +72,5 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 	configure_file(${PROJECT_SOURCE_DIR}/Makefile.in ${PROJECT_SOURCE_DIR}/Makefile.win @ONLY)
 endif()
 
-#Make sure everything installed to the right place
-set(CMAKE_INSTALL_PREFIX "${PROJECT_SOURCE_DIR}")
-
-find_package(Qt5 COMPONENTS Widgets Core Gui REQUIRED)
-
 #Ok, configuration is mostly done. Now actually building the shared library
 add_subdirectory(residualConnectivity)
-
-add_custom_target(residualConnectivityRPackage_install ALL COMMAND ${CMAKE_COMMAND} -P "${CMAKE_BINARY_DIR}/cmake_install.cmake")
-add_dependencies(residualConnectivityRPackage_install residualConnectivity)

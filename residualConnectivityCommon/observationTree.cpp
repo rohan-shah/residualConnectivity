@@ -1,11 +1,5 @@
 #include "observationTree.h"
-#ifdef HAS_GRAPHVIZ
-	#ifdef _MSC_VER
-		#define WIN32_DLL
-	#endif
-	#include <graphviz/gvc.h>
-	#undef WIN32_DLL
-#endif
+#include <igraph.h>
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/graphviz.hpp>
 #include <boost/algorithm/string/split.hpp>
@@ -24,7 +18,6 @@ namespace discreteGermGrain
 	}
 	bool observationTree::layout() const
 	{
-#ifdef HAS_GRAPHVIZ
 		std::size_t totalVertices = 0;
 		for(std::vector<observationCollection>::const_iterator i = levelData.begin(); i != levelData.end(); i++)
 		{
@@ -33,6 +26,20 @@ namespace discreteGermGrain
 		treeGraph.reset(new treeGraphType(totalVertices));
 		std::size_t nLevels = levelData.size();
 
+		//We need to construct an igraph for the purposes of laying out the graph. But then the igraph is deleted, only the boost graph is retained. 
+		static bool attachedAttributes = false;
+		if(!attachedAttributes)
+		{
+			igraph_i_set_attribute_table(&igraph_cattribute_table);
+			attachedAttributes = true;
+		}
+		//Edges for the igraph
+		igraph_vector_t igraphEdges;
+		int igraphResult = igraph_vector_init(&igraphEdges, totalVertices*2);
+		if(igraphResult) return false;
+
+		int igraphEdgeCounter = 0;
+		
 		//Set vertex properties, and also add edges
 		treeGraphType::vertex_descriptor currentVertex = *(boost::vertices(*treeGraph).first);
 		std::ptrdiff_t cumulativeVertices = 0, previousCumulativeVertices = 0;
@@ -48,6 +55,9 @@ namespace discreteGermGrain
 				if(parentData[currentLevel][currentLevelIndex] >= 0)
 				{
 					boost::add_edge(previousCumulativeVertices + parentData[currentLevel][currentLevelIndex], currentVertex, *treeGraph);
+					igraph_vector_set(&igraphEdges, igraphEdgeCounter, previousCumulativeVertices + parentData[currentLevel][currentLevelIndex]);
+					igraph_vector_set(&igraphEdges, igraphEdgeCounter+1, currentVertex);
+					igraphEdgeCounter += 2;
 				}
 				currentVertex++;
 			}
@@ -55,76 +65,34 @@ namespace discreteGermGrain
 			cumulativeVertices += currentLevelSize;
 		}
 
+		igraph_t igraph;
+		igraphResult = igraph_create(&igraph, &igraphEdges, 0, true);
+			if(igraphResult) return false;
 
-		//Construct a graphviz string representation
-		std::stringstream ss;
-		class propertyWriter
-		{
-		public:
-			propertyWriter(treeGraphType& t)
-				:t(t)
-			{}
-			void operator()(std::ostream& out, const treeGraphType::vertex_descriptor& v) const
-			{
-				out << "[potDiscon=\"" << t[v].potentiallyDisconnected <<"\" level=\"" << t[v].level << "\" index=\"" << t[v].index << "\"]";
-			}
-		private:
-			treeGraphType& t;
-		};
-		propertyWriter p(*treeGraph);
-		boost::write_graphviz(ss, *treeGraph, p);
-		
-		//Now have graphviz create a graph from that string
-		GVC_t* gvc = gvContext();
-			//Older versions of graphviz appear to use just a char*
-			Agraph_t* graphvizGraph = agmemread(ss.str().c_str());
-				int graphVizResult = gvLayout(gvc, graphvizGraph, "dot");
-				if(graphVizResult == -1) return false;
-					graphVizResult = gvRender(gvc, graphvizGraph, "dot", NULL);
-					if(graphVizResult == -1) return false;
-				gvFreeLayout(gvc, graphvizGraph);
-				graphVizResult = gvLayout(gvc, graphvizGraph, "dot");
-				if(graphVizResult == -1) return false;
-					char* laidOutDot;
-					unsigned int laidOutDotLength;
-					gvRenderData(gvc, graphvizGraph, "dot", &laidOutDot, &laidOutDotLength);
-						//Set up property maps for reading back in laid out graph
-						boost::dynamic_properties dynamicProperties(boost::ignore_other_properties);
-						boost::vector_property_map<std::string> posProperty;
-						boost::property_map<treeGraphType, int vertexProperty::*>::type levelProperty(boost::get(&vertexProperty::level, *treeGraph));
-						boost::property_map<treeGraphType, int vertexProperty::*>::type indexProperty(boost::get(&vertexProperty::index, *treeGraph));
-						boost::property_map<treeGraphType, bool vertexProperty::*>::type potentiallyDisconnectedProperty(boost::get(&vertexProperty::potentiallyDisconnected, *treeGraph));
-						dynamicProperties.property("pos", posProperty);
-						dynamicProperties.property("level", levelProperty);
-						dynamicProperties.property("index", indexProperty);
-						dynamicProperties.property("potDiscon", potentiallyDisconnectedProperty);
-						//actually read graph back into boos
-						treeGraph->clear();
-						boost::read_graphviz(laidOutDot, laidOutDot+laidOutDotLength, *treeGraph, dynamicProperties);
-						//Now split pos up into x and y from pos, and put those into the graph
-						{
-							treeGraphType::vertex_iterator current, end;
-							boost::tie(current, end) = boost::vertices(*treeGraph);
-							std::vector<std::string> parts;
-							for(;current != end; current++)
-							{
-								parts.clear();
-								boost::algorithm::split(parts, posProperty[*current], boost::algorithm::is_any_of(","), boost::token_compress_on);
-								double x = boost::lexical_cast<double>(parts[0]);
-								double y = boost::lexical_cast<double>(parts[1]);
-								(*treeGraph)[*current].x = x;
-								(*treeGraph)[*current].y = y;
-							}
-						}
-					gvFreeRenderData(laidOutDot);
-				gvFreeLayout(gvc, graphvizGraph);
-			agclose(graphvizGraph);
-		gvFreeContext(gvc);
+			igraph_matrix_t igraphCoordinates;
+			igraphResult = igraph_matrix_init(&igraphCoordinates, 0, 0);
+				if(igraphResult) return false;
+
+				igraph_vector_t igraphRootVertices;
+				int nRootVertices = levelData[0].getSampleSize();
+				igraphResult = igraph_vector_init(&igraphRootVertices, nRootVertices);
+					if(igraphResult) return false;
+					for(int i = 0; i < nRootVertices; i++) igraph_vector_set(&igraphRootVertices, i, i);
+
+					igraphResult = igraph_layout_reingold_tilford(&igraph, &igraphCoordinates, IGRAPH_ALL, &igraphRootVertices, NULL);
+					if(igraphResult) return false;
+					for(int currentVertex = 0; currentVertex < cumulativeVertices; currentVertex++)
+					{
+						(*treeGraph)[currentVertex].x = MATRIX(igraphCoordinates, currentVertex, 0);
+						(*treeGraph)[currentVertex].y = - MATRIX(igraphCoordinates, currentVertex, 1);
+					}
+				igraph_vector_destroy(&igraphRootVertices);
+			igraph_matrix_destroy(&igraphCoordinates);
+		igraph_destroy(&igraph);
+		igraph_vector_destroy(&igraphEdges);
+
 		perLevelVertexIdsFromGraph();
 		return true;
-#else 
-		return true;
-#endif
 	}
 	const std::vector<std::vector<int > >& observationTree::getPerLevelVertexIds() const
 	{

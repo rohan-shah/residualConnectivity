@@ -63,6 +63,7 @@ namespace discreteGermGrain
 		}
 
 		blackPen.setStyle(Qt::SolidLine);
+		blackPen.setWidthF(pointSize/8);
 		observationTree::treeGraphType::edge_iterator currentEdge, endEdge;
 		boost::tie(currentEdge, endEdge) = boost::edges(treeGraph);
 		for(; currentEdge != endEdge; currentEdge++)
@@ -77,11 +78,11 @@ namespace discreteGermGrain
 			QGraphicsLineItem* lineItem = graphicsScene->addLine(sourceX, sourceY, targetX, targetY, blackPen);
 			lineItem->setFlag(QGraphicsItem::ItemIsSelectable, false);
 		}
-
 		layout = new QHBoxLayout;
 		layout->addWidget(graphicsView, 1);
 		layout->setContentsMargins(0,0,0,0);
 		setLayout(layout);
+		graphicsView->fitInView(graphicsView->sceneRect(), Qt::KeepAspectRatioByExpanding);
 	}
 	void treeVisualiserFrame::highlightPosition(double x, double y)
 	{
@@ -103,7 +104,14 @@ namespace discreteGermGrain
 	}
 	bool treeVisualiserFrame::eventFilter(QObject* object, QEvent *event)
 	{
-		if(event->type() == QEvent::GraphicsSceneMousePress && object == graphicsScene)
+		if(event->type() == QEvent::GraphicsSceneMouseMove && object == graphicsScene)
+		{
+			QGraphicsSceneMouseEvent* mouseEvent = static_cast<QGraphicsSceneMouseEvent*>(event);
+			QPointF position = mouseEvent->scenePos();
+			emit positionChanged(position.x(), position.y());
+			return true;
+		}
+		else if(event->type() == QEvent::GraphicsSceneMousePress && object == graphicsScene)
 		{
 			QGraphicsSceneMouseEvent* mouseEvent = static_cast<QGraphicsSceneMouseEvent*>(event);
 			QPointF scenePosition = mouseEvent->scenePos();

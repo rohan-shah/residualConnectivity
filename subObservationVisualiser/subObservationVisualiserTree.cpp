@@ -9,7 +9,7 @@
 #include <QSizePolicy>
 namespace discreteGermGrain
 {
-	subObservationVisualiserTree::subObservationVisualiserTree(const observationTree& inputTree, float pointSize)
+	subObservationVisualiserTree::subObservationVisualiserTree(const observationTree& inputTree, float graphPointSize, float treePointSize)
 		:tree(inputTree), currentLevel(0), currentIndex(0)
 	{
 		if(tree.nLevels() == 0 || tree.getSampleSize(0) == 0)
@@ -23,21 +23,22 @@ namespace discreteGermGrain
 			
 			centralFrame = new QFrame;
 			layout = new QHBoxLayout;
-			base = new subObservationVisualiserBase(tree.getContext(), pointSize);
-			treeFrame = new treeVisualiserFrame(inputTree, pointSize);
+			base = new subObservationVisualiserBase(tree.getContext(), graphPointSize);
+			treeFrame = new treeVisualiserFrame(inputTree, treePointSize);
 
 			treeFrame->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored));
 			base->setSizePolicy(QSizePolicy(QSizePolicy::Ignored, QSizePolicy::Ignored));
 			
-			layout->addWidget(base, 0.5, Qt::AlignLeft);
-			layout->addWidget(treeFrame, 0.5, Qt::AlignRight);
+			layout->addWidget(base, 0, 0);//Qt::AlignLeft);
+			layout->addWidget(treeFrame, 0, 0);//Qt::AlignRight);
 			layout->setContentsMargins(0,0,0,0);
 			centralFrame->setLayout(layout);
 
 			setCentralWidget(centralFrame);
 			base->installEventFilter(this);
 
-			QObject::connect(base, &subObservationVisualiserBase::positionChanged, this, &subObservationVisualiserTree::positionChanged);
+			QObject::connect(base, &subObservationVisualiserBase::positionChanged, this, &subObservationVisualiserTree::graphPositionChanged);
+			QObject::connect(treeFrame, &treeVisualiserFrame::positionChanged, this, &subObservationVisualiserTree::treePositionChanged);
 
 			QObject::connect(base, &subObservationVisualiserBase::observationUp, this, &subObservationVisualiserTree::observationUp);
 			QObject::connect(base, &subObservationVisualiserBase::observationLeft, this, &subObservationVisualiserTree::observationLeft);
@@ -152,7 +153,11 @@ namespace discreteGermGrain
 		}
 		return false;
 	}
-	void subObservationVisualiserTree::positionChanged(double x, double y)
+	void subObservationVisualiserTree::treePositionChanged(double x, double y)
+	{
+		statusBar->setPosition(x, y);
+	}
+	void subObservationVisualiserTree::graphPositionChanged(double x, double y)
 	{
 		statusBar->setPosition(x, y);
 	}

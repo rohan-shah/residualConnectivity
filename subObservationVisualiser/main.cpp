@@ -41,7 +41,8 @@ namespace discreteGermGrain
 	{
 		boost::program_options::options_description options("Usage");
 		options.add_options()
-			("pointSize", boost::program_options::value<float>(), "(float) The size of graph vertices. Defaults to 0.1")
+			("graphPointSize", boost::program_options::value<float>(), "(float) The size of graph vertices. Defaults to 0.1")
+			("treePointSize", boost::program_options::value<float>(), "(float) The size of the vertices of the tree structure. Defaults to 0.1")
 			("fromFile", boost::program_options::value<std::string>(), "(path) The file to take the first observation from")
 			("help", "Display this message");
 
@@ -68,10 +69,14 @@ namespace discreteGermGrain
 		registerQTPluginDir();
 #endif
 		
-		float pointSize = 0.1f;
-		if(variableMap.count("pointSize") >= 1)
+		float graphPointSize = 0.1f, treePointSize = 0.1f;
+		if(variableMap.count("graphPointSize") >= 1)
 		{
-			pointSize = variableMap["pointSize"].as<float>();
+			graphPointSize = variableMap["graphPointSize"].as<float>();
+		}
+		if(variableMap.count("treePointSize") >= 1)
+		{
+			treePointSize = variableMap["treePointSize"].as<float>();
 		}
 
 		QApplication app(argc, argv);
@@ -91,7 +96,7 @@ namespace discreteGermGrain
 		{
 			boost::archive::binary_iarchive archive(inputStream, boost::archive::no_codecvt);
 			observationWithContext obsWithContext(archive);
-			subObservationVisualiserSingle viewer(obsWithContext, pointSize);
+			subObservationVisualiserSingle viewer(obsWithContext, graphPointSize);
 			viewer.show();
 			app.exec();
 			return 0;
@@ -111,7 +116,7 @@ namespace discreteGermGrain
 				std::cout << "observationCollection was empty" << std::endl;
 				return 0;
 			}
-			subObservationVisualiserCollection viewer(collection, pointSize);
+			subObservationVisualiserCollection viewer(collection, graphPointSize);
 			viewer.show();
 			app.exec();
 			return 0;
@@ -139,7 +144,7 @@ namespace discreteGermGrain
 				std::cout << "observationTree was empty" << std::endl;
 				return 0;
 			}
-			subObservationVisualiserTree viewer(tree, pointSize);
+			subObservationVisualiserTree viewer(tree, graphPointSize, treePointSize);
 			viewer.show();
 			app.exec();
 			return 0;
@@ -155,7 +160,7 @@ namespace discreteGermGrain
 			boost::archive::binary_iarchive archive(inputStream, boost::archive::no_codecvt);
 			empiricalDistribution distribution(archive);
 			observationCollection collection(distribution);
-			subObservationVisualiserCollection viewer(collection, pointSize, "Warning: Weights were discarded");
+			subObservationVisualiserCollection viewer(collection, graphPointSize, "Warning: Weights were discarded");
 			viewer.show();
 			app.exec();
 			return 0;
