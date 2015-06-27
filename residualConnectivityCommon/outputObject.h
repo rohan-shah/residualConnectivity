@@ -1,6 +1,7 @@
 #ifndef OUTPUT_OBJECT_HEADER_GUARD
 #define OUTPUT_OBJECT_HEADER_GUARD
 #include <iostream>
+#include <string>
 namespace discreteGermGrain
 {
 	struct outputObject

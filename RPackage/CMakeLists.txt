@@ -1,15 +1,24 @@
 project(residualConnectivity)
-file(COPY NAMESPACE DESTINATION ${CMAKE_BINARY_DIR}/RPackage)
-file(COPY DESCRIPTION DESTINATION ${CMAKE_BINARY_DIR}/RPackage)
-
 find_package(Rcpp REQUIRED)
-add_subdirectory(R)
-add_subdirectory(src)
-#Copy Rcpp_exceptions to the R directory
+#Get location of Rcpp_exceptions.R
 get_property(RCPP_INCLUDE_DIRECTORIES TARGET Rcpp PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 foreach(RCPP_INCLUDE_DIRECTORY IN LISTS RCPP_INCLUDE_DIRECTORIES)
 	if(EXISTS ${RCPP_INCLUDE_DIRECTORY}/Rcpp_exceptions.R)
-		file(COPY ${RCPP_INCLUDE_DIRECTORY}/Rcpp_exceptions.R DESTINATION ${CMAKE_BINARY_DIR}/RPackage/R/)
+		set(RCPP_EXCEPTIONS ${RCPP_INCLUDE_DIRECTORY}/Rcpp_exceptions.R)
 	endif()
 endforeach()
 
+if(WIN32)
+	foreach(BUILD_TYPE IN LISTS CMAKE_CONFIGURATION_TYPES)
+		file(COPY NAMESPACE DESTINATION ${CMAKE_BINARY_DIR}/RPackage/${BUILD_TYPE})
+		file(COPY DESCRIPTION DESTINATION ${CMAKE_BINARY_DIR}/RPackage/${BUILD_TYPE})
+		file(COPY ${RCPP_EXCEPTIONS} DESTINATION ${CMAKE_BINARY_DIR}/RPackage/${BUILD_TYPE}/R/)
+	endforeach()
+else()
+	file(COPY NAMESPACE DESTINATION ${CMAKE_BINARY_DIR}/RPackage/)
+	file(COPY DESCRIPTION DESTINATION ${CMAKE_BINARY_DIR}/RPackage/)
+	file(COPY ${RCPP_INCLUDE_DIRECTORY}/Rcpp_exceptions.R DESTINATION ${CMAKE_BINARY_DIR}/RPackage/R/)
+endif()
+
+add_subdirectory(R)
+add_subdirectory(src)
