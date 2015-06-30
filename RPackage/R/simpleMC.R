@@ -80,4 +80,8 @@ simpleMC <- function(functionName, graph, probability, n, seed=1)
 		result <- .Call(paste0(functionName, "_graphAM"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
 		return (result / n)
 	}
+	else 
+	{
+		stop("Input graph must have class \"igraph\", \"graphAM\" or \"graphNEL\"")
+	}
 }

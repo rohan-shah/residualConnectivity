@@ -1,4 +1,5 @@
 #ifndef LOAD_QT_HEADER_GUARD
+#define LOAD_QT_HEADER_GUARD
 #include <Rcpp.h>
-SEXP loadQT();
+RcppExport SEXP loadQt();
 #endif

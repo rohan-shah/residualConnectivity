@@ -1,6 +1,6 @@
 #include <QApplication>
 #include <Rcpp.h>
-SEXP loadQT()
+RcppExport SEXP loadQt()
 {
 	QCoreApplication::addLibraryPath(QString("."));
 	//only needs to be called once

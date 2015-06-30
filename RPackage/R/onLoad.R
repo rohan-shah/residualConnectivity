@@ -24,7 +24,7 @@
 	if(class(couldLoad) != "try-error")
 	{
 		setwd(dirname(couldLoad[["path"]]))
-		.Call("loadQT", PACKAGE="residualConnectivity")
+		.Call("loadQt", PACKAGE="residualConnectivity")
 		setwd(wd)
 	}
 }

@@ -12,6 +12,31 @@ discreteGermGrain::Context graphNELInterface(SEXP graph_sexp, SEXP vertexCoordin
 		throw std::runtime_error("Unable to convert input probability to a number");
 	}
 
+	boost::shared_ptr<discreteGermGrain::Context::inputGraph> boostGraph = graphNELConvert(graph_sexp);
+	std::size_t nVertices = boost::num_vertices(*boostGraph);
+
+	boost::shared_ptr<std::vector<int> > defaultOrdering(new std::vector<int>());
+	std::vector<int>& defaultOrderingRef = *defaultOrdering;
+	for(std::size_t i = 0; i < nVertices; i++)
+	{
+		defaultOrderingRef.push_back((int)i);
+	}
+
+	boost::shared_ptr<std::vector<discreteGermGrain::Context::vertexPosition> > vertexCoordinates(new std::vector<discreteGermGrain::Context::vertexPosition>());
+	std::vector<discreteGermGrain::Context::vertexPosition>& vertexCoordinatesRef = *vertexCoordinates;
+	vertexCoordinatesRef.reserve(nVertices);
+	float increment = (float)(2.0*M_PI/nVertices);
+	for(std::size_t i = 0; i < nVertices; i++)
+	{
+		float angle = i * increment;
+		vertexCoordinatesRef.push_back(discreteGermGrain::Context::vertexPosition(cosf(angle), sinf(angle)));
+	}
+
+	discreteGermGrain::Context context(boostGraph, defaultOrdering, vertexCoordinates, probability);
+	return context;
+}
+boost::shared_ptr<discreteGermGrain::Context::inputGraph> graphNELConvert(SEXP graph_sexp)
+{
 	Rcpp::S4 graph_s4;
 	try
 	{
@@ -111,24 +136,5 @@ discreteGermGrain::Context graphNELInterface(SEXP graph_sexp, SEXP vertexCoordin
 			boost::add_edge((std::size_t)nodeIndex, (std::size_t)((int)targetIndicesThisNode(j)-1), boostGraphRef);
 		}
 	}
-
-	boost::shared_ptr<std::vector<int> > defaultOrdering(new std::vector<int>());
-	std::vector<int>& defaultOrderingRef = *defaultOrdering;
-	for(int i = 0; i < nVertices; i++)
-	{
-		defaultOrderingRef.push_back(i);
-	}
-
-	boost::shared_ptr<std::vector<discreteGermGrain::Context::vertexPosition> > vertexCoordinates(new std::vector<discreteGermGrain::Context::vertexPosition>());
-	std::vector<discreteGermGrain::Context::vertexPosition>& vertexCoordinatesRef = *vertexCoordinates;
-	vertexCoordinatesRef.reserve(nVertices);
-	float increment = (float)(2.0*M_PI/nVertices);
-	for(int i = 0; i < nVertices; i++)
-	{
-		float angle = i * increment;
-		vertexCoordinatesRef.push_back(discreteGermGrain::Context::vertexPosition(cosf(angle), sinf(angle)));
-	}
-
-	discreteGermGrain::Context context(boostGraph, defaultOrdering, vertexCoordinates, probability);
-	return context;
+	return boostGraph;
 }
