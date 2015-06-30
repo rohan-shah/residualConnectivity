@@ -16,7 +16,7 @@ BEGIN_RCPP
 
 	Rcpp::Function convertToBigZ("as.bigz");
 	Rcpp::S4 retVal("exhaustiveSubgraphs");
-	Rcpp::CharacterVector stringRepresentations(sizeCounters.size());
+	Rcpp::CharacterVector stringRepresentations((int)sizeCounters.size());
 	for(std::size_t i = 0; i < sizeCounters.size(); i++)
 	{
 		std::stringstream ss; ss << sizeCounters[i];
