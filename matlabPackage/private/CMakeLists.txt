@@ -4,10 +4,53 @@ set(MEXFILES crudeMCImpl.cpp)
 add_custom_target(copyMatlabPackagePrivate ALL)
 
 if(WIN32)
-	foreach(BUILD_TYPE IN LISTS CMAKE_CONFIGURATION_TYPES)
+	set(BUILD_TYPES Release Debug RelWithDebInfo MinSizeRel)
+	set(BOOST_BUILD_TYPES Release Debug Release Release)
+	#Set up MEX targets
+	foreach(MEXFILE IN LISTS MEXFILES)
+		get_filename_component(MEXFILE_NAME "${MEXFILE}" NAME_WE)
+		matlab_add_mex(NAME ${MEXFILE_NAME} SRC ${MEXFILE} convertGraph.cpp LINK_TO crudeMCLib)
+	endforeach()
+	#Iterate over build types
+	foreach(val RANGE 3)
+		list(GET BUILD_TYPES ${val} BUILD_TYPE)
+		#We also have a boost build type which tells us which dll to copy
+		list(GET BOOST_BUILD_TYPES ${val} BOOST_BUILD_TYPE)
+
+		#Correct case
+		string(TOUPPER "${BUILD_TYPE}" BUILD_TYPE_TO_UPPER)
+		string(TOUPPER "${BOOST_BUILD_TYPE}" BOOST_BUILD_TYPE_TO_UPPER)
+		#Copy .m files
 		foreach(MFILE IN LISTS MFILES)
-			add_custom_command(TARGET copyMatlabPackagePrivate COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${MFILE} ${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private)
+			add_custom_command(TARGET copyMatlabPackagePrivate COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/${MFILE} ${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private/${MFILE})
 		endforeach()
+		#Set output destinations for MEX files
+		foreach(MEXFILE IN LISTS MEXFILES)
+			set_target_properties(${MEXFILE_NAME} PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${BUILD_TYPE_TO_UPPER} ${PROJECT_BINARY_DIR}/../../matlabPackage/${BUILD_TYPE}/private)
+		endforeach()
+
+		#Copy boost serialization DLL for MEX files
+		get_filename_component(NAME_PART ${Boost_SERIALIZATION_LIBRARY_${BOOST_BUILD_TYPE_TO_UPPER}} NAME_WE)
+		get_filename_component(PATH_PART ${Boost_SERIALIZATION_LIBRARY_${BOOST_BUILD_TYPE_TO_UPPER}} PATH)
+		file(COPY ${PATH_PART}/${NAME_PART}.dll DESTINATION "${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private/")
+
+		#Copy boost graph DLL for MEX files
+		get_filename_component(NAME_PART ${Boost_GRAPH_LIBRARY_${BOOST_BUILD_TYPE_TO_UPPER}} NAME_WE)
+		get_filename_component(PATH_PART ${Boost_GRAPH_LIBRARY_${BOOST_BUILD_TYPE_TO_UPPER}} PATH)
+		file(COPY ${PATH_PART}/${NAME_PART}.dll DESTINATION "${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private/")
+
+		#Copy boost regex DLL for MEX files
+		get_filename_component(NAME_PART ${Boost_REGEX_LIBRARY_${BOOST_BUILD_TYPE_TO_UPPER}} NAME_WE)
+		get_filename_component(PATH_PART ${Boost_REGEX_LIBRARY_${BOOST_BUILD_TYPE_TO_UPPER}} PATH)
+		file(COPY ${PATH_PART}/${NAME_PART}.dll DESTINATION "${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private/")
+
+		#Copy MPFR dll
+		get_target_property(MPFR_LOCATION mpfr "LOCATION_${BOOST_BUILD_TYPE}")
+		file(COPY "${MPFR_LOCATION}" DESTINATION "${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private/")
+
+		#Copy MPIR dll
+		get_target_property(MPIR_LOCATION mpir "LOCATION_${BOOST_BUILD_TYPE}")
+		file(COPY "${MPIR_LOCATION}" DESTINATION "${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private/")
 	endforeach()
 else()
 	foreach(MFILE IN LISTS MFILES)

@@ -1,4 +1,4 @@
-function result = crudeMC(probability, n, varargin)
+function result = crudeMC(probability, n, seed, varargin)
 	adjMat = getGraph(varargin{:});
 	persistent p
 	if isempty(p)
@@ -6,7 +6,8 @@ function result = crudeMC(probability, n, varargin)
 		p.KeepUnmatched = true;
 		addRequired(p, 'probability', @(x) isreal(x) && x >= 0 && x <= 1);
 		addRequired(p, 'n', @(x) validateattributes(x, {'numeric'}, {'scalar', 'integer', 'nonnan', 'nonnegative', 'nonzero'}));
+		addRequired(p, 'seed', @(x) validateattributes(x, {'numeric'}, {'scalar', 'integer', 'nonnan', 'nonnegative'}));
 	end
-	parse(p, probability, n, varargin{:})
-	result = crudeMCImpl(probability, n, adjMat);
+	parse(p, probability, n, seed, varargin{:})
+	result = crudeMCImpl(probability, n, seed, adjMat);
 end

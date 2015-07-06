@@ -35,7 +35,7 @@ namespace discreteGermGrain
 		}
 		//Edges for the igraph
 		igraph_vector_t igraphEdges;
-		int igraphResult = igraph_vector_init(&igraphEdges, totalVertices*2);
+		int igraphResult = igraph_vector_init(&igraphEdges, (long)totalVertices*2);
 		if(igraphResult) return false;
 
 		int igraphEdgeCounter = 0;
@@ -55,8 +55,8 @@ namespace discreteGermGrain
 				if(parentData[currentLevel][currentLevelIndex] >= 0)
 				{
 					boost::add_edge(previousCumulativeVertices + parentData[currentLevel][currentLevelIndex], currentVertex, *treeGraph);
-					igraph_vector_set(&igraphEdges, igraphEdgeCounter, previousCumulativeVertices + parentData[currentLevel][currentLevelIndex]);
-					igraph_vector_set(&igraphEdges, igraphEdgeCounter+1, currentVertex);
+					igraph_vector_set(&igraphEdges, igraphEdgeCounter, (igraph_real_t)(previousCumulativeVertices + parentData[currentLevel][currentLevelIndex]));
+					igraph_vector_set(&igraphEdges, igraphEdgeCounter+1, (igraph_real_t)currentVertex);
 					igraphEdgeCounter += 2;
 				}
 				currentVertex++;
@@ -74,7 +74,7 @@ namespace discreteGermGrain
 				if(igraphResult) return false;
 
 				igraph_vector_t igraphRootVertices;
-				int nRootVertices = levelData[0].getSampleSize();
+				int nRootVertices = (int)levelData[0].getSampleSize();
 				igraphResult = igraph_vector_init(&igraphRootVertices, nRootVertices);
 					if(igraphResult) return false;
 					for(int i = 0; i < nRootVertices; i++) igraph_vector_set(&igraphRootVertices, i, i);

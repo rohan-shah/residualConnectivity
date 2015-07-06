@@ -63,11 +63,6 @@ if(${CMAKE_CXX_COMPILER_ID} STREQUAL MSVC)
 	message(STATUS "Generating import library for R.dll - done")
 
 	add_definitions(-Dsnprintf=_snprintf)
-
-	#Put a Makefile in the source directory
-	find_program(FULL_MAKE_PROGRAM nmake)
-	set(FULL_MAKE_PROGRAM "\"${FULL_MAKE_PROGRAM}\" /f ")
-	configure_file(${PROJECT_SOURCE_DIR}/Makefile.in ${PROJECT_SOURCE_DIR}/Makefile.win @ONLY)
 endif()
 
 #Ok, configuration is mostly done. Now actually building the shared library

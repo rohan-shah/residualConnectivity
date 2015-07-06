@@ -2,10 +2,10 @@
 #define convertFunctions(CTYPE) 					\
 bool convertToBinary_##CTYPE(int* output, const mxArray* input)		\
 {									\
-	int dim1 = mxGetM(input);					\
-	int dim2 = mxGetN(input);					\
+	std::size_t dim1 = mxGetM(input);					\
+	std::size_t dim2 = mxGetN(input);					\
 	CTYPE* data = (CTYPE *)mxGetData(input);			\
-	for(int i = 0; i < dim1*dim2; i++)				\
+	for(std::size_t i = 0; i < dim1*dim2; i++)				\
 	{								\
 		if(data[i] != 0 && data[i] != 1) return false;		\
 		output[i] = (int)data[i];				\
@@ -14,10 +14,10 @@ bool convertToBinary_##CTYPE(int* output, const mxArray* input)		\
 }									\
 void convertToDouble_##CTYPE(double* output, const mxArray* input)	\
 {									\
-	int dim1 = mxGetM(input);					\
-	int dim2 = mxGetN(input);					\
+	std::size_t dim1 = mxGetM(input);					\
+	std::size_t dim2 = mxGetN(input);					\
 	CTYPE* data = (CTYPE *)mxGetData(input);			\
-	for(int i = 0; i < dim1*dim2; i++)				\
+	for(std::size_t i = 0; i < dim1*dim2; i++)				\
 	{								\
 		output[i] = (double)data[i];				\
 	}								\
@@ -82,11 +82,11 @@ void convertToDouble(double* output, const mxArray* input)
 bool convertGraphNoPositions(const mxArray *input, discreteGermGrain::Context::inputGraph& outputGraph, std::vector<discreteGermGrain::Context::vertexPosition>& positions, std::string& error)
 {
 	//Input must be an adjacency matrix
-	bool adjMatValid = !mxIsComplex(input) && !mxIsSparse(input) && mxIsNumeric(input);
+	bool adjMatValid = !mxIsComplex(input) && !mxIsSparse(input) && mxIsNumeric(input) && mxGetNumberOfDimensions(input) == 2;
 	#define RETURN_ERROR {error = "Input adjMat must be a square binary matrix"; return false;}
 	if(!adjMatValid) RETURN_ERROR
-	int adjMatDim1 = mxGetM(input);
-	int adjMatDim2 = mxGetN(input);
+	std::size_t adjMatDim1 = mxGetM(input);
+	std::size_t adjMatDim2 = mxGetN(input);
 	if(adjMatDim1 != adjMatDim2) RETURN_ERROR
 
 	std::vector<int> adjMatVector(adjMatDim1*adjMatDim2);
@@ -97,11 +97,13 @@ bool convertGraphNoPositions(const mxArray *input, discreteGermGrain::Context::i
 		return false;
 	}
 
+	positions.clear();
+	positions.resize(adjMatDim1);
 	outputGraph = discreteGermGrain::Context::inputGraph(adjMatDim1);
-	for(int i = 0; i < adjMatDim1; i++)
+	for(std::size_t i = 0; i < adjMatDim1; i++)
 	{
-		positions[i] = discreteGermGrain::Context::vertexPosition(i, 0);
-		for(int j = 0; j < adjMatDim2; j++)
+		positions[i] = discreteGermGrain::Context::vertexPosition((discreteGermGrain::Context::vertexPosition::first_type)i, (discreteGermGrain::Context::vertexPosition::second_type)0);
+		for(std::size_t j = 0; j < adjMatDim2; j++)
 		{
 			if(adjMatVector[i + adjMatDim1*j])
 			{
@@ -120,11 +122,11 @@ bool convertGraph(const mxArray *inputGraph, const mxArray *inputPositions, disc
 		return false;
 	}
 
-	bool positionsValid = !mxIsComplex(inputPositions) && !mxIsSparse(inputPositions) && mxIsNumeric(inputPositions);
+	bool positionsValid = !mxIsComplex(inputPositions) && !mxIsSparse(inputPositions) && mxIsNumeric(inputPositions) && mxGetNumberOfDimensions(inputPositions) == 2;
 	#define RETURN_ERROR {error = "Input positions must be a numeric matrix with two columns"; return false;}
 	if(!positionsValid) RETURN_ERROR
-	int positionsDim1 = mxGetM(inputPositions);
-	int positionsDim2 = mxGetN(inputPositions);
+	std::size_t positionsDim1 = mxGetM(inputPositions);
+	std::size_t positionsDim2 = mxGetN(inputPositions);
 	if(positionsDim1 != 2) RETURN_ERROR
 	
 	//Convert matlab data to double
@@ -132,9 +134,9 @@ bool convertGraph(const mxArray *inputGraph, const mxArray *inputPositions, disc
 	convertToDouble(&(positionsVector[0]), inputPositions);
 
 	//Now convert this into pairs
-	for(int i = 0; i < positionsDim1; i++)
+	for (std::size_t i = 0; i < positionsDim1; i++)
 	{
-		positions[i] = discreteGermGrain::Context::vertexPosition(positionsVector[i], positionsVector[i + positionsDim1]);
+		positions[i] = discreteGermGrain::Context::vertexPosition((discreteGermGrain::Context::vertexPosition::first_type)positionsVector[i], (discreteGermGrain::Context::vertexPosition::second_type)positionsVector[i + positionsDim1]);
 	}
 	return true;
 }

@@ -3,7 +3,7 @@ add_custom_target(copyMatlabPackage ALL)
 #Copy .m files
 if(WIN32)
 	foreach(BUILD_TYPE IN LISTS CMAKE_CONFIGURATION_TYPES)
-		add_custom_command(TARGET copyMatlabPackage COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/crudeMC.m ${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE})
+		add_custom_command(TARGET copyMatlabPackage COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/crudeMC.m ${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/crudeMC.m)
 	endforeach()
 else()
 	add_custom_command(TARGET copyMatlabPackage COMMAND ${CMAKE_COMMAND} -E copy_if_different ${CMAKE_CURRENT_SOURCE_DIR}/crudeMC.m ${CMAKE_BINARY_DIR}/matlabPackage/)
