@@ -39,7 +39,6 @@ if(("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR ("${CMAKE_BUILD_TYPE}" STREQUAL
 endif()
 
 find_package(Mathematica COMPONENTS MathLink)
-find_package(aliasMethod REQUIRED)
 
 if(WIN32)
 	find_package(mpfr)

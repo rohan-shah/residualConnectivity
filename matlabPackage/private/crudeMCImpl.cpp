@@ -37,7 +37,7 @@ void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[])
 	//Third input must be the random seed
 	bool seedValid = !mxIsComplex(prhs[2]) && !mxIsSparse(prhs[2]) && mxIsNumeric(prhs[2]) && mxGetNumberOfDimensions(prhs[2]) == 2 && mxGetNumberOfElements(prhs[2]) == 1;
 	#define THIRD_INPUT_ERROR mexErrMsgTxt("Third input must be a non-negative integer")
-	if(!nValid) THIRD_INPUT_ERROR;
+	if(!seedValid) THIRD_INPUT_ERROR;
 	double seedDouble = mxGetScalar(prhs[2]);
 	int seed = (int)round(seedDouble);
 	if(fabs(seed - seedDouble) > 1e-5 || n <= 0) THIRD_INPUT_ERROR;

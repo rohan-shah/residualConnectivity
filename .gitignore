@@ -1,2 +1,5 @@
 /build
 /relWithDebInfo
+/debug
+/release
+/cmakeCommand
