@@ -1,5 +1,5 @@
 #include "mex.h"
-#include "crudeMCLib.h"
+#include "conditionalMCLib.h"
 #include "convertGraph.h"
 #include "exceptionHandling.h"
 void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[])
@@ -8,12 +8,12 @@ BEGIN_MEX_WRAPPER
 	//We need three inputs
 	if(nrhs != 4 && nrhs != 5)
 	{
-		throw std::runtime_error("Function crudeMCImpl requires four or five inputs");
+		throw std::runtime_error("Function conditionalMCImpl requires four or five inputs");
 	}
 	//Only one output
 	if(nlhs > 1)
 	{
-		throw std::runtime_error("Function crudeMCImpl returns only one value");
+		throw std::runtime_error("Function conditionalMCImpl returns only one value");
 	}
 	//First input must be a probability
 	bool probabilityValid = !mxIsComplex(prhs[0]) && !mxIsSparse(prhs[0]) && mxIsNumeric(prhs[0]) && mxGetNumberOfDimensions(prhs[0]) == 2 && mxGetNumberOfElements(prhs[0]) == 1;
@@ -39,7 +39,7 @@ BEGIN_MEX_WRAPPER
 	//Third input must be the random seed
 	bool seedValid = !mxIsComplex(prhs[2]) && !mxIsSparse(prhs[2]) && mxIsNumeric(prhs[2]) && mxGetNumberOfDimensions(prhs[2]) == 2 && mxGetNumberOfElements(prhs[2]) == 1;
 	#define THIRD_INPUT_ERROR throw std::runtime_error("Third input must be a non-negative integer")
-	if(!seedValid) THIRD_INPUT_ERROR;
+	if(!nValid) THIRD_INPUT_ERROR;
 	double seedDouble = mxGetScalar(prhs[2]);
 	int seed = (int)round(seedDouble);
 	if(fabs(seed - seedDouble) > 1e-5 || n <= 0) THIRD_INPUT_ERROR;
@@ -64,13 +64,13 @@ BEGIN_MEX_WRAPPER
 
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
-	discreteGermGrain::crudeMCArgs args(context, randomSource);
+	discreteGermGrain::conditionalMCArgs args(context, randomSource);
 	args.n = n;
 
-	std::size_t connected = discreteGermGrain::crudeMC(args);
+	discreteGermGrain::conditionalMC(args);
 	plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	double* output = mxGetPr(plhs[0]);
-	*output = (double)connected / (double)n;
+	*output = args.estimate.convert_to<double>();
 	return;
 END_MEX_WRAPPER
 }

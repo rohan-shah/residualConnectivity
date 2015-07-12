@@ -55,8 +55,9 @@ namespace discreteGermGrain
 			std::cout << message << std::endl;
 			return 0;
 		}
-		crudeMCArgs args(context);
-		readSeed(variableMap, args.randomSource);
+		boost::mt19937 randomSource;
+		readSeed(variableMap, randomSource);
+		crudeMCArgs args(context, randomSource);
 		args.n = n;
 
 		std::size_t connected = crudeMC(args);

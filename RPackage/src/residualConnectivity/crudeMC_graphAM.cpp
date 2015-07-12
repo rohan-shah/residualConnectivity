@@ -34,9 +34,10 @@ BEGIN_RCPP
 	}
 
 	discreteGermGrain::Context context = graphAMInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp);
-	discreteGermGrain::crudeMCArgs args(context);
+	boost::mt19937 randomSource;
+	randomSource.seed(seed);
+	discreteGermGrain::crudeMCArgs args(context, randomSource);
 	args.n = n;
-	args.randomSource.seed(seed);
 
 	std::size_t result = discreteGermGrain::crudeMC(args);
 	return Rcpp::wrap((int)result);

@@ -132,7 +132,7 @@ namespace discreteGermGrain
 				float splittingFactor = splittingFactors[initialRadius-radius-1];
 				for(std::vector<::discreteGermGrain::subObs::basic>::iterator subObsIterator = observations.begin(); subObsIterator != observations.end(); subObsIterator++)
 				{
-					int integerSplittingFactor = splittingFactor;
+					int integerSplittingFactor = (int)splittingFactor;
 					if(bernoullis[initialRadius-radius-1](randomSource)) integerSplittingFactor++;
 					for(int k = 0; k < integerSplittingFactor; k++)
 					{

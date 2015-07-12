@@ -7,12 +7,12 @@ namespace discreteGermGrain
 	struct crudeMCArgs
 	{
 	public:
-		crudeMCArgs(const Context& context)
-			:context(context)
+		crudeMCArgs(const Context& context, boost::mt19937& randomSource)
+			:context(context), randomSource(randomSource)
 		{}
 		int n;
 		const Context& context;
-		boost::mt19937 randomSource;
+		boost::mt19937& randomSource;
 	};
 	std::size_t crudeMC(crudeMCArgs& args);
 }
