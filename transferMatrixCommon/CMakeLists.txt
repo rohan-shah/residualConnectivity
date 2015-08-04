@@ -11,7 +11,7 @@ target_include_directories(transferMatrixCommon PUBLIC ${Boost_INCLUDE_DIRS} ${P
 
 target_link_libraries(transferMatrixCommon PUBLIC ${Boost_LIBRARIES} residualConnectivityCommon)
 if(WIN32)
-	set_target_properties(transferMatrixCommon PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+	set_target_properties(transferMatrixCommon PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 else()
 	target_compile_features(transferMatrixCommon PUBLIC cxx_rvalue_references)
 	target_link_libraries(transferMatrixCommon PRIVATE ${OpenMP_CXX_FLAGS})

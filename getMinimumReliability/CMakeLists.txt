@@ -5,5 +5,5 @@ target_link_libraries(getMinimumReliability PUBLIC residualConnectivityCommon ${
 target_include_directories(getMinimumReliability PUBLIC ${Mathematica_MathLink_INCLUDE_DIR})
 target_compile_definitions(getMinimumReliability PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
 if(WIN32)
-	set_target_properties(getMinimumReliability PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+	set_target_properties(getMinimumReliability PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()

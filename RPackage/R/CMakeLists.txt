@@ -1,4 +1,3 @@
-project(residualConnectivity)
 set(RFILES conditionalMC.R crudeMC.R exactRCR.R exhaustiveSearch.R exhaustiveSubgraphs.R onLoad.R simpleMC.R)
 
 #Get location of Rcpp_exceptions.R

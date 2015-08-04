@@ -1,4 +1,3 @@
-project(residualConnectivity)
 set(MFILES getGraph.m)
 
 set(MEXFILES crudeMCImpl.cpp conditionalMCImpl.cpp exhaustiveSearchImpl.cpp)
@@ -34,7 +33,7 @@ if(WIN32)
 		#Set output destinations for MEX files
 		foreach(MEXFILE IN LISTS MEXFILES)
 			get_filename_component(MEXFILE_NAME "${MEXFILE}" NAME_WE)
-			set_target_properties(${MEXFILE_NAME}Matlab PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${BUILD_TYPE_TO_UPPER} ${PROJECT_BINARY_DIR}/../../matlabPackage/${BUILD_TYPE}/private)
+			set_target_properties(${MEXFILE_NAME}Matlab PROPERTIES RUNTIME_OUTPUT_DIRECTORY_${BUILD_TYPE_TO_UPPER} ${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private)
 		endforeach()
 
 		#Copy boost serialization DLL for MEX files

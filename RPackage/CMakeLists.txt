@@ -1,4 +1,3 @@
-project(residualConnectivity)
 find_package(Rcpp REQUIRED)
 add_custom_target(copyPackage ALL)
 

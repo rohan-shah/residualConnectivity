@@ -1,6 +1,6 @@
 project(residualConnectivity)
 cmake_minimum_required(VERSION 3.1)
-set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake" "${CMAKE_SOURCE_DIR}/..")
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 set(Boost_USE_STATIC_LIBS	OFF)
 set(Boost_USE_MULTITHREADED	ON)
 set(Boost_USE_STATIC_RUNTIME	OFF)
@@ -44,6 +44,7 @@ if(WIN32)
 	find_package(mpfr)
 	find_package(mpir)
 
+	set(COPIED_BOOST_FILES)
 	#If we're on windows, Start copying dlls
 	set(BUILD_TYPES Release Debug RelWithDebInfo MinSizeRel)
 	set(BOOST_BUILD_TYPES Release Debug Release Release)
@@ -55,31 +56,42 @@ if(WIN32)
 		#copy boost serialization
 		get_filename_component(NAME_PART ${Boost_SERIALIZATION_LIBRARY_${BOOST_BUILD_TYPE_UPPER}} NAME_WE)
 		get_filename_component(PATH_PART ${Boost_SERIALIZATION_LIBRARY_${BOOST_BUILD_TYPE_UPPER}} PATH)
-		file(COPY ${PATH_PART}/${NAME_PART}.dll DESTINATION ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/)
+		add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll" COMMAND ${CMAKE_COMMAND} ARGS -E copy "${PATH_PART}/${NAME_PART}.dll" "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
+		list(APPEND COPIED_BOOST_FILES "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
 
 		#copy boost program_options
 		get_filename_component(NAME_PART ${Boost_PROGRAM_OPTIONS_LIBRARY_${BOOST_BUILD_TYPE_UPPER}} NAME_WE)
 		get_filename_component(PATH_PART ${Boost_PROGRAM_OPTIONS_LIBRARY_${BOOST_BUILD_TYPE_UPPER}} PATH)
-		file(COPY ${PATH_PART}/${NAME_PART}.dll DESTINATION ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/)
+		add_custom_command(OUTPUT ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll COMMAND ${CMAKE_COMMAND} ARGS -E copy "${PATH_PART}/${NAME_PART}.dll" "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
+		list(APPEND COPIED_BOOST_FILES "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
 
 		#copy boost graph
 		get_filename_component(NAME_PART ${Boost_GRAPH_LIBRARY_${BOOST_BUILD_TYPE_UPPER}} NAME_WE)
 		get_filename_component(PATH_PART ${Boost_GRAPH_LIBRARY_${BOOST_BUILD_TYPE_UPPER}} PATH)
-		file(COPY ${PATH_PART}/${NAME_PART}.dll DESTINATION ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/)
+		add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll" COMMAND ${CMAKE_COMMAND} ARGS -E copy "${PATH_PART}/${NAME_PART}.dll" "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
+		list(APPEND COPIED_BOOST_FILES "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
 
 		#copy boost regex
 		get_filename_component(NAME_PART ${Boost_REGEX_LIBRARY_${BOOST_BUILD_TYPE_UPPER}} NAME_WE)
 		get_filename_component(PATH_PART ${Boost_REGEX_LIBRARY_${BOOST_BUILD_TYPE_UPPER}} PATH)
-		file(COPY ${PATH_PART}/${NAME_PART}.dll DESTINATION ${CMAKE_BINARY_DIR}/${BUILD_TYPE}/)
+		add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll" COMMAND ${CMAKE_COMMAND} ARGS -E copy "${PATH_PART}/${NAME_PART}.dll" "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
+		list(APPEND COPIED_BOOST_FILES "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
 
 		#Now for MPFR
 		get_target_property(MPFR_LOCATION mpfr "LOCATION_${BOOST_BUILD_TYPE}")
-		file(COPY "${MPFR_LOCATION}" DESTINATION "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/")
+		get_filename_component(NAME_PART "${MPFR_LOCATION}" NAME_WE)
+		get_filename_component(PATH_PART "${MPFR_LOCATION}" PATH)
+		add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll" COMMAND ${CMAKE_COMMAND} ARGS -E copy "${MPFR_LOCATION}" "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
+		list(APPEND COPIED_BOOST_FILES "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
 
 		#Now for MPIR
 		get_target_property(MPIR_LOCATION mpir "LOCATION_${BOOST_BUILD_TYPE}")
-		file(COPY "${MPIR_LOCATION}" DESTINATION "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/")
+		get_filename_component(NAME_PART "${MPIR_LOCATION}" NAME_WE)
+		get_filename_component(PATH_PART "${MPIR_LOCATION}" PATH)
+		add_custom_command(OUTPUT "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll" COMMAND ${CMAKE_COMMAND} ARGS -E copy "${MPIR_LOCATION}" "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
+		list(APPEND COPIED_BOOST_FILES "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/${NAME_PART}.dll")
 	endforeach()
+	add_custom_target(copyBoost ALL DEPENDS ${COPIED_BOOST_FILES})
 else()
 	#mpfr needs to be listed as an imported target so that we can use target_link_librarie later on. If we don't have this then it just adds a -lmpfr which probably picks up the wrong thing. 
 	find_library(mpfr_LIBRARY mpfr)
@@ -118,8 +130,8 @@ if(BUILD_R_PACKAGE)
 	add_subdirectory(RPackage)
 	find_package(R REQUIRED)
 	if(WIN32)
-		install(CODE "execute_process(COMMAND \"${R_COMMAND}\" CMD INSTALL --no-multiarch RPackage/\$\{CMAKE_INSTALL_CONFIG_NAME\} WORKING_DIRECTORY ${PROJECT_BINARY_DIR})")
+		install(CODE "execute_process(COMMAND \"${R_COMMAND}\" CMD INSTALL --no-multiarch RPackage/\$\{CMAKE_INSTALL_CONFIG_NAME\} WORKING_DIRECTORY ${CMAKE_BINARY_DIR})")
 	else()
-		install(CODE "execute_process(COMMAND \"${R_COMMAND}\" CMD INSTALL RPackage/ WORKING_DIRECTORY ${PROJECT_BINARY_DIR})")
+		install(CODE "execute_process(COMMAND \"${R_COMMAND}\" CMD INSTALL RPackage/ WORKING_DIRECTORY ${CMAKE_BINARY_DIR})")
 	endif()
 endif()
