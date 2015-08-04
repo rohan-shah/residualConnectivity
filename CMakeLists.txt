@@ -124,6 +124,7 @@ endif()
 add_subdirectory(articulationConditioningSplitting)
 add_subdirectory(articulationConditioningResampling)
 add_subdirectory(expectedVertexCount)
+add_subdirectory(PMC)
 
 if(BUILD_R_PACKAGE)
 	execute_process(COMMAND "${R_COMMAND}" -f generateDataDir.R --silent --no-save WORKING_DIRECTORY ${PROJECT_SOURCE_DIR}/RPackage OUTPUT_QUIET ERROR_QUIET)
