@@ -1,8 +1,8 @@
-#include "exhaustiveSearchInterfaces.h"
+#include "countConnectedSubgraphsInterfaces.h"
 #include "exhaustiveSearchLib.h"
 #include "igraphInterface.h"
 #include <sstream>
-SEXP exhaustiveSearch_igraph(SEXP graph)
+SEXP countConnectedSubgraphs_igraph(SEXP graph)
 {
 BEGIN_RCPP
 	boost::shared_ptr<discreteGermGrain::Context::inputGraph> boostGraph = igraphConvert(graph);
@@ -15,7 +15,7 @@ BEGIN_RCPP
 	}
 
 	Rcpp::Function convertToBigZ("as.bigz");
-	Rcpp::S4 retVal("exhaustiveSubgraphs");
+	Rcpp::S4 retVal("exactCounts");
 	Rcpp::CharacterVector stringRepresentations((int)sizeCounters.size());
 	for(std::size_t i = 0; i < sizeCounters.size(); i++)
 	{

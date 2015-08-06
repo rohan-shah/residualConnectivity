@@ -22,7 +22,7 @@ for(size in 4:12)
 		toBigZ <- as.bigz(substr(contents, index+1, nchar(contents)))
 
 		variableName <- paste0("grid", size, "Counts")
-		assign(variableName, new("exhaustiveSubgraphs", counts = toBigZ, call = quote(fff()), graph = graph.lattice(length = size, dim = 2)))
+		assign(variableName, new("exactCounts", counts = toBigZ, call = quote(fff()), graph = graph.lattice(length = size, dim = 2)))
 		save(list = variableName, file = rdataFile)
 	}
 }

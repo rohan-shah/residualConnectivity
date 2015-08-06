@@ -1,4 +1,4 @@
-checkExhaustiveSubgraphs <- function(object)
+checkExactCounts <- function(object)
 {
 	errors <- c()
 	graphClass <- class(object@graph)
@@ -9,8 +9,8 @@ checkExhaustiveSubgraphs <- function(object)
 	if(length(errors) > 0) return(errors)
 	return(TRUE)
 }
-setClass("exhaustiveSubgraphs", slots = list(counts = "bigz", call = "call", graph = "ANY"), validity = checkExhaustiveSubgraphs)
-setMethod(f = "show", signature = "exhaustiveSubgraphs", definition = function(object)
+setClass("exactCounts", slots = list(counts = "bigz", call = "call", graph = "ANY"), validity = checkExactCounts)
+setMethod(f = "show", signature = "exactCounts", definition = function(object)
 {
 	cat("Exhaustive subgraphs count of graph with ", length(object@counts)-1, " vertices\n")
 	result <- capture.output(object@counts)

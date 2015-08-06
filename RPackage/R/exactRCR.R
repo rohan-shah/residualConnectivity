@@ -1,8 +1,8 @@
 exactRCR <- function(counts, probability)
 {
-	if(class(counts) != "exhaustiveSubgraphs")
+	if(class(counts) != "exactCounts")
 	{
-		stop("Input counts must have class exhaustiveSubgraphs")
+		stop("Input counts must have class exactCounts")
 	}
 	if(length(probability) != 1 || probability < 0 || probability > 1 || (!is.numeric(probability) && class(probability) != "mpfr"))
 	{

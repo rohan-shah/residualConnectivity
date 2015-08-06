@@ -2,7 +2,7 @@
 #include "loadQt.h"
 #include "crudeMCInterfaces.h"
 #include "conditionalMCInterfaces.h"
-#include "exhaustiveSearchInterfaces.h"
+#include "countConnectedSubgraphsInterfaces.h"
 #include "stochasticEnumeration.h"
 #ifdef _MSC_VER
 	#undef RcppExport
@@ -15,9 +15,9 @@ R_CallMethodDef callMethods[] =
 	{"crudeMC_igraph", (DL_FUNC)&crudeMC_igraph, 5},
 	{"crudeMC_graphNEL", (DL_FUNC)&crudeMC_graphNEL, 5},
 	{"crudeMC_graphAM", (DL_FUNC)&crudeMC_graphAM, 5},
-	{"exhaustiveSearch_igraph", (DL_FUNC)&exhaustiveSearch_igraph, 1},
-	{"exhaustiveSearch_graphNEL", (DL_FUNC)&exhaustiveSearch_graphNEL, 1},
-	{"exhaustiveSearch_graphAM", (DL_FUNC)&exhaustiveSearch_graphAM, 1},
+	{"countConnectedSubgraphs_igraph", (DL_FUNC)&countConnectedSubgraphs_igraph, 1},
+	{"countConnectedSubgraphs_graphNEL", (DL_FUNC)&countConnectedSubgraphs_graphNEL, 1},
+	{"countConnectedSubgraphs_graphAM", (DL_FUNC)&countConnectedSubgraphs_graphAM, 1},
 	{"stochasticEnumeration_igraph", (DL_FUNC)&stochasticEnumeration_igraph, 4},
 	{"stochasticEnumeration_graphNEL", (DL_FUNC)&stochasticEnumeration_graphNEL, 4},
 	{"stochasticEnumeration_graphAM", (DL_FUNC)&stochasticEnumeration_graphAM, 4},

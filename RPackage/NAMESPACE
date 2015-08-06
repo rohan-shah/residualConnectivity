@@ -1,5 +1,5 @@
 export(conditionalMC)
 export(crudeMC)
-export(exhaustiveSearch)
+export(countConnectedSubgraphs)
 export(exactRCR)
 export(estimateSpectraStochasticEnumeration)

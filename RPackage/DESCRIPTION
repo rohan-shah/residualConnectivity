@@ -11,12 +11,12 @@ LazyData: No
 Suggests: graph, igraph, rbgl
 Depends: Rmpfr
 Collate:
-   'exhaustiveSubgraphs.R'
+   'exactCounts-class.R'
    'exactRCR.R'
    'onLoad.R'
    'crudeMC.R'
    'conditionalMC.R'
    'simpleMC.R'
    'Rcpp_exceptions.R'
-   'exhaustiveSearch.R'
+   'countConnectedSubgraphs.R'
    'estimateSpectraStochasticEnumeration.R'
