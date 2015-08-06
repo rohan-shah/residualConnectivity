@@ -1,89 +1,37 @@
-#include <boost/program_options.hpp>
-#include <boost/random/mersenne_twister.hpp>
-#include "arguments.h"
-#include "argumentsMPFR.h"
+#include "stochasticEnumerationLib.h"
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/graph/incremental_components.hpp>
 #include <boost/range/algorithm/random_shuffle.hpp>
 #include <boost/random/random_number_generator.hpp>
 namespace discreteGermGrain
 {
-	int main(int argc, char **argv)
+	bool stochasticEnumeration(stochasticEnumerationArgs& args)
 	{
-		boost::program_options::options_description options("Usage");
-		options.add_options()
-			INPUT_GRAPH_OPTION
-			PROBABILITY_OPTION
-			N_OPTION
-			SEED_OPTION
-			HELP_OPTION
-			("vertexCount", boost::program_options::value<int>(), "(int) Number of UP vertices")
-			;
-
-		boost::program_options::variables_map variableMap;
-		try
-		{
-			boost::program_options::store(boost::program_options::parse_command_line(argc, argv, options), variableMap);
-		}
-		catch(boost::program_options::error& ee)
-		{
-
-			std::cerr << "Error parsing command line arguments: " << ee.what() << std::endl << std::endl;
-			std::cerr << options << std::endl;
-			return -1;
-		}
-		if(variableMap.count("help") > 0)
-		{
-			std::cout << 
-				"This program estimates the probability that a random subgraph of a specified base graph is connected, using Stochastic Enumeration. The random subgraph uses a vertex percolation model.\n\n"
-			;
-			std::cout << options << std::endl;
-			return 0;
-		}
-
-		int n;
-		if(!readN(variableMap, n))
-		{
-			return 0;
-		}
-		if(n <= 2)
-		{
-			std::cout << "Input n must be at least 2" << std::endl;
-			return 0;
-		}
-
-		std::string message;
-		mpfr_class opProbability;
-		if(!readProbabilityString(variableMap, opProbability, message))
-		{
-			std::cout << message << std::endl;
-			return 0;
-		}
-		mpfr_class inopProbability = 1 - opProbability;
-		Context context = Context::gridContext(1, opProbability);
-		if(!readContext(variableMap, context, opProbability, message))
-		{
-			std::cout << message << std::endl;
-			return 0;
-		}
-
-		boost::mt19937 randomSource;
-		readSeed(variableMap, randomSource);
-
-		const Context::inputGraph& graph = context.getGraph();
+		const Context::inputGraph& graph = args.graph;
 		std::size_t nVertices = boost::num_vertices(graph);
-		boost::random_number_generator<boost::mt19937> generator(randomSource);
+		boost::random_number_generator<boost::mt19937> generator(args.randomSource);
 
-		if (variableMap.count("vertexCount") < 1)
+		int vertexCount = args.vertexCount;
+		if (vertexCount > nVertices)
 		{
-			std::cout << "Input vertexCount is required" << std::endl;
-			return 0;
+			args.message ="Input vertexCount cannot be larger than the number of vertices";
+			return false;
 		}
-		int vertexCount = variableMap["vertexCount"].as<int>();
-		if (vertexCount <= 1 || vertexCount > nVertices)
+		if(vertexCount == 0)
 		{
-			std::cout << "Input vertexCount must be a value in [2, nVertices]" << std::endl;
-			return 0;
+			args.estimate = 1; return true;
+		}
+		else if(vertexCount == 1)
+		{
+			args.estimate = nVertices; 
+			return true;
+		}
+
+		int n = args.n;
+		if(n < 2)
+		{
+			args.message = "Input n must be greater than 2";
+			return false;
 		}
 
 		std::vector<int> nActiveVertices(n, 0);
@@ -206,11 +154,7 @@ namespace discreteGermGrain
 			nParticles = newParticlesCount;
 		}
 
-		std::cout << "Estimate is " << total << std::endl;
-		return 0;
+		args.estimate = total;
+		return true;
 	}
-}
-int main(int argc, char **argv)
-{
-	return discreteGermGrain::main(argc, argv);
 }

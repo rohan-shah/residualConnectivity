@@ -3,6 +3,7 @@
 #include "crudeMCInterfaces.h"
 #include "conditionalMCInterfaces.h"
 #include "exhaustiveSearchInterfaces.h"
+#include "stochasticEnumeration.h"
 #ifdef _MSC_VER
 	#undef RcppExport
 	#define RcppExport extern "C" __declspec(dllexport)
@@ -17,6 +18,9 @@ R_CallMethodDef callMethods[] =
 	{"exhaustiveSearch_igraph", (DL_FUNC)&exhaustiveSearch_igraph, 1},
 	{"exhaustiveSearch_graphNEL", (DL_FUNC)&exhaustiveSearch_graphNEL, 1},
 	{"exhaustiveSearch_graphAM", (DL_FUNC)&exhaustiveSearch_graphAM, 1},
+	{"stochasticEnumeration_igraph", (DL_FUNC)&stochasticEnumeration_igraph, 4},
+	{"stochasticEnumeration_graphNEL", (DL_FUNC)&stochasticEnumeration_graphNEL, 4},
+	{"stochasticEnumeration_graphAM", (DL_FUNC)&stochasticEnumeration_graphAM, 4},
 	{NULL, NULL, 0}
 };
 extern "C" void R_init_Rcpp(DllInfo* info);

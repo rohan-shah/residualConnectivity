@@ -19,3 +19,4 @@ Collate:
    'simpleMC.R'
    'Rcpp_exceptions.R'
    'exhaustiveSearch.R'
+   'estimateSpectraStochasticEnumeration.R'

@@ -1,4 +1,4 @@
-set(RFILES conditionalMC.R crudeMC.R exactRCR.R exhaustiveSearch.R exhaustiveSubgraphs.R onLoad.R simpleMC.R)
+set(RFILES conditionalMC.R crudeMC.R exactRCR.R exhaustiveSearch.R exhaustiveSubgraphs.R onLoad.R simpleMC.R estimateSpectraStochasticEnumeration.R)
 
 #Get location of Rcpp_exceptions.R
 get_property(RCPP_INCLUDE_DIRECTORIES TARGET Rcpp PROPERTY INTERFACE_INCLUDE_DIRECTORIES)

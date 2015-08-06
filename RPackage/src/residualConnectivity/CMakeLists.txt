@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-add_library(residualConnectivityRPackage SHARED loadQt.cpp loadQt.h register.cpp crudeMC_igraph.cpp crudeMCInterfaces.h igraphInterface.h igraphInterface.cpp graphNELInterface.h graphNELInterface.cpp crudeMC_graphNEL.cpp crudeMC_graphAM.cpp graphAMInterface.h graphAMInterface.cpp exhaustiveSearch_igraph.cpp exhaustiveSearch_graphNEL.cpp exhaustiveSearch_graphAM.cpp exhaustiveSearchInterfaces.h)
-target_link_libraries(residualConnectivityRPackage PUBLIC residualConnectivityCommon Rcpp crudeMCLib conditionalMCLib exhaustiveSearchLib)
+add_library(residualConnectivityRPackage SHARED loadQt.cpp loadQt.h register.cpp crudeMC_igraph.cpp crudeMCInterfaces.h igraphInterface.h igraphInterface.cpp graphNELInterface.h graphNELInterface.cpp crudeMC_graphNEL.cpp crudeMC_graphAM.cpp graphAMInterface.h graphAMInterface.cpp exhaustiveSearch_igraph.cpp exhaustiveSearch_graphNEL.cpp exhaustiveSearch_graphAM.cpp exhaustiveSearchInterfaces.h stochasticEnumeration.h stochasticEnumeration.cpp)
+target_link_libraries(residualConnectivityRPackage PUBLIC residualConnectivityCommon Rcpp crudeMCLib conditionalMCLib exhaustiveSearchLib stochasticEnumerationLib)
 set_target_properties(residualConnectivityRPackage PROPERTIES OUTPUT_NAME "residualConnectivity")
 
 if(BUILD_VISUALISATION)
