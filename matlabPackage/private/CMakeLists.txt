@@ -1,12 +1,9 @@
-set(MFILES getGraph.m)
-
 set(MEXFILES crudeMCImpl.cpp conditionalMCImpl.cpp exhaustiveSearchImpl.cpp)
 set(MEXFILE_DEPENDENCIES crudeMCLib conditionalMCLib exhaustiveSearchLib)
 list(LENGTH MEXFILES N_MEXFILES)
 MATH(EXPR N_MEXFILES ${N_MEXFILES}-1)
 
 #Target for files that should always be copied
-add_custom_target(copyMatlabPackagePrivateAlways ALL)
 set(copyMatlabPackagePrivateDependencies)
 if(WIN32)
 	set(BUILD_TYPES Release Debug RelWithDebInfo MinSizeRel)
@@ -27,10 +24,6 @@ if(WIN32)
 		#Correct case
 		string(TOUPPER "${BUILD_TYPE}" BUILD_TYPE_TO_UPPER)
 		string(TOUPPER "${BOOST_BUILD_TYPE}" BOOST_BUILD_TYPE_TO_UPPER)
-		#Copy .m files
-		foreach(MFILE IN LISTS MFILES)
-			add_custom_command(TARGET copyMatlabPackagePrivateAlways POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${MFILE}" "${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private/${MFILE}")
-		endforeach()
 		#Set output destinations for MEX files
 		foreach(MEXFILE IN LISTS MEXFILES)
 			get_filename_component(MEXFILE_NAME "${MEXFILE}" NAME_WE)
@@ -68,9 +61,6 @@ if(WIN32)
 		list(APPEND copyMatlabPackagePrivateDependencies "${CMAKE_BINARY_DIR}/matlabPackage/${BUILD_TYPE}/private/${NAME_PART}")
 	endforeach()
 else()
-	foreach(MFILE IN LISTS MFILES)
-		add_custom_command(TARGET copyMatlabPackagePrivateAlways POST_BUILD COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_CURRENT_SOURCE_DIR}/${MFILE}" "${CMAKE_BINARY_DIR}/matlabPackage/private/${MFILE}")
-	endforeach()
 	#On linux matlab ships with its own libstdc++, which we don't necessarily want to pull in. So we find our own libstd (the matlab one is set using LD_LIBRARY_PATH, so we won't pick it up here)
 	find_library(LIBSTD_FOR_MEX stdc++)
 	foreach(counter RANGE (${N_MEXFILES}-1))
