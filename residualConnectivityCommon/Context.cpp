@@ -57,10 +57,6 @@ namespace discreteGermGrain
 		{
 			throw std::runtime_error("Graph ordering data had the wrong size");
 		}
-		if(nVertices != vertexPositions->size())
-		{
-			throw std::runtime_error("Vertex position data had the wrong size");
-		}
 		if(*std::min_element(ordering->begin(), ordering->end()) != 0)
 		{
 			throw std::runtime_error("Wrong minimum vertex in ordering");
@@ -87,8 +83,15 @@ namespace discreteGermGrain
 		this->graph = orderedGraph;
 
 		//Rearrange vertex positions, too
-		this->vertexPositions->resize(nVertices);
-		for(std::size_t i = 0; i < nVertices; i++) (*this->vertexPositions)[(*ordering)[i]] = (*vertexPositions)[i];
+		if(vertexPositions->size() > 0)
+		{
+			if(nVertices != vertexPositions->size())
+			{
+				throw std::runtime_error("Vertex position data had the wrong size");
+			}
+			this->vertexPositions = boost::shared_ptr<std::vector<vertexPosition> >(new std::vector<vertexPosition>(nVertices));
+			for(std::size_t i = 0; i < nVertices; i++) (*this->vertexPositions)[(*ordering)[i]] = (*vertexPositions)[i];
+		}
 
 		//get out shortest distances
 		boost::shared_array<int> shortestDistances = boost::shared_array<int>(new int[nVertices*nVertices]);
@@ -175,6 +178,7 @@ namespace discreteGermGrain
 		properties.property("y", yProperty);
 
 		boost::read_graphml(input, *graph, properties);
+		std::size_t nVertices = boost::num_vertices(*graph);
 
 		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>());
 		ordering->insert(ordering->end(), orderingProperty.storage_begin(), orderingProperty.storage_end());
@@ -186,16 +190,22 @@ namespace discreteGermGrain
 		}
 
 		successful = true;
+		//Assume the ordering is just the identity, if none was given
 		if(ordering->size() == 0)
 		{
-			ordering->resize(vertexPositions->size());
-			for(std::size_t i =0; i < vertexPositions->size(); i++) (*ordering)[i] = (int)i;
-			std::sort(ordering->begin(), ordering->end(), [&vertexPositions](int i1, int i2){return (*vertexPositions)[i1].first < (*vertexPositions)[i2].first || ((*vertexPositions)[i1].first == (*vertexPositions)[i2].first && (*vertexPositions)[i1].second < (*vertexPositions)[i2].second);});
+			ordering->resize(nVertices);
+			for(std::size_t i = 0; i < nVertices; i++) (*ordering)[i] = (int)i;
 		}
-		if(ordering->size() != boost::num_vertices(*graph))
+		if(ordering->size() != nVertices)
 		{
 			successful = false;
 			message = "Wrong number of vertices in ordering";
+			return Context();
+		}
+		if(vertexPositions->size() != 0 && vertexPositions->size() != nVertices)
+		{
+			successful = false;
+			message = "Vertex positions must be specified for all vertices or none";
 			return Context();
 		}
 		return Context(graph, ordering, vertexPositions, opProbability);

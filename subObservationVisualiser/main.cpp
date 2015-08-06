@@ -96,6 +96,11 @@ namespace discreteGermGrain
 		{
 			boost::archive::binary_iarchive archive(inputStream, boost::archive::no_codecvt);
 			observationWithContext obsWithContext(archive);
+			if(obsWithContext.getContext().getVertexPositions().size() == 0)
+			{
+				std::cout << "Specified graph did not have vertex positions, exiting..." << std::endl;
+				return 0;
+			}
 			subObservationVisualiserSingle viewer(obsWithContext, graphPointSize);
 			viewer.show();
 			app.exec();
@@ -114,6 +119,11 @@ namespace discreteGermGrain
 			if(collection.getSampleSize() == 0)
 			{
 				std::cout << "observationCollection was empty" << std::endl;
+				return 0;
+			}
+			if(collection.getContext().getVertexPositions().size() == 0)
+			{
+				std::cout << "Specified graph did not have vertex positions, exiting..." << std::endl;
 				return 0;
 			}
 			subObservationVisualiserCollection viewer(collection, graphPointSize);
@@ -144,6 +154,11 @@ namespace discreteGermGrain
 				std::cout << "observationTree was empty" << std::endl;
 				return 0;
 			}
+			if(tree.getContext().getVertexPositions().size() == 0)
+			{
+				std::cout << "Specified graph did not have vertex positions, exiting..." << std::endl;
+				return 0;
+			}
 			subObservationVisualiserTree viewer(tree, graphPointSize, treePointSize);
 			viewer.show();
 			app.exec();
@@ -160,6 +175,11 @@ namespace discreteGermGrain
 			boost::archive::binary_iarchive archive(inputStream, boost::archive::no_codecvt);
 			empiricalDistribution distribution(archive);
 			observationCollection collection(distribution);
+			if(collection.getContext().getVertexPositions().size() == 0)
+			{
+				std::cout << "Specified graph did not have vertex positions, exiting..." << std::endl;
+				return 0;
+			}
 			subObservationVisualiserCollection viewer(collection, graphPointSize, "Warning: Weights were discarded");
 			viewer.show();
 			app.exec();

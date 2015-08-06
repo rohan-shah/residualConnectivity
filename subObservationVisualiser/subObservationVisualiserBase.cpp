@@ -48,6 +48,13 @@ namespace discreteGermGrain
 	subObservationVisualiserBase::subObservationVisualiserBase(const Context& context, float pointSize)
 		:pointSize(pointSize), context(context),standardPointsItem(NULL), standardLinesItem(NULL), backgroundItem(NULL)
 	{
+		//We don't run this if there are no vertex positions
+		if(context.getVertexPositions().size() == 0)
+		{
+			std::cout << "Specified graph did not have vertex positions, exiting..." << std::endl;
+			QTimer::singleShot(0, this, SLOT(close()));
+			return;
+		}
 		initialiseControls();
 
 		QPen pen(Qt::NoPen);
