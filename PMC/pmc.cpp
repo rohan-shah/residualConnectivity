@@ -6,6 +6,7 @@
 #include <boost/graph/incremental_components.hpp>
 #include <boost/range/algorithm/random_shuffle.hpp>
 #include <boost/random/random_number_generator.hpp>
+#include "calculateFactorials.h"
 namespace discreteGermGrain
 {
 	int main(int argc, char **argv)
@@ -69,8 +70,8 @@ namespace discreteGermGrain
 
 		typedef boost::graph_traits<Context::inputGraph>::vertex_descriptor Vertex;
 		typedef boost::graph_traits<Context::inputGraph>::vertices_size_type VertexIndex;
-		std::vector<VertexIndex> rank(boost::num_vertices(graph));
-		std::vector<Vertex> parent(boost::num_vertices(graph));
+		std::vector<VertexIndex> rank(boost::num_vertices(graph), 0);
+		std::vector<Vertex> parent(boost::num_vertices(graph), 0);
 		typedef VertexIndex* Rank;
 		typedef Vertex* Parent;
 
@@ -121,13 +122,7 @@ namespace discreteGermGrain
 		//Now calculate the estimate
 		//First calculate factorials
 		std::vector<mpz_class> factorials;
-		factorials.reserve(nVertices + 1);
-		factorials.push_back(1);
-		factorials.push_back(1);
-		for (int i = 2; i < (int)nVertices + 1; i++)
-		{
-			factorials.push_back(factorials[i - 1] * i);
-		}
+		calculateFactorials(factorials, nVertices + 1);
 
 		//Calculate powers of p and q (q = 1-p)
 		std::vector<mpfr_class> powersP, powersQ;
