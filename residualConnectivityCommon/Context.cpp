@@ -80,10 +80,10 @@ namespace discreteGermGrain
 		{
 			boost::add_edge((*ordering)[start->m_source], (*ordering)[start->m_target], *orderedGraph);
 		}
-		this->graph = orderedGraph;
 
+		this->graph = orderedGraph;
 		//Rearrange vertex positions, too
-		if(vertexPositions->size() > 0)
+		if(vertexPositions && vertexPositions->size() > 0)
 		{
 			if(nVertices != vertexPositions->size())
 			{

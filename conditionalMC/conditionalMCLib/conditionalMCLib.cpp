@@ -5,22 +5,34 @@
 #include "observation.h"
 #include "subObs/subObs.h"
 #include "isSingleComponentWithRadius.h"
+#include <boost/iterator/counting_iterator.hpp>
 namespace discreteGermGrain
 {	
 	void conditionalMC(conditionalMCArgs& args)
 	{
 		std::size_t nVertices = boost::num_vertices(args.context.getGraph());
-		boost::random::geometric_distribution<int, double> numberOffVertices(args.probability.convert_to<double>());
+		boost::random::geometric_distribution<int, double> numberOffVertices(args.context.getOperationalProbability().convert_to<double>());
 
 		mpfr_class total = 0;
 		mpfr_class numeratorExpectedUpNumber = 0;
-		mpfr_class q = 1 - args.probability;
+		mpfr_class q = 1 - args.context.getOperationalProbability();
 
 		std::vector<int> connectedComponents(nVertices);
 		std::vector<bool> isBoundary(nVertices);
 		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 		
 		std::vector<int> allVertices;
+		allVertices.reserve(nVertices);
+
+		//Cache of powers of Q
+		std::vector<mpfr_class> powersOfQ;
+		powersOfQ.reserve(nVertices + 1);
+		powersOfQ.push_back(1);
+		powersOfQ.push_back(q);
+		for (int i = 2; i < nVertices + 1; i++)
+		{
+			powersOfQ.push_back(mpfr_class(powersOfQ[i - 1] * q));
+		}
 
 		for(int i = 0; i < args.n; i++)
 		{
@@ -34,8 +46,7 @@ namespace discreteGermGrain
 			if(nOff < (int)nVertices)
 			{
 				allVertices.clear();
-				allVertices.reserve(nVertices);
-				for(int i = 0; i < (int)nVertices; i++) allVertices.push_back(i);
+				allVertices.insert(allVertices.begin(), boost::counting_iterator<int>(0), boost::counting_iterator<int>((int)nVertices));
 				for(int i = 0; i < nOff; i++)
 				{
 					boost::random::uniform_int_distribution<> randomVertex(0, (int)allVertices.size()-1);
@@ -104,7 +115,7 @@ namespace discreteGermGrain
 				nBoundaryPoints = 0;
 			}
 			int power = ((int)nVertices - nOff) - componentSize - nBoundaryPoints;
-			mpfr_class connectedProbability = boost::multiprecision::pow(q, power);
+			mpfr_class connectedProbability = powersOfQ[power];
 			total += connectedProbability;
 			numeratorExpectedUpNumber += componentSize * connectedProbability;
 		}

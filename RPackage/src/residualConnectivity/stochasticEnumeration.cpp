@@ -1,10 +1,10 @@
 #include "stochasticEnumerationLib.h"
 #include "Rcpp.h"
 #include "stochasticEnumeration.h"
-#include "graphAMInterface.h"
-#include "graphNELInterface.h"
-#include "igraphInterface.h"
+#include "graphInterface.h"
+#include "graphConvert.h"
 #include "calculateFactorials.h"
+#include "graphType.h"
 SEXP stochasticEnumeration(SEXP graph_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, graphType type)
 {
 BEGIN_RCPP
@@ -46,11 +46,7 @@ BEGIN_RCPP
 		throw std::runtime_error("Input counts must be a boolean");
 	}
 
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph;
-	if(type == IGRAPH) graph = igraphConvert(graph_sexp);
-	else if(type == GRAPHNEL) graph = graphNELConvert(graph_sexp);
-	else if(type == GRAPHAM) graph = graphAMConvert(graph_sexp);
-	else throw std::runtime_error("Internal error");
+	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph = graphConvert(graph_sexp, type);
 	std::size_t nVertices = boost::num_vertices(*graph);
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);

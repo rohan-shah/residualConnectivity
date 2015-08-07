@@ -32,53 +32,27 @@ simpleMC <- function(functionName, graph, probability, n, seed=1)
 		}
 		vertexCoordinates <- layout.auto(graph)
 		result <- .Call(paste0(functionName, "_igraph"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
-		return(result / n)
+		return(result)
 	}
 	else if(class(graph) == "graphNEL")
 	{
 		vertexCoordinates <- NULL
 		if(length(graph@renderInfo@nodes) > 0)
 		{
-			vertexCoordinates <- c(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-		}
-		else
-		{
-			loadResult <- try(library(Rgraphviz), silent = TRUE)
-			if(class(loadResult) == "try-error")
-			{
-				warning("The input format does not support vertex positions, arbitrary positions inserted.")
-			}
-			else
-			{
-				graph <- layoutGraph(graph, layoutType="dot")
-				vertexCoordinates <- c(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-			}
+			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
 		}
 		result <- .Call(paste0(functionName, "_graphNEL"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
-		return (result / n)
+		return (result)
 	}
 	else if(class(graph) == "graphAM")
 	{
 		vertexCoordinates <- NULL
 		if(length(graph@renderInfo@nodes) > 0)
 		{
-			vertexCoordinates <- c(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-		}
-		else
-		{
-			loadResult <- try(library(Rgraphviz), silent = TRUE)
-			if(class(loadResult) == "try-error")
-			{
-				warning("The input format does not support vertex positions, arbitrary positions inserted.")
-			}
-			else
-			{
-				graph <- layoutGraph(graph, layoutType="dot")
-				vertexCoordinates <- c(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-			}
+			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
 		}
 		result <- .Call(paste0(functionName, "_graphAM"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
-		return (result / n)
+		return (result)
 	}
 	else 
 	{

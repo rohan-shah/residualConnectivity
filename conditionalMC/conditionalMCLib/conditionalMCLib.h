@@ -13,7 +13,6 @@ namespace discreteGermGrain
 		const Context& context;
 		boost::mt19937& randomSource;
 		int n;
-		mpfr_class probability;
 		mpfr_class estimate, expectedUpNumber;
 	};
 	void conditionalMC(conditionalMCArgs& args);

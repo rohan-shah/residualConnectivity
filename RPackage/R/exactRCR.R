@@ -10,8 +10,7 @@ exactRCR <- function(counts, probability)
 	}
 	if(is.numeric(probability))
 	{
-		warning("Computing exact RCR using standard precision, answer may be inaccurate. Consider inputting probability as an object of class \"mpfr\" for higher precision computation.")
-		prec <- getPrec(1, doNumeric=TRUE)
+		prec <- 50
 	}
 	else
 	{

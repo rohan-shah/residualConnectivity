@@ -71,7 +71,6 @@ namespace discreteGermGrain
 
 		conditionalMCArgs args(context, randomSource);
 		args.n = n;
-		args.probability = probability;
 		conditionalMC(args);
 
 		std::cout << "Connectivity estimate is " << args.estimate.convert_to<double>() << std::endl;
