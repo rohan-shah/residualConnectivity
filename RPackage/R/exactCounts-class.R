@@ -12,8 +12,12 @@ checkExactCounts <- function(object)
 setClass("exactCounts", slots = list(counts = "bigz", call = "call", graph = "ANY"), validity = checkExactCounts)
 setMethod(f = "show", signature = "exactCounts", definition = function(object)
 {
-	cat("Exhaustive subgraphs count of graph with ", length(object@counts)-1, " vertices\n")
+	cat("Number of connected subgraphs of a graph with ", length(object@counts)-1, " vertices, by number of subgraph vertices\n")
 	result <- capture.output(object@counts)
 	cat(tail(result, -1), sep="\n")
 })
-
+setAs("exactCounts", "exactSpectra", def = function(from, to)
+{
+	binomialCoefficients <- chooseZ(length(from@counts)-1, 0:(length(from@counts)-1))
+	return(new(to, spectra = as.bigq(from@counts, binomialCoefficients), graph = from@graph))
+})

@@ -1,4 +1,4 @@
-estimateSpectraStochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1)
+stochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1)
 {
 	if(form == "spectra") counts <- FALSE
 	else if(form == "counts") counts <- TRUE
@@ -25,13 +25,13 @@ estimateSpectraStochasticEnumeration <- function(graph, budget, form = "spectra"
 	}
 	if(counts)
 	{
-		result <- new("estimatedCounts", data = result)
+		result <- new("estimatedCounts", data = result, call = match.call())
 	}
 	else 
 	{
-		result <- new("estimatedSpectra", data = result)
+		result <- new("estimatedSpectra", data = result, call = match.call())
 	}
 	return(result)
 }
-setClass("estimatedCounts", slots = list(data = "mpfr"))
-setClass("estimatedSpectra", slots = list(data = "mpfr"))
+setClass("estimatedCounts", slots = list(data = "mpfr", call = "call"))
+setClass("estimatedSpectra", slots = list(data = "mpfr", call = "call"))

@@ -22,7 +22,7 @@ endif()
 
 if(BUILD_R_PACKAGE)
 	find_package(Rcpp REQUIRED)
-	set(RPackageFiles NAMESPACE DESCRIPTION R/conditionalMC.R R/countConnectedSubgraphs.R R/crudeMC.R R/estimateSpectraStochasticEnumeration.R R/exactCounts-class.R R/exactRCR.R R/onLoad.R R/simpleMC.R tests/testthat.R tests/testthat/test-gridCounts.R tests/testthat/test-conditionalMC.R tests/testthat/test-crudeMC.R)
+	set(RPackageFiles NAMESPACE DESCRIPTION R/conditionalMC.R R/countConnectedSubgraphs.R R/crudeMC.R R/stochasticEnumeration.R R/exactCounts-class.R R/exactSpectra-class.R R/exactRCR.R R/onLoad.R R/simpleMC.R tests/testthat.R tests/testthat/test-gridCounts.R tests/testthat/test-conditionalMC.R tests/testthat/test-crudeMC.R tests/testthat/test-countConnectedSubgraphs.R tests/testthat/test-stochasticEnumeration.R)
 	#Find location of Rcpp_exceptions.R 
 	get_property(RCPP_INCLUDE_DIRECTORIES TARGET Rcpp PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 	foreach(RCPP_INCLUDE_DIRECTORY IN LISTS RCPP_INCLUDE_DIRECTORIES)

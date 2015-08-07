@@ -2,7 +2,7 @@
 #include "loadQt.h"
 #include "crudeMC.h"
 #include "conditionalMC.h"
-#include "countConnectedSubgraphsInterfaces.h"
+#include "countConnectedSubgraphs.h"
 #include "stochasticEnumeration.h"
 #ifdef _MSC_VER
 	#undef RcppExport

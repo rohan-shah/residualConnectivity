@@ -1,11 +1,12 @@
-#include "countConnectedSubgraphsInterfaces.h"
+#include "countConnectedSubgraphs.h"
 #include "exhaustiveSearchLib.h"
-#include "igraphInterface.h"
+#include "graphConvert.h"
+#include "graphType.h"
 #include <sstream>
-SEXP countConnectedSubgraphs_igraph(SEXP graph)
+SEXP countConnectedSubgraphs(SEXP graph, graphType type)
 {
 BEGIN_RCPP
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> boostGraph = igraphConvert(graph);
+	boost::shared_ptr<discreteGermGrain::Context::inputGraph> boostGraph = graphConvert(graph, type);
 	std::string message;
 	std::vector<discreteGermGrain::counterType> sizeCounters;
 	bool result = discreteGermGrain::exhaustiveSearch(*boostGraph, sizeCounters, message);
@@ -22,7 +23,19 @@ BEGIN_RCPP
 		std::stringstream ss; ss << sizeCounters[i];
 		stringRepresentations(i) = ss.str();
 	}
-	retVal.slot(".S3Class") = convertToBigZ(stringRepresentations);
+	retVal.slot("counts") = convertToBigZ(stringRepresentations);
 	return retVal;
 END_RCPP
+}
+SEXP countConnectedSubgraphs_igraph(SEXP graph)
+{
+	return countConnectedSubgraphs(graph, IGRAPH);
+}
+SEXP countConnectedSubgraphs_graphNEL(SEXP graph)
+{
+	return countConnectedSubgraphs(graph, GRAPHNEL);
+}
+SEXP countConnectedSubgraphs_graphAM(SEXP graph)
+{
+	return countConnectedSubgraphs(graph, GRAPHAM);
 }

@@ -19,4 +19,5 @@ Collate:
    'simpleMC.R'
    'Rcpp_exceptions.R'
    'countConnectedSubgraphs.R'
-   'estimateSpectraStochasticEnumeration.R'
+   'stochasticEnumeration.R'
+   'exactSpectra-class.R'
