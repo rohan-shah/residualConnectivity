@@ -21,3 +21,4 @@ Collate:
    'countConnectedSubgraphs.R'
    'stochasticEnumeration.R'
    'exactSpectra-class.R'
+   'spectraToRCR.R'

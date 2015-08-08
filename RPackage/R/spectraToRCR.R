@@ -1,8 +1,8 @@
-exactRCR <- function(input, probability)
+spectraToRCR <- function(input, probability)
 {
-	if(!(class(input) %in% c("exactCounts", "exactSpectra")))
+	if(!(class(input) %in% c("estimatedCounts", "estimatedSpectra")))
 	{
-		stop("First argument must have class exactCounts or exactSpectra")
+		stop("First argument must have class estimatedCounts or estimatedSpectra")
 	}
 	if(length(probability) != 1 || probability < 0 || probability > 1 || (!is.numeric(probability) && class(probability) != "mpfr"))
 	{
@@ -10,7 +10,7 @@ exactRCR <- function(input, probability)
 	}
 	if(is.numeric(probability))
 	{
-		prec <- 50
+		prec <- max(getPrec(input@data))
 	}
 	else
 	{
@@ -18,21 +18,20 @@ exactRCR <- function(input, probability)
 	}
 	probabilityComplement <- 1 - probability
 	result <- mpfr(0, prec)
-	if(class(input) == "exactCounts")
+	nVertices <- length(input@data)-1
+	if(class(input) == "estimatedCounts")
 	{
-		nVertices <- length(input@counts)-1
 		for(i in 0:nVertices)
 		{
-			result <- result + mpfr(input@counts[i+1], prec) * (probability ^ i) * (probabilityComplement ^(nVertices - i))
+			result <- result + input@data[i+1] * (probability ^ i) * (probabilityComplement ^(nVertices - i))
 		}
 	}
-	else if(class(input) == "exactSpectra")
+	else if(class(input) == "estimatedSpectra")
 	{
-		nVertices <- length(input@spectra)-1
 		binomialCoefficients <- chooseZ(nVertices, 0:nVertices)
 		for(i in 0:nVertices)
 		{
-			result <- result + binomialCoefficients[i+1] * mpfr(input@spectra[i+1], prec) * (probability ^ i) * (probabilityComplement ^(nVertices - i))
+			result <- result + binomialCoefficients[i+1] * input@data[i+1] * (probability ^ i) * (probabilityComplement ^(nVertices - i))
 		}
 		#Because we're multiplying by large integers, apparently the number of bits of precision changes as we go through the loop
 		result <- roundMpfr(result, prec)
