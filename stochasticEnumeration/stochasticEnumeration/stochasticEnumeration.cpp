@@ -17,6 +17,7 @@ namespace discreteGermGrain
 			SEED_OPTION
 			HELP_OPTION
 			("vertexCount", boost::program_options::value<int>(), "(int) Number of UP vertices")
+			("optimized", boost::program_options::bool_switch()->default_value(true)->implicit_value(true))
 			;
 
 		boost::program_options::variables_map variableMap;
@@ -72,13 +73,34 @@ namespace discreteGermGrain
 		const Context::inputGraph& graph = context.getGraph();
 		std::size_t nVertices = boost::num_vertices(graph);
 		boost::random_number_generator<boost::mt19937> generator(randomSource);
+		bool optimized = variableMap["optimized"].as<bool>();
 
 		stochasticEnumerationArgs args(graph, randomSource);
 		args.n = n;
 		//Do we want whole spectra, or just a component?
 		if (variableMap.count("vertexCount") < 1)
 		{
-			
+			std::vector<mpfr_class> estimates;
+			estimates.reserve(nVertices + 1);
+			for (int i = 0; i < (int)nVertices+1; i++)
+			{
+				args.vertexCount = i;
+				bool result;
+				if(optimized) result = stochasticEnumeration2(args);
+				else result = stochasticEnumeration1(args);
+				if (!result)
+				{
+					std::cout << "Error: " << args.message << std::endl;
+					return 0;
+				}
+				estimates.push_back(args.estimate);
+			}
+			std::cout << "Estimated spectra is " << std::endl;
+			for (int i = 0; i < (int)nVertices + 1; i++)
+			{
+				std::cout << "[" << i << "]: " << estimates[i].str() << std::endl;
+			}
+
 		}
 		else
 		{
@@ -90,7 +112,9 @@ namespace discreteGermGrain
 			}
 			args.vertexCount = vertexCount;
 
-			bool result = stochasticEnumeration(args);
+			bool result;
+			if(optimized) result = stochasticEnumeration2(args);
+			else result = stochasticEnumeration1(args);
 			if (result)
 			{
 				std::cout << "Estimated spectra is " << args.estimate.str() << std::endl;

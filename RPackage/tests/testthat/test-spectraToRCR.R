@@ -32,5 +32,5 @@ test_that("Check that the optimized version has lower relative error",
 		optimizedArray <- mpfr2array(optimizedResults, dim=20)
 		unoptimizedArray <- mpfr2array(unoptimizedResults, dim=20)
 		exact <- exactRCR(grid12Counts, probability)
-		expect_less_than(abs(mean(optimizedArray) - exact), abs(mean(unoptimizedArray) - exact)
+		expect_less_than(as.double(abs(mean(optimizedArray) - exact)), as.double(abs(mean(unoptimizedArray) - exact)))
 	})

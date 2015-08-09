@@ -68,7 +68,8 @@ namespace discreteGermGrain
 		std::vector<boost::default_color_type> colors(nVertices, Color::black());
 		std::vector<int> connectedComponentVector(nVertices);
 		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
-		std::vector<Context::inputGraph::vertex_descriptor> initialVertex(1, 0);
+		std::vector<Context::inputGraph::vertex_descriptor> initialVertex(0);
+		initialVertex.reserve(nVertices);
 
 		for(int vertexCounter = 1; vertexCounter < (int)nVertices; vertexCounter++)
 		{
@@ -119,7 +120,7 @@ namespace discreteGermGrain
 				//2. The connected component attached to anActiveVertex has at least vertexCount vertices
 				else
 				{
-					bool optionalVertex = true;
+					bool possiblyOn = true, possiblyOff = true;
 					if(nActiveVertices[particleCounter] > 0) 
 					{
 						//Colours are initially all white
@@ -129,27 +130,49 @@ namespace discreteGermGrain
 						{
 							if(!alreadyPresent[particleCounter*nVertices+i]) colors[i] = Color::black();
 						}
-						initialVertex[0] = anActiveVertex[particleCounter];
+						initialVertex.clear();
+						initialVertex.push_back(anActiveVertex[particleCounter]);
+						//First the maximum size with this vertex on
+						std::fill(connectedComponentVector.begin(), connectedComponentVector.end(), -1);
 						boost::connected_components_restricted(graph, &(connectedComponentVector[0]), &(colors[0]), stack, initialVertex);
 						int importantComponent = connectedComponentVector[initialVertex[0]];
-						int maximumSize = 0;
+						int maximumSizeOn = 0;
 						for(int i = 0; i < nVertices; i++)
 						{
-							if(connectedComponentVector[i] == importantComponent) maximumSize++;
+							if(connectedComponentVector[i] == importantComponent) maximumSizeOn++;
 						}
 						//If (no matter how many more vertices we add) we cannot reach the desired component size, then this corresponds to a leaf with zero children, and 0 cost. So skip this one completely
-						if(maximumSize < vertexCount) continue;
-						//If the vertex under consideration is in the same component as initialVertex[0], then it's optional
-						if(connectedComponentVector[vertexCounter] == importantComponent) optionalVertex = true;
-						//Otherwise it must be off, so it's not optional. 
-						else optionalVertex = false;
+						if(maximumSizeOn < vertexCount) continue;
+						//If the vertex under consideration is in a different connected component then it can't be on
+						if (connectedComponentVector[vertexCounter] != importantComponent)
+						{
+							possiblyOn = false;
+						}
+						int maximumSizeOff = 0;
+						std::fill(connectedComponentVector.begin(), connectedComponentVector.end(), -1);
+						std::fill(colors.begin(), colors.end(), Color::white());
+						initialVertex.clear();
+						//Those that are fixed at OFF are marked as black
+						for (int i = 0; i < vertexCounter; i++)
+						{
+							if (!alreadyPresent[particleCounter*nVertices + i]) colors[i] = Color::black();
+							else initialVertex.push_back(i);
+						}
+						colors[vertexCounter] = Color::black();
+						boost::connected_components_restricted(graph, &(connectedComponentVector[0]), &(colors[0]), stack, initialVertex);
+						bool multipleComponents = false;
+						for (int i = 0; i < nVertices; i++)
+						{
+							if (connectedComponentVector[i] == importantComponent) maximumSizeOff++;
+							else if (alreadyPresent[particleCounter*nVertices + i]) multipleComponents = true;
+						}
+						if (maximumSizeOff < vertexCount || multipleComponents) possiblyOff = false;
 					}
-					if(optionalVertex)
+					if(possiblyOn)
 					{
-						scratchPairs.push_back(std::make_pair(particleCounter, 0));
 						scratchPairs.push_back(std::make_pair(particleCounter, 1));
 					}
-					else
+					if (possiblyOff)
 					{
 						scratchPairs.push_back(std::make_pair(particleCounter, 0));
 					}
