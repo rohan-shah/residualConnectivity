@@ -5,7 +5,7 @@
 #include <boost/random/random_number_generator.hpp>
 namespace discreteGermGrain
 {
-	bool stochasticEnumeration(stochasticEnumerationArgs& args)
+	bool stochasticEnumeration1(stochasticEnumerationArgs& args)
 	{
 		const Context::inputGraph& graph = args.graph;
 		std::size_t nVertices = boost::num_vertices(graph);

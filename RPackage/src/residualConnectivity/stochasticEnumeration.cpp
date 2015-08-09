@@ -5,7 +5,7 @@
 #include "graphConvert.h"
 #include "calculateFactorials.h"
 #include "graphType.h"
-SEXP stochasticEnumeration(SEXP graph_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, graphType type)
+SEXP stochasticEnumeration(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, graphType type)
 {
 BEGIN_RCPP
 	/*convert budget*/
@@ -24,6 +24,16 @@ BEGIN_RCPP
 		throw std::runtime_error("Input budget must be an integer");
 	}
 	budget = (long)std::round(budget_double);
+
+	bool optimized;
+	try
+	{
+		optimized = Rcpp::as<bool>(optimized_sexp);
+	}
+	catch(Rcpp::not_compatible&)
+	{
+		throw std::runtime_error("Unable to convert input optimized to a boolean");
+	}
 
 	/*convert seed*/
 	int seed;
@@ -58,7 +68,9 @@ BEGIN_RCPP
 	for(int i = 0; i < nVertices+1; i++)
 	{
 		args.vertexCount = i;
-		bool result = discreteGermGrain::stochasticEnumeration(args);
+		bool result;
+		if(optimized) result = discreteGermGrain::stochasticEnumeration2(args);
+		else result = discreteGermGrain::stochasticEnumeration1(args);
 		if(result)
 		{
 			estimatedCounts.push_back(args.estimate);
@@ -105,15 +117,15 @@ BEGIN_RCPP
 	}
 END_RCPP
 }
-SEXP stochasticEnumeration_igraph(SEXP graph_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp)
+SEXP stochasticEnumeration_igraph(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp)
 {
-	return stochasticEnumeration(graph_sexp, budget_sexp, seed_sexp, counts_sexp, IGRAPH);
+	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, IGRAPH);
 }
-SEXP stochasticEnumeration_graphAM(SEXP graph_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp)
+SEXP stochasticEnumeration_graphAM(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp)
 {
-	return stochasticEnumeration(graph_sexp, budget_sexp, seed_sexp, counts_sexp, GRAPHAM);
+	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, GRAPHAM);
 }
-SEXP stochasticEnumeration_graphNEL(SEXP graph_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp)
+SEXP stochasticEnumeration_graphNEL(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp)
 {
-	return stochasticEnumeration(graph_sexp, budget_sexp, seed_sexp, counts_sexp, GRAPHNEL);
+	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, GRAPHNEL);
 }

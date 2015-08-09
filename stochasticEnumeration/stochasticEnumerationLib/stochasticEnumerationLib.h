@@ -18,6 +18,7 @@ namespace discreteGermGrain
 		mpfr_class estimate;
 		std::string message;
 	};
-	bool stochasticEnumeration(stochasticEnumerationArgs& args);
+	bool stochasticEnumeration1(stochasticEnumerationArgs& args);
+	bool stochasticEnumeration2(stochasticEnumerationArgs& args);
 }
 #endif

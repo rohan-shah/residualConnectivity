@@ -21,9 +21,9 @@ R_CallMethodDef callMethods[] =
 	{"countConnectedSubgraphs_igraph", (DL_FUNC)&countConnectedSubgraphs_igraph, 1},
 	{"countConnectedSubgraphs_graphNEL", (DL_FUNC)&countConnectedSubgraphs_graphNEL, 1},
 	{"countConnectedSubgraphs_graphAM", (DL_FUNC)&countConnectedSubgraphs_graphAM, 1},
-	{"stochasticEnumeration_igraph", (DL_FUNC)&stochasticEnumeration_igraph, 4},
-	{"stochasticEnumeration_graphNEL", (DL_FUNC)&stochasticEnumeration_graphNEL, 4},
-	{"stochasticEnumeration_graphAM", (DL_FUNC)&stochasticEnumeration_graphAM, 4},
+	{"stochasticEnumeration_igraph", (DL_FUNC)&stochasticEnumeration_igraph, 5},
+	{"stochasticEnumeration_graphNEL", (DL_FUNC)&stochasticEnumeration_graphNEL, 5},
+	{"stochasticEnumeration_graphAM", (DL_FUNC)&stochasticEnumeration_graphAM, 5},
 	{NULL, NULL, 0}
 };
 extern "C" void R_init_Rcpp(DllInfo* info);
