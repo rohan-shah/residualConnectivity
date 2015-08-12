@@ -10,6 +10,8 @@ if(!file.exists("data"))
 {
 	dir.create("data")
 }
+NAtime <- as.numeric(NA)
+class(NAtime) <- "POSIXct"
 for(size in 4:12)
 {
 	rdataFile <- file.path("data", paste0("grid", size, "Counts.RData"))
@@ -22,7 +24,7 @@ for(size in 4:12)
 		toBigZ <- as.bigz(substr(contents, index+1, nchar(contents)))
 
 		variableName <- paste0("grid", size, "Counts")
-		assign(variableName, new("exactCounts", counts = toBigZ, call = quote(fff()), graph = graph.lattice(length = size, dim = 2)))
+		assign(variableName, new("exactCounts", counts = toBigZ, call = quote(fff()), graph = graph.lattice(length = size, dim = 2), start = NAtime, end = NAtime))
 		save(list = variableName, file = rdataFile)
 	}
 }

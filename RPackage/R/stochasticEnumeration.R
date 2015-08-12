@@ -9,15 +9,21 @@ stochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1, opt
 		{
 			stop("Input `graph' must be undirected")
 		}
+		start <- Sys.time()
 		result <- .Call("stochasticEnumeration_igraph", graph, optimized, budget, seed, counts, PACKAGE="residualConnectivity")
+		end <- Sys.time()
 	}
 	else if(class(graph) == "graphNEL")
 	{
+		start <- Sys.time()
 		result <- .Call("stochasticEnumeration_graphNEL", graph, optimized, budget, seed, counts, PACKAGE="residualConnectivity")
+		end <- Sys.time()
 	}
 	else if(class(graph) == "graphAM")
 	{
+		start <- Sys.time()
 		result <- .Call("stochasticEnumeration_graphAM", graph, optimized, budget, seed, counts, PACKAGE="residualConnectivity")
+		end <- Sys.time()
 	}
 	else 
 	{
@@ -25,13 +31,13 @@ stochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1, opt
 	}
 	if(counts)
 	{
-		result <- new("estimatedCounts", data = result, call = match.call())
+		result <- new("estimatedCounts", data = result, call = match.call(), start = start, end = end)
 	}
 	else 
 	{
-		result <- new("estimatedSpectra", data = result, call = match.call())
+		result <- new("estimatedSpectra", data = result, call = match.call(), start = start, end = end)
 	}
 	return(result)
 }
-setClass("estimatedCounts", slots = list(data = "mpfr", call = "call"))
-setClass("estimatedSpectra", slots = list(data = "mpfr", call = "call"))
+setClass("estimatedCounts", slots = list(data = "mpfr", call = "call", start = "POSIXct", end = "POSIXct"))
+setClass("estimatedSpectra", slots = list(data = "mpfr", call = "call", start = "POSIXct", end = "POSIXct"))

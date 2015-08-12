@@ -9,7 +9,7 @@ checkExactSpectra <- function(object)
 	if(length(errors) > 0) return(errors)
 	return(TRUE)
 }
-setClass("exactSpectra", slots = list(spectra = "bigq", graph = "ANY"), validity = checkExactSpectra)
+setClass("exactSpectra", slots = list(spectra = "bigq", call = "call", start = "POSIXct", end = "POSIXct", graph = "ANY"), validity = checkExactSpectra)
 setMethod(f = "show", signature = "exactSpectra", definition = function(object)
 {
 	cat("Spectra of a graph with ", length(object@spectra)-1, " vertices, by number of subgraph vertices\n")

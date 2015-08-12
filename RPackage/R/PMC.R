@@ -17,20 +17,26 @@ PMC <- function(graph, n, seed = 1)
 		{
 			stop("Input `graph' must be undirected")
 		}
+		start <- Sys.time()
 		result <- .Call("PMC_igraph", graph, n, seed, PACKAGE="residualConnectivity")
+		end <- Sys.time()
 	}
 	else if(class(graph) == "graphNEL")
 	{
+		start <- Sys.time()
 		result <- .Call("PMC_graphNEL", graph, n, seed, PACKAGE="residualConnectivity")
+		end <- Sys.time()
 	}
 	else if(class(graph) == "graphAM")
 	{
+		start <- Sys.time()
 		result <- .Call("PMC_graphAM", graph, n, seed, PACKAGE="residualConnectivity")
+		end <- Sys.time()
 	}
 	else 
 	{
 		stop("Input graph must have class \"igraph\", \"graphAM\" or \"graphNEL\"")
 	}
-	estimatedSpectra <- new("estimatedSpectra", data = result)
+	estimatedSpectra <- new("estimatedSpectra", data = result, call = match.call(), start = start, end = end)
 	return(estimatedSpectra)
 }
