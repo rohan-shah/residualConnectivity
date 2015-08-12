@@ -1,8 +1,8 @@
 cmake_minimum_required(VERSION 3.1)
-set(CppFiles loadQt.cpp register.cpp crudeMC.cpp igraphInterface.cpp graphNELInterface.cpp graphAMInterface.cpp countConnectedSubgraphs.cpp stochasticEnumeration.cpp conditionalMC.cpp graphConvert.cpp graphInterface.cpp)
-set(HeaderFiles loadQt.h crudeMC.h igraphInterface.h graphNELInterface.h graphAMInterface.h countConnectedSubgraphs.h stochasticEnumeration.h conditionalMC.h graphConvert.h graphInterface.h)
+set(CppFiles loadQt.cpp register.cpp crudeMC.cpp igraphInterface.cpp graphNELInterface.cpp graphAMInterface.cpp countConnectedSubgraphs.cpp stochasticEnumeration.cpp conditionalMC.cpp graphConvert.cpp graphInterface.cpp PMC.cpp)
+set(HeaderFiles loadQt.h crudeMC.h igraphInterface.h graphNELInterface.h graphAMInterface.h countConnectedSubgraphs.h stochasticEnumeration.h conditionalMC.h graphConvert.h graphInterface.h PMC.h)
 add_library(residualConnectivityRPackage SHARED ${CppFiles} ${HeaderFiles})
-target_link_libraries(residualConnectivityRPackage PUBLIC residualConnectivityCommon Rcpp crudeMCLib conditionalMCLib exhaustiveSearchLib stochasticEnumerationLib)
+target_link_libraries(residualConnectivityRPackage PUBLIC residualConnectivityCommon Rcpp crudeMCLib conditionalMCLib exhaustiveSearchLib stochasticEnumerationLib PMCLib)
 set_target_properties(residualConnectivityRPackage PROPERTIES OUTPUT_NAME "residualConnectivity")
 
 if(BUILD_VISUALISATION)

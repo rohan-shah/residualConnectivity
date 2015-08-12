@@ -4,6 +4,7 @@
 #include "conditionalMC.h"
 #include "countConnectedSubgraphs.h"
 #include "stochasticEnumeration.h"
+#include "PMC.h"
 #ifdef _MSC_VER
 	#undef RcppExport
 	#define RcppExport extern "C" __declspec(dllexport)
@@ -24,6 +25,9 @@ R_CallMethodDef callMethods[] =
 	{"stochasticEnumeration_igraph", (DL_FUNC)&stochasticEnumeration_igraph, 5},
 	{"stochasticEnumeration_graphNEL", (DL_FUNC)&stochasticEnumeration_graphNEL, 5},
 	{"stochasticEnumeration_graphAM", (DL_FUNC)&stochasticEnumeration_graphAM, 5},
+	{"PMC_igraph", (DL_FUNC)&PMC_igraph, 3},
+	{"PMC_graphNEL", (DL_FUNC)&PMC_graphNEL, 3},
+	{"PMC_graphAM", (DL_FUNC)&PMC_graphAM, 3},
 	{NULL, NULL, 0}
 };
 extern "C" void R_init_Rcpp(DllInfo* info);
