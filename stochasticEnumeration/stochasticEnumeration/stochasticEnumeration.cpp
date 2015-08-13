@@ -18,6 +18,7 @@ namespace discreteGermGrain
 			HELP_OPTION
 			("vertexCount", boost::program_options::value<int>(), "(int) Number of UP vertices")
 			("optimized", boost::program_options::bool_switch()->default_value(true)->implicit_value(true))
+			("nPermutations", boost::program_options::value<int>()->default_value(1)->implicit_value(1), "(int) Number of permutations")
 			;
 
 		boost::program_options::variables_map variableMap;
@@ -38,6 +39,13 @@ namespace discreteGermGrain
 				"This program estimates the probability that a random subgraph of a specified base graph is connected, using Stochastic Enumeration. The random subgraph uses a vertex percolation model.\n\n"
 			;
 			std::cout << options << std::endl;
+			return 0;
+		}
+
+		int nPermutations = variableMap["nPermutations"].as<int>();
+		if (nPermutations < 1)
+		{
+			std::cout << "Input nPermutations must be at least 1" << std::endl;
 			return 0;
 		}
 
@@ -77,6 +85,7 @@ namespace discreteGermGrain
 
 		stochasticEnumerationArgs args(graph, randomSource);
 		args.n = n;
+		args.nPermutations = nPermutations;
 		//Do we want whole spectra, or just a component?
 		if (variableMap.count("vertexCount") < 1)
 		{

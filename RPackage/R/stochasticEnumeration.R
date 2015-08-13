@@ -1,4 +1,4 @@
-stochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1, optimized = TRUE)
+stochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1, optimized = TRUE, nPermutations = 1)
 {
 	if(form == "spectra") counts <- FALSE
 	else if(form == "counts") counts <- TRUE
@@ -10,19 +10,19 @@ stochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1, opt
 			stop("Input `graph' must be undirected")
 		}
 		start <- Sys.time()
-		result <- .Call("stochasticEnumeration_igraph", graph, optimized, budget, seed, counts, PACKAGE="residualConnectivity")
+		result <- .Call("stochasticEnumeration_igraph", graph, optimized, budget, seed, counts, nPermutations, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else if(class(graph) == "graphNEL")
 	{
 		start <- Sys.time()
-		result <- .Call("stochasticEnumeration_graphNEL", graph, optimized, budget, seed, counts, PACKAGE="residualConnectivity")
+		result <- .Call("stochasticEnumeration_graphNEL", graph, optimized, budget, seed, counts, nPermutations, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else if(class(graph) == "graphAM")
 	{
 		start <- Sys.time()
-		result <- .Call("stochasticEnumeration_graphAM", graph, optimized, budget, seed, counts, PACKAGE="residualConnectivity")
+		result <- .Call("stochasticEnumeration_graphAM", graph, optimized, budget, seed, counts, nPermutations, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else 

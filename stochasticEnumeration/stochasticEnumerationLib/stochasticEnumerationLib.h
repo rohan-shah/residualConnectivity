@@ -13,6 +13,7 @@ namespace discreteGermGrain
 			{}
 		const Context::inputGraph& graph;
 		boost::mt19937& randomSource;
+		int nPermutations;
 		int vertexCount;
 		int n;
 		mpfr_class estimate;

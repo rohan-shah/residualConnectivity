@@ -26,7 +26,7 @@ namespace discreteGermGrain
 		observation(Context const& context, boost::shared_array<const vertexState> state);
 		//A default constructor that fills all numeric members with -1. Somewhat dangerous to leave in here, but problems are due to the use of such invalid objects, it should be fairly obvious. 
 		//observation(Context const& context);
-		observation(observation&& other) noexcept;
+		observation(observation&& other);
 		observation& operator=(observation&& other);
 		Context const& getContext() const;
 		const vertexState* getState() const;

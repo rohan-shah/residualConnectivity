@@ -36,6 +36,13 @@ namespace discreteGermGrain
 			return false;
 		}
 
+		int nPermutations = args.nPermutations;
+		if (nPermutations < 1)
+		{
+			args.message = "Input nPermutations must be at least 1";
+			return false;
+		}
+
 		std::vector<int> nActiveVertices(n, 0);
 		std::vector<int> anActiveVertex(n, 0);
 		std::vector<int> rank(n*nVertices, 0);
@@ -47,21 +54,10 @@ namespace discreteGermGrain
 		std::vector<int> copiedRank(n*nVertices, 0);
 		std::vector<int> copiedParent(n*nVertices, 0);
 		std::vector<bool> copiedAlreadyPresent(n*nVertices, false);
-		//Initialize the algorithm by having the first vertex both up and down. 
-		int nParticles = 2;
-		{
-			boost::disjoint_sets<int*, int*> ds(&rank[0], &parent[0]);
-			ds.make_set(0);
-		}
-		nActiveVertices[0] = 1;
-		nActiveVertices[1] = 0;
-		alreadyPresent[0] = true;
 
-		mpfr_class total = 0;
-		mpfr_class multiple = 1;
 		//Scratch memory
 		std::vector<std::pair<int, int> > scratchPairs;
-		scratchPairs.reserve(nParticles*2);
+		scratchPairs.reserve(n * 2);
 
 		//Scratch memory for depth first search
 		typedef boost::color_traits<boost::default_color_type> Color;
@@ -71,163 +67,205 @@ namespace discreteGermGrain
 		std::vector<Context::inputGraph::vertex_descriptor> initialVertex(0);
 		initialVertex.reserve(nVertices);
 
-		for(int vertexCounter = 1; vertexCounter < (int)nVertices; vertexCounter++)
+		//The permutation is initially the identity. This means that if we set nPermutations = 1 we will get the same permutation for every seed. 
+		std::vector<int> permutation(boost::counting_iterator<int>(0), boost::counting_iterator<int>((int)nVertices));
+		mpfr_class totalOverPermutations = 0;
+		for(int permutationCounter = 0; permutationCounter < args.nPermutations; permutationCounter++)
 		{
-			scratchPairs.clear();
-			if(nParticles == 0) break;
-			int nConnected = 0;
-			for(int particleCounter = 0; particleCounter < nParticles; particleCounter++)
+			//It seems the easiest thing is to actually reorder the vertices within the graph (because we rely on being able to easily determine which vertices are AFTER the current vertex)
+			Context::inputGraph reorderedGraph(nVertices);
 			{
-				//No more vertices will be added to this particle
-				if(nActiveVertices[particleCounter] == vertexCount)
+				Context::inputGraph::edge_iterator current, end;
+				boost::tie(current, end) = boost::edges(graph);
+				for(; current != end; current++)
 				{
-					boost::disjoint_sets<int*, int*> ds(&rank[particleCounter*nVertices], &parent[particleCounter*nVertices]);
-					int connectedComponents = 0;
-					for(int i = 0; i < (int)nVertices; i++)
-					{
-						if(alreadyPresent[particleCounter*nVertices+i]) connectedComponents += parent[particleCounter*nVertices+i] == i;
-					}
-					nConnected += connectedComponents == 1;
+					boost::add_edge(permutation[current->m_source], permutation[current->m_target], reorderedGraph);
 				}
-				//All remaining vertices will be added to this particle
-				else if(nActiveVertices[particleCounter] + (int)nVertices - vertexCounter == vertexCount)
+			}
+
+			//Initialize the algorithm by having the first vertex both up and down. 
+			int nParticles = 2;
+			{
+				boost::disjoint_sets<int*, int*> ds(&rank[0], &parent[0]);
+				ds.make_set(0);
+			}
+			nActiveVertices[0] = 1;
+			nActiveVertices[1] = 0;
+			alreadyPresent[0] = true;
+			alreadyPresent[nVertices] = false;
+			anActiveVertex[0] = 0;
+			std::fill(rank.begin(), rank.end(), 0);
+			std::fill(parent.begin(), parent.end(), 0);
+
+			mpfr_class total = 0;
+			mpfr_class multiple = 1;
+
+			for(int vertexCounter = 1; vertexCounter < (int)nVertices; vertexCounter++)
+			{
+				int currentVertex = permutation[vertexCounter];
+				scratchPairs.clear();
+				if(nParticles == 0) break;
+				int nConnected = 0;
+				for(int particleCounter = 0; particleCounter < nParticles; particleCounter++)
 				{
-					boost::disjoint_sets<int*, int*> ds(&rank[particleCounter*nVertices], &parent[particleCounter*nVertices]);
-					//Add in remaining vertices
-					for(int k = vertexCounter; k < (int)nVertices; k++)
+					//No more vertices will be added to this particle
+					if(nActiveVertices[particleCounter] == vertexCount)
 					{
-						ds.make_set(k);
+						boost::disjoint_sets<int*, int*> ds(&rank[particleCounter*nVertices], &parent[particleCounter*nVertices]);
+						int connectedComponents = 0;
+						for(int i = 0; i < (int)vertexCounter; i++)
+						{
+							if(alreadyPresent[particleCounter*nVertices+i]) connectedComponents += parent[particleCounter*nVertices+i] == i;
+						}
+						nConnected += connectedComponents == 1;
+					}
+					//All remaining vertices will be added to this particle
+					else if(nActiveVertices[particleCounter] + (int)nVertices - vertexCounter == vertexCount)
+					{
+						boost::disjoint_sets<int*, int*> ds(&rank[particleCounter*nVertices], &parent[particleCounter*nVertices]);
+						//Add in remaining vertices
+						for(int k = vertexCounter; k < (int)nVertices; k++)
+						{
+							ds.make_set(k);
+							Context::inputGraph::out_edge_iterator current, last;
+							boost::tie(current, last) = boost::out_edges(k, reorderedGraph);
+							for(; current != last; current++)
+							{
+								int other = (int)current->m_target;
+								if((alreadyPresent[particleCounter*nVertices+other] && other < vertexCounter) || (other <= k && other >= vertexCounter))
+								{
+									ds.union_set(other, k);
+								}
+							}
+						}
+						int connectedComponents = 0;
+						for(int i = 0; i < (int)nVertices; i++)
+						{
+							if(alreadyPresent[particleCounter*nVertices+i] || i >= vertexCounter) connectedComponents += parent[particleCounter*nVertices+i] == i;
+						}
+						nConnected += (connectedComponents == 1);
+					}
+					//In this case we have a choice of whether or not to take this vertex as active. So we check that
+					//1. This vertex is contained in the connected component attached to anActiveVertex[particleCounter]
+					//2. The connected component attached to anActiveVertex has at least vertexCount vertices
+					else
+					{
+						bool possiblyOn = true, possiblyOff = true;
+						if(nActiveVertices[particleCounter] > 0) 
+						{
+							//Colours are initially all white
+							std::fill(colors.begin(), colors.end(), Color::white());
+							//Those that are fixed at OFF are marked as black
+							for(int i = 0; i < vertexCounter; i++) 
+							{
+								if(!alreadyPresent[particleCounter*nVertices+i]) colors[i] = Color::black();
+							}
+							initialVertex.clear();
+							initialVertex.push_back(anActiveVertex[particleCounter]);
+							//First the maximum size with this vertex on
+							std::fill(connectedComponentVector.begin(), connectedComponentVector.end(), -1);
+							boost::connected_components_restricted(reorderedGraph, &(connectedComponentVector[0]), &(colors[0]), stack, initialVertex);
+							int importantComponent = connectedComponentVector[initialVertex[0]];
+							int maximumSizeOn = 0;
+							for(int i = 0; i < (int)nVertices; i++)
+							{
+								if(connectedComponentVector[i] == importantComponent) maximumSizeOn++;
+							}
+							//If (no matter how many more vertices we add) we cannot reach the desired component size, then this corresponds to a leaf with zero children, and 0 cost. So skip this one completely
+							if(maximumSizeOn < vertexCount) continue;
+							//If the vertex under consideration is in a different connected component then it can't be on
+							if (connectedComponentVector[vertexCounter] != importantComponent)
+							{
+								possiblyOn = false;
+							}
+							int maximumSizeOff = 0;
+							std::fill(connectedComponentVector.begin(), connectedComponentVector.end(), -1);
+							std::fill(colors.begin(), colors.end(), Color::white());
+							initialVertex.clear();
+							//Those that are fixed at OFF are marked as black
+							for (int i = 0; i < vertexCounter; i++)
+							{
+								if (!alreadyPresent[particleCounter*nVertices + i]) colors[i] = Color::black();
+								else initialVertex.push_back(i);
+							}
+							colors[vertexCounter] = Color::black();
+							boost::connected_components_restricted(reorderedGraph, &(connectedComponentVector[0]), &(colors[0]), stack, initialVertex);
+							bool multipleComponents = false;
+							for (int i = 0; i < (int)nVertices; i++)
+							{
+								if (connectedComponentVector[i] == importantComponent) maximumSizeOff++;
+								else if (i < vertexCounter && alreadyPresent[particleCounter*nVertices + i]) multipleComponents = true;
+							}
+							if (maximumSizeOff < vertexCount || multipleComponents) possiblyOff = false;
+						}
+						if(possiblyOn)
+						{
+							scratchPairs.push_back(std::make_pair(particleCounter, 1));
+						}
+						if (possiblyOff)
+						{
+							scratchPairs.push_back(std::make_pair(particleCounter, 0));
+						}
+					}
+				}
+				int newParticlesCount = std::min(n, (int)scratchPairs.size());
+				boost::random_shuffle(scratchPairs, generator);
+				total += multiple * nConnected;
+				multiple *= mpfr_class(scratchPairs.size()) / mpfr_class(newParticlesCount);
+
+				for(int particleCounter = 0; particleCounter < newParticlesCount; particleCounter++)
+				{
+					std::pair<int, int> newParticleData = *scratchPairs.rbegin();
+					scratchPairs.pop_back();
+
+					//Same number of active vertices, or maybe one more. 
+					copiedNActiveVertices[particleCounter] = nActiveVertices[newParticleData.first] + newParticleData.second;
+					//Copy rank data
+					std::copy(rank.begin() + (newParticleData.first*nVertices), rank.begin() + (newParticleData.first+1)*nVertices, copiedRank.begin() + particleCounter*nVertices);
+					//copy parent data
+					std::copy(parent.begin() + (newParticleData.first*nVertices), parent.begin() + (newParticleData.first+1)*nVertices, copiedParent.begin() + (particleCounter*nVertices));
+					//copy already present data
+					std::copy(alreadyPresent.begin() + newParticleData.first*nVertices, alreadyPresent.begin() + (newParticleData.first+1)*nVertices, copiedAlreadyPresent.begin() + particleCounter*nVertices);
+					//Copy data about a (random) active vertex (for use in depth-first search)
+					copiedAnActiveVertex[particleCounter] = anActiveVertex[newParticleData.first];
+					//Add extra vertex, if required
+					if(newParticleData.second)
+					{
+						copiedAlreadyPresent[particleCounter * nVertices + vertexCounter] = true;
+						copiedAnActiveVertex[particleCounter] = vertexCounter;
+
+						boost::disjoint_sets<int*, int*> ds(&copiedRank[particleCounter*nVertices], &copiedParent[particleCounter*nVertices]);
+						ds.make_set(vertexCounter);
+
 						Context::inputGraph::out_edge_iterator current, last;
-						boost::tie(current, last) = boost::out_edges(k, graph);
+						boost::tie(current, last) = boost::out_edges(vertexCounter, reorderedGraph);
 						for(; current != last; current++)
 						{
-							int other = (int)current->m_target;
-							if(alreadyPresent[particleCounter*nVertices+other] || (other <= k && other >= vertexCounter))
+							if(current->m_target < vertexCounter && copiedAlreadyPresent[particleCounter*nVertices + current->m_target])
 							{
-								ds.union_set(other, k);
+								ds.union_set(vertexCounter, (int)current->m_target);
 							}
 						}
 					}
-					int connectedComponents = 0;
-					for(int i = 0; i < (int)nVertices; i++)
+					else
 					{
-						if(alreadyPresent[particleCounter*nVertices+i] || i >= vertexCounter) connectedComponents += parent[particleCounter*nVertices+i] == i;
-					}
-					nConnected += (connectedComponents == 1);
-				}
-				//In this case we have a choice of whether or not to take this vertex as active. So we check that
-				//1. This vertex is contained in the connected component attached to anActiveVertex[vertexCounter]
-				//2. The connected component attached to anActiveVertex has at least vertexCount vertices
-				else
-				{
-					bool possiblyOn = true, possiblyOff = true;
-					if(nActiveVertices[particleCounter] > 0) 
-					{
-						//Colours are initially all white
-						std::fill(colors.begin(), colors.end(), Color::white());
-						//Those that are fixed at OFF are marked as black
-						for(int i = 0; i < vertexCounter; i++) 
-						{
-							if(!alreadyPresent[particleCounter*nVertices+i]) colors[i] = Color::black();
-						}
-						initialVertex.clear();
-						initialVertex.push_back(anActiveVertex[particleCounter]);
-						//First the maximum size with this vertex on
-						std::fill(connectedComponentVector.begin(), connectedComponentVector.end(), -1);
-						boost::connected_components_restricted(graph, &(connectedComponentVector[0]), &(colors[0]), stack, initialVertex);
-						int importantComponent = connectedComponentVector[initialVertex[0]];
-						int maximumSizeOn = 0;
-						for(int i = 0; i < (int)nVertices; i++)
-						{
-							if(connectedComponentVector[i] == importantComponent) maximumSizeOn++;
-						}
-						//If (no matter how many more vertices we add) we cannot reach the desired component size, then this corresponds to a leaf with zero children, and 0 cost. So skip this one completely
-						if(maximumSizeOn < vertexCount) continue;
-						//If the vertex under consideration is in a different connected component then it can't be on
-						if (connectedComponentVector[vertexCounter] != importantComponent)
-						{
-							possiblyOn = false;
-						}
-						int maximumSizeOff = 0;
-						std::fill(connectedComponentVector.begin(), connectedComponentVector.end(), -1);
-						std::fill(colors.begin(), colors.end(), Color::white());
-						initialVertex.clear();
-						//Those that are fixed at OFF are marked as black
-						for (int i = 0; i < vertexCounter; i++)
-						{
-							if (!alreadyPresent[particleCounter*nVertices + i]) colors[i] = Color::black();
-							else initialVertex.push_back(i);
-						}
-						colors[vertexCounter] = Color::black();
-						boost::connected_components_restricted(graph, &(connectedComponentVector[0]), &(colors[0]), stack, initialVertex);
-						bool multipleComponents = false;
-						for (int i = 0; i < (int)nVertices; i++)
-						{
-							if (connectedComponentVector[i] == importantComponent) maximumSizeOff++;
-							else if (alreadyPresent[particleCounter*nVertices + i]) multipleComponents = true;
-						}
-						if (maximumSizeOff < vertexCount || multipleComponents) possiblyOff = false;
-					}
-					if(possiblyOn)
-					{
-						scratchPairs.push_back(std::make_pair(particleCounter, 1));
-					}
-					if (possiblyOff)
-					{
-						scratchPairs.push_back(std::make_pair(particleCounter, 0));
+						copiedAlreadyPresent[particleCounter * nVertices + vertexCounter] = false;
 					}
 				}
+
+				nActiveVertices.swap(copiedNActiveVertices);
+				rank.swap(copiedRank);
+				parent.swap(copiedParent);
+				alreadyPresent.swap(copiedAlreadyPresent);
+				anActiveVertex.swap(copiedAnActiveVertex);
+				nParticles = newParticlesCount;
 			}
-			int newParticlesCount = std::min(n, (int)scratchPairs.size());
-			boost::random_shuffle(scratchPairs, generator);
-			total += multiple * nConnected;
-			multiple *= mpfr_class(scratchPairs.size()) / mpfr_class(newParticlesCount);
-
-			for(int particleCounter = 0; particleCounter < newParticlesCount; particleCounter++)
-			{
-				std::pair<int, int> newParticleData = *scratchPairs.rbegin();
-				scratchPairs.pop_back();
-
-				//Same number of active vertices, or maybe one more. 
-				copiedNActiveVertices[particleCounter] = nActiveVertices[newParticleData.first] + newParticleData.second;
-				//Copy rank data
-				std::copy(rank.begin() + (newParticleData.first*nVertices), rank.begin() + (newParticleData.first+1)*nVertices, copiedRank.begin() + particleCounter*nVertices);
-				//copy parent data
-				std::copy(parent.begin() + (newParticleData.first*nVertices), parent.begin() + (newParticleData.first+1)*nVertices, copiedParent.begin() + (particleCounter*nVertices));
-				//copy already present data
-				std::copy(alreadyPresent.begin() + newParticleData.first*nVertices, alreadyPresent.begin() + (newParticleData.first+1)*nVertices, copiedAlreadyPresent.begin() + particleCounter*nVertices);
-				//Copy data about a (random) active vertex (for use in depth-first search)
-				copiedAnActiveVertex[particleCounter] = anActiveVertex[newParticleData.first];
-				//Add extra vertex, if required
-				if(newParticleData.second)
-				{
-					copiedAlreadyPresent[particleCounter * nVertices + vertexCounter] = true;
-					copiedAnActiveVertex[particleCounter] = vertexCounter;
-
-					boost::disjoint_sets<int*, int*> ds(&copiedRank[particleCounter*nVertices], &copiedParent[particleCounter*nVertices]);
-					ds.make_set(vertexCounter);
-
-					Context::inputGraph::out_edge_iterator current, last;
-					boost::tie(current, last) = boost::out_edges(vertexCounter, graph);
-					for(; current != last; current++)
-					{
-						if(copiedAlreadyPresent[particleCounter*nVertices + current->m_target])
-						{
-							ds.union_set(vertexCounter, (int)current->m_target);
-						}
-					}
-				}
-			}
-
-			nActiveVertices.swap(copiedNActiveVertices);
-			rank.swap(copiedRank);
-			parent.swap(copiedParent);
-			alreadyPresent.swap(copiedAlreadyPresent);
-			anActiveVertex.swap(copiedAnActiveVertex);
-			nParticles = newParticlesCount;
+			boost::random_shuffle(permutation, generator);
+			std::string totalStr = total.str();
+			totalOverPermutations += total;
 		}
 
-		args.estimate = total;
+		args.estimate = totalOverPermutations/nPermutations;
 		return true;
 	}
 }
