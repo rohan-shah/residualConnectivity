@@ -9,8 +9,9 @@ option(BUILD_R_PACKAGE "Build R package" ON)
 option(BUILD_MATLAB_PACKAGE "Build Matlab package" ON)
 option(BUILD_VISUALISATION "Build visualisation code" ON)
 
+add_definitions("-DBOOST_NO_AUTO_PTR")
 if(CMAKE_COMPILER_IS_GNUCC)
-	add_definitions("-Wall")
+	add_definitions("-Wall -fPIC")
 endif()
 
 #Find boost packages
@@ -25,12 +26,12 @@ include_directories("${EIGEN_INCLUDE_DIR}")
 if(BUILD_MATLAB_PACKAGE)
 	find_package(Matlab COMPONENTS MEX_COMPILER MX_LIBRARY REQUIRED)
 endif()
+#Try config file first
+find_package(igraph CONFIG QUIET)
+if(NOT HAVE_IGRAPH)
+	find_package(igraph REQUIRED)
+endif()
 if(BUILD_VISUALISATION)
-	#Try config file first
-	find_package(igraph CONFIG QUIET)
-	if(NOT HAVE_IGRAPH)
-		find_package(igraph REQUIRED)
-	endif()
 	find_package(Qt5 COMPONENTS Widgets Core Gui REQUIRED)
 endif()
 
@@ -46,8 +47,10 @@ if(WIN32)
 else()
 	#mpfr needs to be listed as an imported target so that we can use target_link_librarie later on. If we don't have this then it just adds a -lmpfr which probably picks up the wrong thing. 
 	find_library(mpfr_LIBRARY mpfr)
+	find_path(mpfr_INCLUDE mpfr.h)
 	add_library(mpfr SHARED IMPORTED)
 	set_target_properties(mpfr PROPERTIES IMPORTED_LOCATION ${mpfr_LIBRARY})
+	set_target_properties(mpfr PROPERTIES INTERFACE_INCLUDE_DIRECTORIES ${mpfr_INCLUDE})
 endif()
 
 add_subdirectory(residualConnectivityCommon)

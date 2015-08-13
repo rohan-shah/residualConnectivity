@@ -18,7 +18,7 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		usingBiconnectedComponents::usingBiconnectedComponents(usingBiconnectedComponents&& other)
-			: ::discreteGermGrain::subObs::withWeight(static_cast<::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
+			: ::discreteGermGrain::subObs::withWeight(static_cast< ::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}

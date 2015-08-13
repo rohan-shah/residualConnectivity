@@ -15,7 +15,7 @@ namespace discreteGermGrain
 			other.weight = weight;
 		}
 		articulationConditioningForSplitting::articulationConditioningForSplitting(articulationConditioningForSplitting&& other)
-			: ::discreteGermGrain::withSub(static_cast<::discreteGermGrain::withSub&&>(other)), weight(other.weight)
+			: ::discreteGermGrain::withSub(static_cast< ::discreteGermGrain::withSub&&>(other)), weight(other.weight)
 		{}
 		const mpfr_class& articulationConditioningForSplitting::getWeight() const
 		{

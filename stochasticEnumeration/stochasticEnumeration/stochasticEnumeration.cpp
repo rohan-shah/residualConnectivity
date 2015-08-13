@@ -71,7 +71,7 @@ namespace discreteGermGrain
 		readSeed(variableMap, randomSource);
 
 		const Context::inputGraph& graph = context.getGraph();
-		std::size_t nVertices = boost::num_vertices(graph);
+		const std::size_t nVertices = boost::num_vertices(graph);
 		boost::random_number_generator<boost::mt19937> generator(randomSource);
 		bool optimized = variableMap["optimized"].as<bool>();
 
@@ -105,7 +105,7 @@ namespace discreteGermGrain
 		else
 		{
 			int vertexCount = variableMap["vertexCount"].as<int>();
-			if (vertexCount < 0 || vertexCount > nVertices)
+			if (vertexCount < 0 || vertexCount > (int)nVertices)
 			{
 				std::cout << "Input vertexCount must be a value in [0, nVertices]" << std::endl;
 				return 0;

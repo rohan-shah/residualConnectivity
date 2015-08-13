@@ -29,7 +29,7 @@ namespace discreteGermGrain
 		powersOfQ.reserve(nVertices + 1);
 		powersOfQ.push_back(1);
 		powersOfQ.push_back(q);
-		for (int i = 2; i < nVertices + 1; i++)
+		for (int i = 2; i < (int)nVertices + 1; i++)
 		{
 			powersOfQ.push_back(mpfr_class(powersOfQ[i - 1] * q));
 		}

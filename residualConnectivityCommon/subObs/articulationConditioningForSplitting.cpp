@@ -25,7 +25,7 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		articulationConditioningForSplitting::articulationConditioningForSplitting(articulationConditioningForSplitting&& other)
-			: ::discreteGermGrain::subObs::withWeight(static_cast<::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
+			: ::discreteGermGrain::subObs::withWeight(static_cast< ::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}

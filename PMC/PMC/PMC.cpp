@@ -78,7 +78,7 @@ namespace discreteGermGrain
 		powersQ.reserve(nVertices + 1);
 		powersP.push_back(1);
 		powersQ.push_back(1);
-		for (int i = 1; i < nVertices + 1; i++)
+		for (int i = 1; i < (int)nVertices + 1; i++)
 		{
 			powersP.push_back(powersP[i - 1] * opProbability);
 			powersQ.push_back(powersQ[i - 1] * inopProbability);

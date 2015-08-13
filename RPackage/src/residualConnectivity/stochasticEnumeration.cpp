@@ -57,7 +57,7 @@ BEGIN_RCPP
 	}
 
 	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph = graphConvert(graph_sexp, type);
-	std::size_t nVertices = boost::num_vertices(*graph);
+	const std::size_t nVertices = boost::num_vertices(*graph);
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
@@ -65,7 +65,7 @@ BEGIN_RCPP
 	discreteGermGrain::stochasticEnumerationArgs args(*graph, randomSource);
 	args.n = budget;
 
-	for(int i = 0; i < nVertices+1; i++)
+	for(int i = 0; i < (int)nVertices+1; i++)
 	{
 		args.vertexCount = i;
 		bool result;
@@ -100,7 +100,7 @@ BEGIN_RCPP
 		std::vector<mpz_class> factorials;
 		std::vector<mpfr_class> estimatedSpectra;
 		discreteGermGrain::calculateFactorials(factorials, (int)nVertices + 1);
-		for(int vertexCounter = 0; vertexCounter < nVertices+1; vertexCounter++)
+		for(int vertexCounter = 0; vertexCounter < (int)nVertices+1; vertexCounter++)
 		{
 			estimatedSpectra.push_back(mpfr_class((estimatedCounts[vertexCounter] * factorials[vertexCounter] * factorials[nVertices - vertexCounter]) / factorials[nVertices]));
 		}

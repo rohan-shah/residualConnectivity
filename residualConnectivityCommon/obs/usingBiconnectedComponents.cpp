@@ -15,7 +15,7 @@ namespace discreteGermGrain
 			other.weight = weight;
 		}
 		usingBiconnectedComponents::usingBiconnectedComponents(usingBiconnectedComponents&& other)
-			: ::discreteGermGrain::withSub(static_cast<::discreteGermGrain::withSub&&>(other)), weight(other.weight)
+			: ::discreteGermGrain::withSub(static_cast< ::discreteGermGrain::withSub&&>(other)), weight(other.weight)
 		{}
 		const mpfr_class& usingBiconnectedComponents::getWeight() const
 		{

@@ -11,7 +11,7 @@ if(BUILD_MATLAB_PACKAGE)
 		endforeach()
 	else()
 		foreach(MFILE IN LISTS MFILES)
-			add_custom_command(TARGET copyText COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/matlabPackage${MFILE}" "${CMAKE_BINARY_DIR}/matlabPackage/${MFILE}")
+			add_custom_command(TARGET copyText COMMAND ${CMAKE_COMMAND} -E copy "${CMAKE_SOURCE_DIR}/matlabPackage/${MFILE}" "${CMAKE_BINARY_DIR}/matlabPackage/${MFILE}")
 		endforeach()
 	endif()
 	#Output the runMatlab file

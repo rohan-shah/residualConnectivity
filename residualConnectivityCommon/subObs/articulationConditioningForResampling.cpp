@@ -25,7 +25,7 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		articulationConditioningForResampling::articulationConditioningForResampling(articulationConditioningForResampling&& other)
-			: ::discreteGermGrain::subObs::withWeight(static_cast<::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
+			: ::discreteGermGrain::subObs::withWeight(static_cast< ::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}

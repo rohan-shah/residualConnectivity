@@ -7,6 +7,7 @@ set_target_properties(residualConnectivityRPackage PROPERTIES OUTPUT_NAME "resid
 
 if(BUILD_VISUALISATION)
 	target_link_libraries(residualConnectivityRPackage PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets ${IGRAPH_LIBRARIES})
+	target_compile_definitions(residualConnectivityRPackage PUBLIC BUILD_VISUALISATION)
 endif()
 if(WIN32)
 	target_compile_definitions(residualConnectivityRPackage PUBLIC _CRT_SECURE_NO_WARNINGS)

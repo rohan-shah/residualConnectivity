@@ -16,7 +16,7 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		basic::basic(basic&& other)
-			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast<::discreteGermGrain::subObs::subObsWithRadius&&>(other))
+			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast< ::discreteGermGrain::subObs::subObsWithRadius&&>(other))
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}

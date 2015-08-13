@@ -58,7 +58,7 @@ namespace discreteGermGrain
 				int components = 0;
 				for (int j = 0; j < vertexCounter + 1; j++)
 				{
-					components += (parent[permutation[j]] == permutation[j]);
+					components += ((int)parent[permutation[j]] == permutation[j]);
 					if (components > 1) break;
 				}
 				//if (ds.count_sets(&permutation[0], &permutation[0] + vertexCounter + 1) == 1)

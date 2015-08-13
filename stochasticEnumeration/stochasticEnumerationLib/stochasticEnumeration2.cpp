@@ -10,11 +10,11 @@ namespace discreteGermGrain
 	bool stochasticEnumeration2(stochasticEnumerationArgs& args)
 	{
 		const Context::inputGraph& graph = args.graph;
-		std::size_t nVertices = boost::num_vertices(graph);
+		const std::size_t nVertices = boost::num_vertices(graph);
 		boost::random_number_generator<boost::mt19937> generator(args.randomSource);
 
 		int vertexCount = args.vertexCount;
-		if (vertexCount > nVertices)
+		if (vertexCount > (int)nVertices)
 		{
 			args.message = "Input vertexCount cannot be larger than the number of vertices";
 			return false;
@@ -83,14 +83,14 @@ namespace discreteGermGrain
 				{
 					boost::disjoint_sets<int*, int*> ds(&rank[particleCounter*nVertices], &parent[particleCounter*nVertices]);
 					int connectedComponents = 0;
-					for(int i = 0; i < nVertices; i++)
+					for(int i = 0; i < (int)nVertices; i++)
 					{
 						if(alreadyPresent[particleCounter*nVertices+i]) connectedComponents += parent[particleCounter*nVertices+i] == i;
 					}
 					nConnected += connectedComponents == 1;
 				}
 				//All remaining vertices will be added to this particle
-				else if(nActiveVertices[particleCounter] + nVertices - vertexCounter == vertexCount)
+				else if(nActiveVertices[particleCounter] + (int)nVertices - vertexCounter == vertexCount)
 				{
 					boost::disjoint_sets<int*, int*> ds(&rank[particleCounter*nVertices], &parent[particleCounter*nVertices]);
 					//Add in remaining vertices
@@ -109,7 +109,7 @@ namespace discreteGermGrain
 						}
 					}
 					int connectedComponents = 0;
-					for(int i = 0; i < nVertices; i++)
+					for(int i = 0; i < (int)nVertices; i++)
 					{
 						if(alreadyPresent[particleCounter*nVertices+i] || i >= vertexCounter) connectedComponents += parent[particleCounter*nVertices+i] == i;
 					}
@@ -137,7 +137,7 @@ namespace discreteGermGrain
 						boost::connected_components_restricted(graph, &(connectedComponentVector[0]), &(colors[0]), stack, initialVertex);
 						int importantComponent = connectedComponentVector[initialVertex[0]];
 						int maximumSizeOn = 0;
-						for(int i = 0; i < nVertices; i++)
+						for(int i = 0; i < (int)nVertices; i++)
 						{
 							if(connectedComponentVector[i] == importantComponent) maximumSizeOn++;
 						}
@@ -161,7 +161,7 @@ namespace discreteGermGrain
 						colors[vertexCounter] = Color::black();
 						boost::connected_components_restricted(graph, &(connectedComponentVector[0]), &(colors[0]), stack, initialVertex);
 						bool multipleComponents = false;
-						for (int i = 0; i < nVertices; i++)
+						for (int i = 0; i < (int)nVertices; i++)
 						{
 							if (connectedComponentVector[i] == importantComponent) maximumSizeOff++;
 							else if (alreadyPresent[particleCounter*nVertices + i]) multipleComponents = true;

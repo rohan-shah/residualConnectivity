@@ -51,7 +51,7 @@ namespace discreteGermGrain
 		: context(context), state(state)
 	{
 	}
-	observation::observation(observation&& other)
+	observation::observation(observation&& other) noexcept
 		:context(other.context)
 	{
 		state.swap(other.state);

@@ -20,7 +20,7 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		usingCutVertices::usingCutVertices(usingCutVertices&& other)
-			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast<::discreteGermGrain::subObs::subObsWithRadius&&>(other))
+			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast< ::discreteGermGrain::subObs::subObsWithRadius&&>(other))
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}
