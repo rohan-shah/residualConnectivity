@@ -28,3 +28,13 @@ for(size in 4:12)
 		save(list = variableName, file = rdataFile)
 	}
 }
+
+textFile <- file.path("..", "Tests", "Dodecahedron.txt")
+contents <- readLines(textFile)
+contents <- tail(contents, -1)
+index <- str_locate(contents, ":")
+toBigZ <- as.bigz(substr(contents, index+1, nchar(contents)))
+
+dodecahedronGraph <- read.graph("data/dodecahedron.graphml", format = "graphml")
+dodecahedronCounts <- new("exactCounts", counts = toBigZ, call = quote(fff()), graph = dodecahedronGraph, start = NAtime, end = NAtime)
+save(dodecahedronCounts, file = file.path("data", "dodecahedronCounts.RData"))
