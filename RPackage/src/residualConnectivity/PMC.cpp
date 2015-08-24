@@ -6,7 +6,6 @@ SEXP PMC(SEXP graph_sexp, SEXP n_sexp, SEXP seed_sexp, graphType type)
 {
 BEGIN_RCPP
 	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph = graphConvert(graph_sexp, type);
-	std::size_t nVertices = boost::num_vertices(*graph);
 	boost::mt19937 randomSource;
 
 	/*convert seed*/

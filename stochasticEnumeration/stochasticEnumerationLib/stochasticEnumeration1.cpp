@@ -168,7 +168,7 @@ namespace discreteGermGrain
 						boost::tie(current, last) = boost::out_edges(vertexCounter, graph);
 						for (; current != last; current++)
 						{
-							if (current->m_target < vertexCounter && copiedAlreadyPresent[particleCounter*nVertices + current->m_target])
+							if ((int)current->m_target < vertexCounter && copiedAlreadyPresent[particleCounter*nVertices + current->m_target])
 							{
 								ds.union_set(vertexCounter, (int)current->m_target);
 							}

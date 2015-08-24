@@ -102,7 +102,6 @@ namespace discreteGermGrain
 
 			for(int vertexCounter = 1; vertexCounter < (int)nVertices; vertexCounter++)
 			{
-				int currentVertex = permutation[vertexCounter];
 				scratchPairs.clear();
 				if(nParticles == 0) break;
 				int nConnected = 0;
@@ -241,7 +240,7 @@ namespace discreteGermGrain
 						boost::tie(current, last) = boost::out_edges(vertexCounter, reorderedGraph);
 						for(; current != last; current++)
 						{
-							if(current->m_target < vertexCounter && copiedAlreadyPresent[particleCounter*nVertices + current->m_target])
+							if((int)current->m_target < vertexCounter && copiedAlreadyPresent[particleCounter*nVertices + current->m_target])
 							{
 								ds.union_set(vertexCounter, (int)current->m_target);
 							}

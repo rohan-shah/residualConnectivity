@@ -7,9 +7,9 @@ spectraToRCR <- function(data, probability)
 	{
 		stop("Input data must have class estimatedCounts or estimatedSpectra")
 	}
-	if(length(probability) != 1 || probability < 0 || probability > 1 || (!is.numeric(probability) && class(probability) != "mpfr"))
+	if(any(probability < 0) || any(probability > 1) || (!is.numeric(probability) && class(probability) != "mpfr"))
 	{
-		stop("Input probability must be a single number between 0 and 1")
+		stop("Input probability must be numbers between 0 and 1")
 	}
 	if(is.numeric(probability))
 	{
