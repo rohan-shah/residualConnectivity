@@ -4,9 +4,9 @@ namespace discreteGermGrain
 {
 	bool readContext(boost::program_options::variables_map& variableMap, Context& out, mpfr_class opProbability, std::string& message)
 	{
-		if(variableMap.count("graphFile") + variableMap.count("gridGraph") + variableMap.count("torusGraph") != 1)
+		if(variableMap.count("graphFile") + variableMap.count("gridGraph") + variableMap.count("torusGraph") + variableMap.count("hexagonalGrid") != 1)
 		{
-			message = "Please enter exactly one of `gridGraph', `graphFile' or `torusGraph'";
+			message = "Please enter exactly one of `gridGraph', `graphFile', `hexagonalGrid' or `torusGraph'";
 			return false;
 		}
 		else if(variableMap.count("graphFile") == 1)
@@ -30,6 +30,17 @@ namespace discreteGermGrain
 				return false;
 			}
 			out = Context::torusContext(gridDimension, opProbability);
+			return true;
+		}
+		else if (variableMap.count("hexagonalGrid") == 1)
+		{
+			std::vector<int> gridDimensions = variableMap["hexagonalGrid"].as<std::vector<int> >();
+			if (gridDimensions.size() != 2 || gridDimensions[0] <= 0 || gridDimensions[1] <= 0)
+			{
+				message = "Input `hexagonalGrid' must be a pair of positive numbers";
+				return false;
+			}
+			out = Context::hexagonalGridcontext(gridDimensions[1], gridDimensions[0], opProbability);
 			return true;
 		}
 		else

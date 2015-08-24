@@ -75,6 +75,7 @@ namespace discreteGermGrain
 		const int* getShortestDistances() const;
 		const inputGraph& getGraph() const;
 		static Context gridContext(int gridDimension, mpfr_class opProbability);
+		static Context hexagonalGridcontext(int gridDimensionX, int gridDimensionY, mpfr_class opProbability);
 		static Context torusContext(int dimension, mpfr_class opProbability);
 		static Context fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message);
 		Context& operator=(Context&& other);

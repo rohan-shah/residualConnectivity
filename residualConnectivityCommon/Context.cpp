@@ -3,6 +3,7 @@
 #include <boost/property_map/function_property_map.hpp>
 #include <boost/graph/graphml.hpp>
 #include <boost/property_map/vector_property_map.hpp>
+#include "constructGraphs.h"
 namespace discreteGermGrain
 {
 	namespace ContextImpl
@@ -124,21 +125,11 @@ namespace discreteGermGrain
 	}
 	Context Context::gridContext(int gridDimension, mpfr_class opProbability)
 	{
-		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions(new std::vector<vertexPosition>(gridDimension * gridDimension));
-		boost::shared_ptr<Context::inputGraph> graph(new Context::inputGraph(gridDimension * gridDimension));
-		for(int i = 0; i < gridDimension; i++)
-		{
-			for(int j = 0; j < gridDimension; j++)
-			{
-				(*vertexPositions)[i + j * gridDimension] = vertexPosition((float)i*100, (float)j*100);
-
-				if(i != gridDimension - 1) boost::add_edge(i + j*gridDimension, i + 1 +j*gridDimension, *graph);
-				if(j != gridDimension - 1) boost::add_edge(i + j*gridDimension, i + (j+1)*gridDimension, *graph);
-			}
-		}
+		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions;
+		boost::shared_ptr<Context::inputGraph> graph;
+		constructGraphs::squareGrid(gridDimension, graph, vertexPositions);
 		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(gridDimension * gridDimension));
 		for(int i = 0; i < gridDimension * gridDimension; i++) (*ordering)[i] = i;
-
 
 		return Context(graph, ordering, vertexPositions, opProbability);
 	}
@@ -216,34 +207,23 @@ namespace discreteGermGrain
 	}
 	Context Context::torusContext(int dimension, mpfr_class opProbability)
 	{
-		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions(new std::vector<vertexPosition>(dimension * dimension));
-		boost::shared_ptr<Context::inputGraph> graph(new Context::inputGraph(dimension * dimension));
-		for(int i = 0; i < dimension; i++)
-		{
-			for(int j = 0; j < dimension; j++)
-			{
-				(*vertexPositions)[i + j * dimension] = vertexPosition((float)i, (float)j);
-
-				if(i != dimension - 1) 
-				{
-					boost::add_edge(i + j*dimension, i + 1 +j*dimension, *graph);
-				}
-				else
-				{
-					boost::add_edge(i + j*dimension, 0 +j*dimension, *graph);
-				}
-				if(j != dimension - 1) 
-				{
-					boost::add_edge(i + j*dimension, i + (j+1)*dimension, *graph);
-				}
-				else
-				{
-					boost::add_edge(i + j*dimension, i + 0*dimension, *graph);
-				}
-			}
-		}
+		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions;
+		boost::shared_ptr<Context::inputGraph> graph;
+		constructGraphs::squareTorus(dimension, graph, vertexPositions);
 		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(dimension * dimension));
 		for(int i = 0; i < dimension * dimension; i++) (*ordering)[i] = i;
+
+		return Context(graph, ordering, vertexPositions, opProbability);
+	}
+	Context Context::hexagonalGridcontext(int gridDimensionX, int gridDimensionY, mpfr_class opProbability)
+	{
+		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions;
+		boost::shared_ptr<Context::inputGraph> graph;
+		constructGraphs::hexagonalTiling(gridDimensionX, gridDimensionY, graph, vertexPositions);
+
+		std::size_t nVertices = boost::num_vertices(*graph);
+		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(nVertices));
+		for (int i = 0; i < (int)nVertices; i++) (*ordering)[i] = i;
 
 		return Context(graph, ordering, vertexPositions, opProbability);
 	}
