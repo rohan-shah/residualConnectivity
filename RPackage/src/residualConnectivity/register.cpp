@@ -4,6 +4,7 @@
 #include "conditionalMC.h"
 #include "countConnectedSubgraphs.h"
 #include "stochasticEnumeration.h"
+#include "createHexagonalLattice.h"
 #include "PMC.h"
 #ifdef _MSC_VER
 	#undef RcppExport
@@ -28,6 +29,7 @@ R_CallMethodDef callMethods[] =
 	{"PMC_igraph", (DL_FUNC)&PMC_igraph, 3},
 	{"PMC_graphNEL", (DL_FUNC)&PMC_graphNEL, 3},
 	{"PMC_graphAM", (DL_FUNC)&PMC_graphAM, 3},
+	{"createHexagonalLattice", (DL_FUNC)&createHexagonalLattice, 2},
 	{NULL, NULL, 0}
 };
 extern "C" void R_init_Rcpp(DllInfo* info);

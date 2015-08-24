@@ -4,6 +4,7 @@
 #include "graphConvert.h"
 SEXP PMC(SEXP graph_sexp, SEXP n_sexp, SEXP seed_sexp, graphType type)
 {
+BEGIN_RCPP
 	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph = graphConvert(graph_sexp, type);
 	std::size_t nVertices = boost::num_vertices(*graph);
 	boost::mt19937 randomSource;
@@ -48,6 +49,7 @@ SEXP PMC(SEXP graph_sexp, SEXP n_sexp, SEXP seed_sexp, graphType type)
 	Rcpp::Function mpfrFunction("mpfr");
 	Rcpp::RObject result = mpfrFunction(spectraStrings_sexp, Rcpp::Named("prec", 50));
 	return result;
+END_RCPP
 }
 SEXP PMC_igraph(SEXP graph_sexp, SEXP n_exp, SEXP seed_sexp)
 {

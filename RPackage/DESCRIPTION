@@ -24,3 +24,4 @@ Collate:
    'spectraToRCR.R'
    'PMC.R'
    'coerce.R'
+   'createHexagonalLattice.R'
