@@ -1,5 +1,7 @@
 library(Rmpfr)
-library(residualConnectivity)
+hasPackage <- require(residualConnectivity)
+library(R.utils)
+if(!hasPackage) q(save="no")
 library(igraph)
 library(stringr)
 fff <- function()
@@ -25,6 +27,9 @@ for(size in 4:12)
 
 		variableName <- paste0("grid", size, "Counts")
 		assign(variableName, new("exactCounts", counts = toBigZ, call = quote(fff()), graph = graph.lattice(length = size, dim = 2), start = NAtime, end = NAtime))
+
+		#If we're creating a data file that didn't already exist, we need to trigger CMake to run again. 
+		if(!file.exists(rdataFile)) touchFile("CMakeLists.txt")
 		save(list = variableName, file = rdataFile)
 	}
 }

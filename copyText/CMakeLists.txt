@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-add_custom_target(copyText ALL)
+add_custom_target(copyText ALL DEPENDS nonExistentFilename)
 if(BUILD_MATLAB_PACKAGE)
 	set(MFILES crudeMC.m conditionalMC.m exhaustiveSearch.m private/getGraph.m)
 	#Copy .m files
