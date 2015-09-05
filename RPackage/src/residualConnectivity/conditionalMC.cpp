@@ -1,4 +1,4 @@
-#include "conditionalMCLib.h"
+#include "monteCarloMethods/conditionalMC.h"
 #include "Rcpp.h"
 #include "conditionalMC.h"
 #include "graphInterface.h"

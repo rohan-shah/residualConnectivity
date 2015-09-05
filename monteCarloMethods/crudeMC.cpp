@@ -1,6 +1,6 @@
 #include "observation.h"
 #include "isSingleComponentWithRadius.h"
-#include "crudeMCLib.h"
+#include "monteCarloMethods/crudeMC.h"
 namespace discreteGermGrain
 {
 	std::size_t crudeMC(crudeMCArgs& args)

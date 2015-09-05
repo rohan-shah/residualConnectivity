@@ -1,5 +1,5 @@
 set(MEXFILES crudeMCImpl.cpp conditionalMCImpl.cpp exhaustiveSearchImpl.cpp)
-set(MEXFILE_DEPENDENCIES crudeMCLib conditionalMCLib exhaustiveSearchLib)
+set(MEXFILE_DEPENDENCIES monteCarloMethods monteCarloMethods exactMethods)
 list(LENGTH MEXFILES N_MEXFILES)
 MATH(EXPR N_MEXFILES ${N_MEXFILES}-1)
 

@@ -3,7 +3,7 @@
 #include <boost/graph/incremental_components.hpp>
 #include <boost/range/algorithm/random_shuffle.hpp>
 #include <boost/random/random_number_generator.hpp>
-#include "PMCLib.h"
+#include "monteCarloMethods/PMC.h"
 namespace discreteGermGrain
 {
 	pmcArguments::pmcArguments(const Context::inputGraph& graph, boost::mt19937& randomSource)

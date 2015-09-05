@@ -1,4 +1,4 @@
-#include "conditionalMCLib.h"
+#include "monteCarloMethods/conditionalMC.h"
 #include <boost/random/bernoulli_distribution.hpp>
 #include <boost/random/geometric_distribution.hpp>
 #include <boost/random/uniform_int_distribution.hpp>

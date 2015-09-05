@@ -1,5 +1,5 @@
 #include "PMC.h"
-#include "PMCLib.h"
+#include "monteCarloMethods/PMC.h"
 #include "graphType.h"
 #include "graphConvert.h"
 SEXP PMC(SEXP graph_sexp, SEXP n_sexp, SEXP seed_sexp, graphType type)

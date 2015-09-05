@@ -2,6 +2,7 @@ context("check stochasticEnumeration function")
 
 test_that("Function can be called using graphNEL, graphAM and igraph, and gives same results", 
 	{
+		library(graph)
 		gridSizes <- 2:4
 		forms <- c("spectra", "counts")
 		for(form in forms)
@@ -24,6 +25,7 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 test_that("Values agree with exact counts for small grids",
 {
 	library(igraph)
+	library(graph)
 	for(i in 2:4)
 	{
 		graph <- graph.lattice(dim = 2, length=i)
@@ -36,6 +38,7 @@ test_that("Values agree with exact counts for small grids",
 test_that("Values agree with exact spectra for small grids",
 {
 	library(igraph)
+	library(graph)
 	for(i in 2:4)
 	{
 		graph <- graph.lattice(dim = 2, length=i)

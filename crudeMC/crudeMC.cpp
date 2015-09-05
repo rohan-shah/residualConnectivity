@@ -1,16 +1,8 @@
-#include <iostream>
 #include <boost/program_options.hpp>
 #include <boost/random/mersenne_twister.hpp>
-#include <boost/random/bernoulli_distribution.hpp>
-#include <boost/random/geometric_distribution.hpp>
-#include <boost/random/uniform_int_distribution.hpp>
-#include "observation.h"
-#include "Context.h"
-#include "isSingleComponentWithRadius.h"
+#include "monteCarloMethods/crudeMC.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
-#include "subObs/subObs.h"
-#include "conditionalMCLib.h"
 namespace discreteGermGrain
 {
 	int main(int argc, char **argv)
@@ -21,7 +13,6 @@ namespace discreteGermGrain
 			PROBABILITY_OPTION
 			N_OPTION
 			SEED_OPTION
-			EXPECTED_UP_NUMBER_OPTION
 			HELP_OPTION;
 
 		boost::program_options::variables_map variableMap;
@@ -51,33 +42,26 @@ namespace discreteGermGrain
 			return 0;
 		}
 
-		mpfr_class probability;
 		std::string message;
-		if(!readProbabilityString(variableMap, probability, message))
+		mpfr_class opProbability;
+		if(!readProbabilityString(variableMap, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
-		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, probability, message))
+		Context context = Context::gridContext(1, opProbability);
+		if(!readContext(variableMap, context, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
-		bool outputExpectedUpNumber = variableMap["expectedUpNumber"].as<bool>();
-		
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
-
-		conditionalMCArgs args(context, randomSource);
+		crudeMCArgs args(context, randomSource);
 		args.n = n;
-		conditionalMC(args);
 
-		std::cout << "Connectivity estimate is " << args.estimate.convert_to<double>() << std::endl;
-		if(outputExpectedUpNumber)
-		{
-			std::cout << "Expected number of up vertices conditional on having a connected graph was " << args.expectedUpNumber.convert_to<double>() << std::endl;
-		}
+		std::size_t connected = crudeMC(args);
+		std::cout << connected << " / " << n << " = " << ((float)connected / (float)n) << " had one connected component" << std::endl;
 		return 0;
 	}
 }

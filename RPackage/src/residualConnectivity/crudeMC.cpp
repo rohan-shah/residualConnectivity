@@ -1,4 +1,4 @@
-#include "crudeMCLib.h"
+#include "monteCarloMethods/crudeMC.h"
 #include "Rcpp.h"
 #include "crudeMC.h"
 #include "graphInterface.h"

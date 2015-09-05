@@ -1,8 +1,0 @@
-cmake_minimum_required(VERSION 3.1)
-add_library(usingBiconnectedSplittingLib STATIC usingBiconnectedSplittingLib.cpp)
-target_link_libraries(usingBiconnectedSplittingLib PUBLIC residualConnectivityCommon)
-target_compile_definitions(usingBiconnectedSplittingLib PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
-target_include_directories(usingBiconnectedSplittingLib INTERFACE ${PROJECT_SOURCE_DIR}/usingBiconnectedSplitting/usingBiconnectedSplittingLib)
-if(WIN32)
-	set_target_properties(usingBiconnectedSplittingLib PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
-endif()

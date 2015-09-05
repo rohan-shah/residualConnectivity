@@ -1,5 +1,5 @@
 #include <boost/archive/basic_archive.hpp>
-#include "usingBiconnectedSplittingLib.h"
+#include "monteCarloMethods/usingBiconnectedSplitting.h"
 #include <algorithm>
 #include <iostream>
 #include "empiricalDistribution.h"

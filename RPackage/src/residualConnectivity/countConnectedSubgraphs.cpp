@@ -1,5 +1,5 @@
 #include "countConnectedSubgraphs.h"
-#include "exhaustiveSearchLib.h"
+#include "exactMethods/exhaustiveSearch.h"
 #include "graphConvert.h"
 #include "graphType.h"
 #include <sstream>

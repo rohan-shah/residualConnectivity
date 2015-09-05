@@ -1,4 +1,4 @@
-#include "exhaustiveSearchLib.h"
+#include "exactMethods/exhaustiveSearch.h"
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <iomanip>
@@ -61,3 +61,4 @@ int main(int argc, char** argv)
 {
 	return discreteGermGrain::main(argc, argv);
 }
+

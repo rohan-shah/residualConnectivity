@@ -1,4 +1,4 @@
-#include "stochasticEnumerationLib.h"
+#include "monteCarloMethods/stochasticEnumeration.h"
 #include <boost/iterator/counting_iterator.hpp>
 #include <boost/graph/incremental_components.hpp>
 #include <boost/range/algorithm/random_shuffle.hpp>

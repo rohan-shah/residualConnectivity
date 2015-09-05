@@ -1,4 +1,4 @@
-#include "stochasticEnumerationLib.h"
+#include "monteCarloMethods/stochasticEnumeration.h"
 #include "Rcpp.h"
 #include "stochasticEnumeration.h"
 #include "graphInterface.h"

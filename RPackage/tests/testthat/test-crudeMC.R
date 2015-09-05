@@ -4,6 +4,7 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 	{
 		data(grid6Counts, package="residualConnectivity")
 		library(igraph)
+		library(graph)
 
 		igraph <- graph.lattice(dim = 2, length = 6)
 		graphNEL <- igraph.to.graphNEL(igraph)
@@ -25,6 +26,7 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 test_that("Test that crudeMC gives numerically accurate results", 
 	{
 		library(igraph)
+		library(graph)
 		data(grid4Counts, package="residualConnectivity")
 		igraph <- graph.lattice(dim = 2, length = 4)
 		probabilities <- seq(from = 0.1, to = 0.9, length.out = 5)

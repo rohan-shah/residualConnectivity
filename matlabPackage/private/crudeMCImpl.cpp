@@ -1,5 +1,5 @@
 #include "mex.h"
-#include "crudeMCLib.h"
+#include "monteCarloMethods/crudeMC.h"
 #include "convertGraph.h"
 #include "exceptionHandling.h"
 void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[])

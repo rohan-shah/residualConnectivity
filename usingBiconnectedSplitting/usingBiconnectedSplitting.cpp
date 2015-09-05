@@ -1,6 +1,6 @@
 #include <boost/program_options.hpp>
 #include <iostream>
-#include "usingBiconnectedSplittingLib.h"
+#include "monteCarloMethods/usingBiconnectedSplitting.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
 namespace discreteGermGrain

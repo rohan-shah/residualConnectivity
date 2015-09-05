@@ -1,7 +1,7 @@
 #include <boost/program_options.hpp>
 #include "arguments.h"
 #include "argumentsMPFR.h"
-#include "PMCLib.h"
+#include "monteCarloMethods/PMC.h"
 #include "calculateFactorials.h"
 namespace discreteGermGrain
 {

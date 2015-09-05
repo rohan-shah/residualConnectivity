@@ -1,5 +1,10 @@
 cmake_minimum_required(VERSION 3.1)
-add_custom_target(copyText ALL DEPENDS nonExistentFilename)
+if(WIN32)
+	#It seems adding a non-satsfied dependency like this only works on windows
+	add_custom_target(copyText ALL DEPENDS nonExistentFilename)
+else()
+	add_custom_target(copyText ALL)
+endif()
 if(BUILD_MATLAB_PACKAGE)
 	set(MFILES crudeMC.m conditionalMC.m exhaustiveSearch.m private/getGraph.m)
 	#Copy .m files

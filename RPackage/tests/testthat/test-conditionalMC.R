@@ -3,6 +3,7 @@ context("check conditionalMC function")
 test_that("Function can be called using graphNEL, graphAM and igraph, and gives same results", 
 	{
 		data(grid6Counts, package="residualConnectivity")
+		library(graph)
 		library(igraph)
 
 		igraph <- graph.lattice(dim = 2, length = 6)
@@ -24,6 +25,7 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 
 test_that("Test that conditionalMC gives numerically accurate results", 
 	{
+		library(graph)
 		library(igraph)
 		data(grid4Counts, package="residualConnectivity")
 		igraph <- graph.lattice(dim = 2, length = 4)

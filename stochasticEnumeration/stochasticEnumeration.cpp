@@ -1,5 +1,5 @@
 #include <boost/program_options.hpp>
-#include "stochasticEnumerationLib.h"
+#include "monteCarloMethods/stochasticEnumeration.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
 #include <boost/iterator/counting_iterator.hpp>

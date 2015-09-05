@@ -2,6 +2,7 @@ context("check countConnectedSubgraphs function")
 
 test_that("Function can be called using graphNEL, graphAM and igraph, and gives same results", 
 	{
+		library(graph)
 		gridSizes <- 2:4
 		for(gridSize in gridSizes)
 		{
@@ -20,6 +21,7 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 
 test_that("Values agree with transfer matrix data for small grids",
 {
+	library(graph)
 	library(igraph)
 	for(i in 4:5)
 	{

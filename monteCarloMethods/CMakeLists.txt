@@ -1,0 +1,13 @@
+cmake_minimum_required(VERSION 3.1)
+set(CppFiles PMC.cpp conditionalMC.cpp crudeMC.cpp stochasticEnumeration1.cpp stochasticEnumeration2.cpp usingBiconnectedSplitting.cpp)
+set(HeaderFiles monteCarloMethods/PMC.h monteCarloMethods/crudeMC.h monteCarloMethods/conditionalMC.h monteCarloMethods/stochasticEnumeration.h monteCarloMethods/usingBiconnectedSplitting.h)
+
+add_library(monteCarloMethods STATIC ${CppFiles} ${HeaderFiles})
+target_include_directories(monteCarloMethods PUBLIC ${PROJECT_SOURCE_DIR}/monteCarloMethods)
+target_link_libraries(monteCarloMethods PUBLIC residualConnectivityCommon)
+
+if(WIN32)
+	set_target_properties(monteCarloMethods PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+else()
+	target_compile_features(monteCarloMethods PUBLIC cxx_rvalue_references)
+endif()

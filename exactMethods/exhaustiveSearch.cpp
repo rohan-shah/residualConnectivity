@@ -1,4 +1,4 @@
-#include "exhaustiveSearchLib.h"
+#include "exactMethods/exhaustiveSearch.h"
 namespace discreteGermGrain
 {
 	bool exhaustiveSearch(const Context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error)
