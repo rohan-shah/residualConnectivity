@@ -1,5 +1,25 @@
-simpleMC <- function(functionName, graph, probability, n, seed=1)
+simpleMC <- function(functionName, graph, probability, n, seed)
 {
+	if(missing(functionName))
+	{
+		stop("Internal error")
+	}
+	if(missing(graph))
+	{
+		stop("Input graph cannot be missing")
+	}
+	if(missing(probability))
+	{
+		stop("Input probability cannot be missing")
+	}
+	if(missing(n))
+	{
+		stop("Input n cannot be missing")
+	}
+	if(missing(seed))
+	{
+		stop("Input seed cannot be missing")
+	}
 	if(length(functionName) != 1)
 	{
 		stop("Input functionName to simpleMC must have length 1") 

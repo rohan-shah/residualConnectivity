@@ -1,4 +1,4 @@
-crudeMC <- function(graph, probability, n, seed=1)
+crudeMC <- function(probability, n, seed, graph)
 {
-	return(simpleMC("crudeMC", graph, probability, n, seed))
+	return(simpleMC("crudeMC", graph=graph, probability=probability, n=n, seed=seed))
 }

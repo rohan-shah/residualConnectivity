@@ -1,4 +1,4 @@
-conditionalMC <- function(graph, probability, n, seed=1)
+conditionalMC <- function(probability, n, seed, graph)
 {
-	return(simpleMC("conditionalMC", graph, probability, n, seed))
+	return(simpleMC("conditionalMC", graph=graph, probability=probability, n=n, seed=seed))
 }
