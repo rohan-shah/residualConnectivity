@@ -6,7 +6,7 @@ test_that("There is no grid13Counts object",
 	})
 test_that("Data objects are present",
 {
-	for(i in 4:12)
+	for(i in 3:12)
 	{
 		#These objects exist
 		expect_identical({data(list = paste0("grid", i, "Counts"), package="residualConnectivity")}, paste0("grid", i, "Counts"))

@@ -1,6 +1,6 @@
 find_package(Rcpp REQUIRED)
 set(copyPackageDependencies)
-set(dataFiles grid4Counts.RData grid5Counts.RData grid6Counts.RData grid7Counts.RData grid8Counts.RData grid9Counts.RData grid10Counts.RData grid11Counts.RData grid12Counts.RData dodecahedronCounts.RData dodecahedron.graphml)
+set(dataFiles grid3Counts.RData grid4Counts.RData grid5Counts.RData grid6Counts.RData grid7Counts.RData grid8Counts.RData grid9Counts.RData grid10Counts.RData grid11Counts.RData grid12Counts.RData dodecahedronCounts.RData dodecahedron.graphml)
 if(WIN32)
 	foreach(BUILD_TYPE IN LISTS CMAKE_CONFIGURATION_TYPES)
 		foreach(DATAFILE IN LISTS dataFiles)

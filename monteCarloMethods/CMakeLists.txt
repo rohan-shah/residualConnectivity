@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-set(CppFiles PMC.cpp conditionalMC.cpp crudeMC.cpp stochasticEnumeration1.cpp stochasticEnumeration2.cpp usingBiconnectedSplitting.cpp)
-set(HeaderFiles monteCarloMethods/PMC.h monteCarloMethods/crudeMC.h monteCarloMethods/conditionalMC.h monteCarloMethods/stochasticEnumeration.h monteCarloMethods/usingBiconnectedSplitting.h)
+set(CppFiles PMC.cpp conditionalMC.cpp crudeMC.cpp stochasticEnumeration1.cpp stochasticEnumeration2.cpp usingBiconnectedSplitting.cpp articulationConditioningResampling)
+set(HeaderFiles monteCarloMethods/PMC.h monteCarloMethods/crudeMC.h monteCarloMethods/conditionalMC.h monteCarloMethods/stochasticEnumeration.h monteCarloMethods/usingBiconnectedSplitting.h monteCarloMethods/articulationConditioningResampling.h)
 
 add_library(monteCarloMethods STATIC ${CppFiles} ${HeaderFiles})
 target_include_directories(monteCarloMethods PUBLIC ${PROJECT_SOURCE_DIR}/monteCarloMethods)

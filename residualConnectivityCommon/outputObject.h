@@ -60,6 +60,7 @@ namespace discreteGermGrain
 			std::cout << c;
 			return *this;
 		}
+	protected:
 		virtual outputObject& internalEndl()
 		{
 			std::cout << std::endl;

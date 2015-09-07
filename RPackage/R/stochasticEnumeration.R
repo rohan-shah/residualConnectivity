@@ -5,7 +5,7 @@ stochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1, opt
 	else stop("Input form must have value \"counts\" or \"spectra\"")
 	if(class(graph) == "igraph")
 	{
-		if(is.directed(graph))
+		if(igraph::is.directed(graph))
 		{
 			stop("Input `graph' must be undirected")
 		}

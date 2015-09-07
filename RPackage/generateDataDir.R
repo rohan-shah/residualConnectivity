@@ -14,7 +14,7 @@ if(!file.exists("data"))
 }
 NAtime <- as.numeric(NA)
 class(NAtime) <- "POSIXct"
-for(size in 4:12)
+for(size in 3:12)
 {
 	rdataFile <- file.path("data", paste0("grid", size, "Counts.RData"))
 	if(!file.exists(rdataFile))

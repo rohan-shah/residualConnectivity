@@ -46,13 +46,14 @@ simpleMC <- function(functionName, graph, probability, n, seed)
 	}
 	if(class(graph) == "igraph")
 	{
-		if(is.directed(graph))
+		if(igraph::is.directed(graph))
 		{
 			stop("Input `graph' must be undirected")
 		}
-		vertexCoordinates <- layout.auto(graph)
-		result <- .Call(paste0(functionName, "_igraph"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
-		return(result)
+		vertexCoordinates <- igraph::layout.auto(graph)
+		start <- Sys.time()
+		estimate <- .Call(paste0(functionName, "_igraph"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
+		end <- Sys.time()
 	}
 	else if(class(graph) == "graphNEL")
 	{
@@ -61,8 +62,9 @@ simpleMC <- function(functionName, graph, probability, n, seed)
 		{
 			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
 		}
-		result <- .Call(paste0(functionName, "_graphNEL"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
-		return (result)
+		start <- Sys.time()
+		estimate <- .Call(paste0(functionName, "_graphNEL"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
+		end <- Sys.time()
 	}
 	else if(class(graph) == "graphAM")
 	{
@@ -71,11 +73,13 @@ simpleMC <- function(functionName, graph, probability, n, seed)
 		{
 			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
 		}
-		result <- .Call(paste0(functionName, "_graphAM"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
-		return (result)
+		start <- Sys.time()
+		estimate <- .Call(paste0(functionName, "_graphAM"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
+		end <- Sys.time()
 	}
 	else 
 	{
 		stop("Input graph must have class \"igraph\", \"graphAM\" or \"graphNEL\"")
 	}
+	return(new("monteCarloResult", start = start, end = end, call = match.call(), estimate = estimate))
 }

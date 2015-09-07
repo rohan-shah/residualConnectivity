@@ -5,6 +5,7 @@
 #include "countConnectedSubgraphs.h"
 #include "stochasticEnumeration.h"
 #include "createHexagonalLattice.h"
+#include "articulationConditioningResampling.h"
 #include "PMC.h"
 #ifdef _MSC_VER
 	#undef RcppExport
@@ -26,6 +27,9 @@ R_CallMethodDef callMethods[] =
 	{"stochasticEnumeration_igraph", (DL_FUNC)&stochasticEnumeration_igraph, 6},
 	{"stochasticEnumeration_graphNEL", (DL_FUNC)&stochasticEnumeration_graphNEL, 6},
 	{"stochasticEnumeration_graphAM", (DL_FUNC)&stochasticEnumeration_graphAM, 6},
+	{"articulationConditioningResampling_igraph", (DL_FUNC)&articulationConditioningResampling_igraph, 6},
+	{"articulationConditioningResampling_graphNEL", (DL_FUNC)&articulationConditioningResampling_graphNEL, 6},
+	{"articulationConditioningResampling_graphAM", (DL_FUNC)&articulationConditioningResampling_graphAM, 6},
 	{"PMC_igraph", (DL_FUNC)&PMC_igraph, 3},
 	{"PMC_graphNEL", (DL_FUNC)&PMC_graphNEL, 3},
 	{"PMC_graphAM", (DL_FUNC)&PMC_graphAM, 3},

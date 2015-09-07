@@ -13,7 +13,7 @@ PMC <- function(graph, n, seed = 1)
 
 	if(class(graph) == "igraph")
 	{
-		if(is.directed(graph))
+		if(igraph::is.directed(graph))
 		{
 			stop("Input `graph' must be undirected")
 		}

@@ -1,22 +1,21 @@
 context("check crudeMC function")
+library(graph)
 
 test_that("Function can be called using graphNEL, graphAM and igraph, and gives same results", 
 	{
 		data(grid6Counts, package="residualConnectivity")
-		library(igraph)
-		library(graph)
 
-		igraph <- graph.lattice(dim = 2, length = 6)
-		graphNEL <- igraph.to.graphNEL(igraph)
+		igraph <- igraph::graph.lattice(dim = 2, length = 6)
+		graphNEL <- igraph::igraph.to.graphNEL(igraph)
 		graphAM <- as(graphNEL, "graphAM")
 
 		probabilities <- c(0.1, 0.5, 0.9)
 		for(index in 1:length(probabilities))
 		{
 			probability <- probabilities[index]
-			igraphResult <- crudeMC(igraph, probability = probability, n = 1000, seed = index)
-			graphAMResult <- crudeMC(graphAM, probability = probability, n = 1000, seed = index)
-			graphNELResult <- crudeMC(graphNEL, probability = probability, n = 1000, seed = index)
+			igraphResult <- crudeMC(igraph, probability = probability, n = 1000, seed = index)@estimate
+			graphAMResult <- crudeMC(graphAM, probability = probability, n = 1000, seed = index)@estimate
+			graphNELResult <- crudeMC(graphNEL, probability = probability, n = 1000, seed = index)@estimate
 
 			expect_identical(igraphResult, graphAMResult)
 			expect_identical(graphAMResult, graphNELResult)
@@ -25,15 +24,13 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 
 test_that("Test that crudeMC gives numerically accurate results", 
 	{
-		library(igraph)
-		library(graph)
 		data(grid4Counts, package="residualConnectivity")
-		igraph <- graph.lattice(dim = 2, length = 4)
+		igraph <- igraph::graph.lattice(dim = 2, length = 4)
 		probabilities <- seq(from = 0.1, to = 0.9, length.out = 5)
 		for(index in 1:length(probabilities))
 		{
 			probability <- probabilities[index]
-			igraphResult <- crudeMC(igraph, probability = probability, n = 500000, seed = index)
+			igraphResult <- crudeMC(igraph, probability = probability, n = 500000, seed = index)@estimate
 
 			exactResult <- as.double(exactRCR(grid4Counts, probability))
 
