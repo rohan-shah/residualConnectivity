@@ -1,0 +1,6 @@
+cmake_minimum_required(VERSION 3.1)
+add_executable(cancela2002RVR recursiveVarianceReduction.cpp)
+target_link_libraries(cancela2002RVR PUBLIC residualConnectivityCommon monteCarloMethods)
+if(WIN32)
+	set_target_properties(cancela2002RVR PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+endif()

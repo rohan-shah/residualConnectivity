@@ -6,6 +6,7 @@
 #include "stochasticEnumeration.h"
 #include "createHexagonalLattice.h"
 #include "articulationConditioningResampling.h"
+#include "recursiveVarianceReduction.h"
 #include "PMC.h"
 #ifdef _MSC_VER
 	#undef RcppExport
@@ -18,6 +19,9 @@ R_CallMethodDef callMethods[] =
 	{"crudeMC_igraph", (DL_FUNC)&crudeMC_igraph, 5},
 	{"crudeMC_graphNEL", (DL_FUNC)&crudeMC_graphNEL, 5},
 	{"crudeMC_graphAM", (DL_FUNC)&crudeMC_graphAM, 5},
+	{"recursiveVarianceReduction_igraph", (DL_FUNC)&recursiveVarianceReduction_igraph, 5},
+	{"recursiveVarianceReduction_graphNEL", (DL_FUNC)&recursiveVarianceReduction_graphNEL, 5},
+	{"recursiveVarianceReduction_graphAM", (DL_FUNC)&recursiveVarianceReduction_graphAM, 5},
 	{"conditionalMC_igraph", (DL_FUNC)&conditionalMC_igraph, 5},
 	{"conditionalMC_graphNEL", (DL_FUNC)&conditionalMC_graphNEL, 5},
 	{"conditionalMC_graphAM", (DL_FUNC)&conditionalMC_graphAM, 5},

@@ -27,8 +27,8 @@ endif()
 
 if(BUILD_R_PACKAGE)
 	find_package(Rcpp REQUIRED)
-	set(RFiles R/conditionalMC.R R/countConnectedSubgraphs.R R/crudeMC.R R/stochasticEnumeration.R R/exactCounts-class.R R/exactSpectra-class.R R/exactRCR.R R/onLoad.R R/simpleMC.R R/spectraToRCR.R R/PMC.R R/coerce.R R/createHexagonalLattice.R R/articulationConditioningResampling.R R/monteCarloResult-class.R)
-	set(RTestFiles tests/testthat.R tests/testthat/test-gridCounts.R tests/testthat/test-conditionalMC.R tests/testthat/test-crudeMC.R tests/testthat/test-countConnectedSubgraphs.R tests/testthat/test-stochasticEnumeration.R tests/testthat/test-exactRCR.R tests/testthat/test-spectraToRCR.R tests/testthat/test-PMC.R tests/testthat/test-articulationConditioningResampling.R)
+	set(RFiles R/conditionalMC.R R/countConnectedSubgraphs.R R/crudeMC.R R/stochasticEnumeration.R R/exactCounts-class.R R/exactSpectra-class.R R/exactRCR.R R/onLoad.R R/simpleMC.R R/spectraToRCR.R R/PMC.R R/coerce.R R/createHexagonalLattice.R R/articulationConditioningResampling.R R/monteCarloResult-class.R R/recursiveVarianceReduction.R)
+	set(RTestFiles tests/testthat.R tests/testthat/test-gridCounts.R tests/testthat/test-conditionalMC.R tests/testthat/test-crudeMC.R tests/testthat/test-countConnectedSubgraphs.R tests/testthat/test-stochasticEnumeration.R tests/testthat/test-exactRCR.R tests/testthat/test-spectraToRCR.R tests/testthat/test-PMC.R tests/testthat/test-articulationConditioningResampling.R tests/testthat/test-recursiveVarianceReduction.R)
 	set(RPackageFiles NAMESPACE DESCRIPTION ${RFiles} ${RTestFiles})
 	#Find location of Rcpp_exceptions.R 
 	get_property(RCPP_INCLUDE_DIRECTORIES TARGET Rcpp PROPERTY INTERFACE_INCLUDE_DIRECTORIES)

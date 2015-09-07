@@ -27,3 +27,4 @@ Collate:
    'createHexagonalLattice.R'
    'articulationConditioningResampling.R'
    'monteCarloResult-class.R'
+   'recursiveVarianceReduction.R'
