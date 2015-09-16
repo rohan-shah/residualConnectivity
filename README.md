@@ -12,23 +12,23 @@ This repository contains
 # Contents
 
 ## Monte Carlo Methods
-This repository contains implementations of the following methods:
-* The crude Monte Carlo method, under folder crudeMC. 
-* Permutation Monte Carlo, under folder PMC/. This computes RCR indirectly using the spectra. 
-* Stochastic Enumeration, under folder stochasticEnumeration/. This computes RCR indirectly using the spectra. 
-* The Recursive Variance Reduction technique, under folder Cancela2002RVR. For details see
+This repository contains implementations of the following methods under the monteCarloMethods/ folder:
+* The crude Monte Carlo method (monteCarloMethods/crudeMC.cpp).
+* Permutation Monte Carlo (monteCarloMethods/PMC.cpp). This computes RCR indirectly using the spectra. 
+* Stochastic Enumeration (monteCarloMethods/stochasticEnumeration*.cpp). This computes RCR indirectly using the spectra. 
+* The Recursive Variance Reduction technique (monteCarloMethods/recursiveVarianceReduction.cpp). For details see
 ```
 Cancela H, Urquhart M (2002) Adapting RVR simulation techniques for residual connectedness
 network reliability models. IEEE Transactions on Computers 51(4):439–443
 ```
-* A conditional Monte Carlo method, under folder conditionalMC/. For details see
+* A conditional Monte Carlo method (monteCarloMethods/conditionalMC.cpp). For details see
 ```
 Shah R, Hirsch C, Kroese DP, Schmidt V (2014) Rare event probability estimation for connectivity of large random graphs. In: Tolks A, Diallo SD, Ryzhov IO, Yilmaz L, Buckley S,
 Miller JA (eds) Proceedings of the 2014 Winter Simulation Conference, Institute of Electrical and Electronics Engineers, Inc, Piscataway, New Jersey
 ```
-* A basic splitting implementation, under folder splittingBasic/. 
-* A splitting implementation that decomposes by biconnected components in the laste step, under folder usingBiconnectedSplitting/
-* Sequential Monte Carlo methods using articulation vertices, under folders articulationConditionangResampling/ and articulationConditioningSplitting/. 
+* A basic splitting implementation (monteCarloMethods/splittingBasic.cpp).
+* A splitting implementation that decomposes by biconnected components in the laste step (monteCarloMethods/usingBiconnectedSplitting.cpp).
+* Sequential Monte Carlo methods using articulation vertices, (monteCarloMethods/articulationConditionangResampling.cpp and monteCarloMethods/articulationConditioningSplitting.cpp). 
 
 ## Exact computation
 This repository contains code for:
