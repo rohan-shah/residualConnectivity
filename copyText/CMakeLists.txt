@@ -6,7 +6,7 @@ else()
 	add_custom_target(copyText ALL)
 endif()
 if(BUILD_MATLAB_PACKAGE)
-	set(MFILES crudeMC.m conditionalMC.m exhaustiveSearch.m private/getGraph.m)
+	set(MFILES crudeMC.m conditionalMC.m exhaustiveSearch.m recursiveVarianceReduction.m private/getGraph.m)
 	#Copy .m files
 	if(WIN32)
 		foreach(BUILD_TYPE IN LISTS CMAKE_CONFIGURATION_TYPES)
