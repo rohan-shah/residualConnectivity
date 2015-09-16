@@ -57,7 +57,7 @@ Applications to polypyrene fusenes. Journal of Computational Chemistry 7(4):443â
 
 ## General instructions
 
-The software is mostly organised as a collection of static libraries and executables. Static libraries include the utility code (`residualConnectivityCommon/`, `transferMatrixCommon/`) and implementations of some of the methods (`crudeMC/crudeMCLib/`, `stochasticEnumeration/stochasticEnumerationLib/`, etc). These are then linked into command-line executables (E.g. `crudeMC/crudeMC`, and the R and matlab packages). Note that some of the Monte Carlo methods are only provided as command-line executables; they'll be converted across to library+executable when I get round to it.
+The software is mostly organised as a collection of static libraries and executables. Static libraries include the utility code (`residualConnectivityCommon/`, `transferMatrixCommon/`) and implementations of the methods (`monteCarloMethods/`). These are then linked into command-line executables (E.g. `executables/crudeMC`, and the R and matlab packages). 
 
 You can build the software using CMake on Windows and Linux (Mac is untested, but should work). Required dependencies are:
 * Cmake 3.*
