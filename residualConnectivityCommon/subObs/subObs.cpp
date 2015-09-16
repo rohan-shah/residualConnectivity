@@ -1,26 +1,26 @@
 #include "subObs/subObs.h"
 #include <boost/random/bernoulli_distribution.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
 		subObsWithRadius::subObsWithRadius(Context const& context, boost::shared_array<const vertexState> state, int radius)
-			: ::discreteGermGrain::subObs::subObs(context, state), radius(radius)
+			: ::residualConnectivity::subObs::subObs(context, state), radius(radius)
 		{}
 		subObsWithRadius::subObsWithRadius(subObsWithRadius&& other)
-			: ::discreteGermGrain::subObs::subObs(static_cast< ::discreteGermGrain::subObs::subObs&&>(other)), radius(other.radius)
+			: ::residualConnectivity::subObs::subObs(static_cast< ::residualConnectivity::subObs::subObs&&>(other)), radius(other.radius)
 		{}
 		subObs::subObs(Context const& context, boost::shared_array<const vertexState> state)
-			: ::discreteGermGrain::observation(context, state)
+			: ::residualConnectivity::observation(context, state)
 		{}
 		subObs::subObs(subObs&& other)
-			: ::discreteGermGrain::observation(static_cast< ::discreteGermGrain::observation&&>(other))
+			: ::residualConnectivity::observation(static_cast< ::residualConnectivity::observation&&>(other))
 		{}
 		subObs::subObs(const subObs& other)
-			: ::discreteGermGrain::observation(static_cast<const ::discreteGermGrain::observation&>(other))
+			: ::residualConnectivity::observation(static_cast<const ::residualConnectivity::observation&>(other))
 		{}
 		subObsWithRadius::subObsWithRadius(const subObsWithRadius& other)
-			: ::discreteGermGrain::subObs::subObs(static_cast<const ::discreteGermGrain::subObs::subObs&>(other)), radius(other.radius)
+			: ::residualConnectivity::subObs::subObs(static_cast<const ::residualConnectivity::subObs::subObs&>(other)), radius(other.radius)
 		{}
 		void subObs::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&) const
 		{

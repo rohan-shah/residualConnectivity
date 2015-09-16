@@ -5,7 +5,7 @@
 #include <boost/shared_ptr.hpp>
 #include "Context.h"
 #include "depth_first_search_restricted.hpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	bool isSingleComponentPossible(Context const& context, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
 	bool isSingleComponentAllOn(Context const& context, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);

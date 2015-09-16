@@ -1,20 +1,20 @@
-#ifndef DISCRETE_GERM_GRAIN_SUB_OBS_SUB_OBS_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUB_OBS_SUB_OBS_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUB_OBS_SUB_OBS_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUB_OBS_SUB_OBS_HEADER_GUARD
 #include <boost/shared_array.hpp>
 #include "Context.h"
 #include "observation.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
-		class subObs : public ::discreteGermGrain::observation
+		class subObs : public ::residualConnectivity::observation
 		{
 		public:
-			template<class T> friend class ::discreteGermGrain::subObs::getObservation;
-			typedef ::discreteGermGrain::observation observationType;
-			typedef ::discreteGermGrain::obs::basicConstructorType observationConstructorType;
+			template<class T> friend class ::residualConnectivity::subObs::getObservation;
+			typedef ::residualConnectivity::observation observationType;
+			typedef ::residualConnectivity::obs::basicConstructorType observationConstructorType;
 
 			subObs& operator=(subObs&& other);
 			subObs(const Context& context, boost::shared_array<const vertexState> state);

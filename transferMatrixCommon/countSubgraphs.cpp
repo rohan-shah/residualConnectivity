@@ -3,7 +3,7 @@
 #include "countSubgraphs.h"
 #include <stdexcept>
 #include <vector>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	mpz_class countSubgraphsSingleThreaded(int gridDimension, LargeDenseIntMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsLogger* logger)
 	{

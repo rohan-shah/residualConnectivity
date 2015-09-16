@@ -3,7 +3,7 @@
 #include <boost/random/mersenne_twister.hpp>
 #include "Context.h"
 #include "includeNumerics.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct stochasticEnumerationArgs
 	{

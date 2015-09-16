@@ -1,5 +1,5 @@
 #include "constructSubGraph.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	void constructSubGraph(subGraphType& graph, std::vector<int>& graphVertices, const Context& context, const vertexState* stateRef)
 	{

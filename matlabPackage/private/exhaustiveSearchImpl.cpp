@@ -16,19 +16,19 @@ BEGIN_MEX_WRAPPER
 		throw std::runtime_error("Function exhaustiveSearchImpl returns only one value");
 	}
 	//First input must be an adjacency matrix
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph(new discreteGermGrain::Context::inputGraph());
-	boost::shared_ptr<std::vector<discreteGermGrain::Context::vertexPosition> > vertexPositions(new std::vector<discreteGermGrain::Context::vertexPosition>());
+	boost::shared_ptr<residualConnectivity::Context::inputGraph> graph(new residualConnectivity::Context::inputGraph());
+	boost::shared_ptr<std::vector<residualConnectivity::Context::vertexPosition> > vertexPositions(new std::vector<residualConnectivity::Context::vertexPosition>());
 	std::string error;
 	bool conversionResult = convertGraphNoPositions(prhs[0], *graph, *vertexPositions, error);
 	if(!conversionResult) throw std::runtime_error(error);
 
-	std::vector<discreteGermGrain::counterType> sizeCounters;
-	bool result = discreteGermGrain::exhaustiveSearch(*graph, sizeCounters, error);
+	std::vector<residualConnectivity::counterType> sizeCounters;
+	bool result = residualConnectivity::exhaustiveSearch(*graph, sizeCounters, error);
 	if (!result) throw std::runtime_error(error);
 
 	//Horrible interface. First convert to std::string, then C strings. 
 	std::vector<std::string> countersToStrings;
-	for(std::vector<discreteGermGrain::counterType>::iterator i = sizeCounters.begin(); i != sizeCounters.end(); i++)
+	for(std::vector<residualConnectivity::counterType>::iterator i = sizeCounters.begin(); i != sizeCounters.end(); i++)
 	{
 		std::stringstream ss;
 		ss << *i;

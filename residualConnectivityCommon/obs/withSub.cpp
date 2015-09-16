@@ -1,5 +1,5 @@
 #include "obs/withSub.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	void withSub::getSubObservation(int radius, vertexState* newState, const Context& context, const vertexState* oldStatesPtr)
 	{

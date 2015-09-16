@@ -1,5 +1,5 @@
-#ifndef DISCRETE_GERM_GRAIN_OBS_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_OBS_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_OBS_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_OBS_HEADER_GUARD
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <vector>
@@ -13,13 +13,13 @@
 #include "Context.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class observation : public boost::noncopyable
 	{
 	public:
 		friend class boost::serialization::access;
-		template<class T> friend class ::discreteGermGrain::subObs::getObservation;
+		template<class T> friend class ::residualConnectivity::subObs::getObservation;
 		observation(Context const& context, boost::archive::binary_iarchive& archive);
 		observation(Context const& context, boost::archive::text_iarchive& archive);
 		observation(Context const&, boost::mt19937& randomSource);
@@ -35,7 +35,7 @@ namespace discreteGermGrain
 		Context const& context;
 		boost::shared_array<const vertexState> state;
 	private:
-		observation(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::basicConstructorType&);
+		observation(Context const& context, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::basicConstructorType&);
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
@@ -67,25 +67,25 @@ namespace discreteGermGrain
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		template<class Archive> void save(Archive& ar, const unsigned int version) const
 		{
-			std::string typeString = "discreteGermGrainObsWithContext";
+			std::string typeString = "residualConnectivityObsWithContext";
 			ar << typeString;
 			ar << obs->getContext();
 			ar << *obs;
-			typeString = "discreteGermGrainObsWithContext_end";
+			typeString = "residualConnectivityObsWithContext_end";
 			ar << typeString;
 		}
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
 			std::string typeString;
 			ar >> typeString;
-			if(typeString != "discreteGermGrainObsWithContext")
+			if(typeString != "residualConnectivityObsWithContext")
 			{
 				throw std::runtime_error("Incorrect type specifier");
 			}
 			context.reset(new Context(ar));
 			obs.reset(new observation(*context.get(), ar));
 			ar >> typeString;
-			if(typeString != "discreteGermGrainObsWithContext_end")
+			if(typeString != "residualConnectivityObsWithContext_end")
 			{
 				throw std::runtime_error("Incorrect type specifier");
 			}

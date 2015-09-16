@@ -74,13 +74,13 @@ BEGIN_RCPP
 		throw std::runtime_error("Input nPermutations must be at least 1");
 	}
 
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph = graphConvert(graph_sexp, type);
+	boost::shared_ptr<residualConnectivity::Context::inputGraph> graph = graphConvert(graph_sexp, type);
 	const std::size_t nVertices = boost::num_vertices(*graph);
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
 	std::vector<mpfr_class> estimatedCounts;
-	discreteGermGrain::stochasticEnumerationArgs args(*graph, randomSource);
+	residualConnectivity::stochasticEnumerationArgs args(*graph, randomSource);
 	args.n = budget;
 	args.nPermutations = nPermutations;
 
@@ -88,8 +88,8 @@ BEGIN_RCPP
 	{
 		args.vertexCount = i;
 		bool result;
-		if(optimized) result = discreteGermGrain::stochasticEnumeration2(args);
-		else result = discreteGermGrain::stochasticEnumeration1(args);
+		if(optimized) result = residualConnectivity::stochasticEnumeration2(args);
+		else result = residualConnectivity::stochasticEnumeration1(args);
 		if(result)
 		{
 			estimatedCounts.push_back(args.estimate);
@@ -118,7 +118,7 @@ BEGIN_RCPP
 		/*Divide by binomial coefficients*/
 		std::vector<mpz_class> factorials;
 		std::vector<mpfr_class> estimatedSpectra;
-		discreteGermGrain::calculateFactorials(factorials, (int)nVertices + 1);
+		residualConnectivity::calculateFactorials(factorials, (int)nVertices + 1);
 		for(int vertexCounter = 0; vertexCounter < (int)nVertices+1; vertexCounter++)
 		{
 			estimatedSpectra.push_back(mpfr_class((estimatedCounts[vertexCounter] * factorials[vertexCounter] * factorials[nVertices - vertexCounter]) / factorials[nVertices]));

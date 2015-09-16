@@ -4,7 +4,7 @@
 #include <boost/graph/graphviz.hpp>
 #include <boost/algorithm/string/split.hpp>
 #include <boost/algorithm/string/classification.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	observationTree::observationTree(boost::archive::binary_iarchive& ar)
 		:externalContext(NULL)

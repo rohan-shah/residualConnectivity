@@ -15,7 +15,7 @@
 #include "includeNumerics.h"
 #include "vertexState.h"
 #include "serializeGMP.hpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class Context : public boost::noncopyable
 	{

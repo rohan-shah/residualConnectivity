@@ -4,7 +4,7 @@
 #include "isSingleComponentWithRadius.h"
 #include "subObs/usingBiconnectedComponents.h"
 #include "constructSubGraph.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
@@ -56,7 +56,7 @@ namespace discreteGermGrain
 				{
 					if(object.isPotentiallyConnected())
 					{
-						::discreteGermGrain::obs::withWeightConstructorType weightType;
+						::residualConnectivity::obs::withWeightConstructorType weightType;
 						weightType.weight = object.getWeight();
 						boost::shared_array<vertexState> copiedState(new vertexState[nVertices]);
 						memcpy(copiedState.get(), object.getState(), nVertices*sizeof(vertexState));
@@ -125,7 +125,7 @@ namespace discreteGermGrain
 					unFixedPointsPerComponent.push_back(std::move(currentComponentUnFixed));
 				}
 				mpfr_class newWeight = object.getWeight() * boost::multiprecision::pow(context.getOperationalProbability(), nNotAlreadyFixedArticulation);
-				::discreteGermGrain::obs::withWeightConstructorType observationInput;
+				::residualConnectivity::obs::withWeightConstructorType observationInput;
 				//We need to take the same number of effective simulations, regardless of the number of biconnected components
 				int nComponentRuns = (int)(pow(nSimulations, 1.0/(float)nBiconnectedComponents));
 				int nRemaining = nSimulations - (int)(pow(nComponentRuns, nBiconnectedComponents) + 0.5);

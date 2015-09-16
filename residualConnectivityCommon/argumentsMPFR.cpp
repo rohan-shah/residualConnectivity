@@ -1,6 +1,6 @@
 #include "argumentsMPFR.h"
 #include <iostream>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	bool readContext(boost::program_options::variables_map& variableMap, Context& out, mpfr_class opProbability, std::string& message)
 	{

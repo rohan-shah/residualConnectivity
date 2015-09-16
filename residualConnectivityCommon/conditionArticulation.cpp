@@ -1,7 +1,7 @@
 #include "conditionArticulation.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/biconnected_components.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct findFixedOnVisitor : public boost::default_dfs_visitor
 	{

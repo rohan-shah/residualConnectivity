@@ -13,7 +13,7 @@
 #ifdef _MSC_VER
 	#include <intrin.h>
 #endif
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	mpz_class countSubgraphsBySize(int gridDimension, int size, const Context& context)
 	{
@@ -122,5 +122,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char **argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

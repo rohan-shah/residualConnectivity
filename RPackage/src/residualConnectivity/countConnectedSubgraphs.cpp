@@ -6,10 +6,10 @@
 SEXP countConnectedSubgraphs(SEXP graph, graphType type)
 {
 BEGIN_RCPP
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> boostGraph = graphConvert(graph, type);
+	boost::shared_ptr<residualConnectivity::Context::inputGraph> boostGraph = graphConvert(graph, type);
 	std::string message;
-	std::vector<discreteGermGrain::counterType> sizeCounters;
-	bool result = discreteGermGrain::exhaustiveSearch(*boostGraph, sizeCounters, message);
+	std::vector<residualConnectivity::counterType> sizeCounters;
+	bool result = residualConnectivity::exhaustiveSearch(*boostGraph, sizeCounters, message);
 	if(!result)
 	{
 		throw std::runtime_error(message.c_str());

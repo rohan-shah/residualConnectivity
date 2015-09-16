@@ -21,7 +21,7 @@
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct stepInputs
 	{
@@ -36,11 +36,11 @@ namespace discreteGermGrain
 	};
 	struct stepOutputs
 	{
-		stepOutputs(std::vector<::discreteGermGrain::subObs::articulationConditioningForSplitting>& subObservations, std::vector<::discreteGermGrain::obs::articulationConditioningForSplitting>& observations, boost::mt19937& randomSource, observationTree& tree)
+		stepOutputs(std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>& subObservations, std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>& observations, boost::mt19937& randomSource, observationTree& tree)
 			:subObservations(subObservations), observations(observations), randomSource(randomSource), tree(tree)
 		{}
-		std::vector<::discreteGermGrain::subObs::articulationConditioningForSplitting>& subObservations;
-		std::vector<::discreteGermGrain::obs::articulationConditioningForSplitting>& observations;
+		std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>& subObservations;
+		std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>& observations;
 		std::vector<int> potentiallyConnectedIndices;
 		boost::mt19937& randomSource;
 		observationTree& tree;
@@ -61,7 +61,7 @@ namespace discreteGermGrain
 		#pragma omp parallel
 #endif
 		{
-			std::vector<::discreteGermGrain::obs::articulationConditioningForSplitting> observationsThisThread;
+			std::vector<::residualConnectivity::obs::articulationConditioningForSplitting> observationsThisThread;
 			std::vector<int> parentIndicesThisThread;
 			//vector that we re-use to avoid allocations
 			std::vector<int> connectedComponents(inputs.context.nVertices());
@@ -143,7 +143,7 @@ namespace discreteGermGrain
 		boost::mt19937::result_type perThreadSeeds[100];
 		for(int j = 0; j < 100; j++) perThreadSeeds[j] = outputs.randomSource();
 #endif
-		std::vector<::discreteGermGrain::subObs::articulationConditioningForSplitting> nextSetObservations;
+		std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting> nextSetObservations;
 		std::vector<int> nextStepPotentiallyConnectedIndices;
 		//Loop over the splitting steps (the different nested events)
 		for(int i = 1; i < inputs.initialRadius/*+1*/; i++)
@@ -170,8 +170,8 @@ namespace discreteGermGrain
 				//used to calculate the splitting factor (which is random)
 				boost::random::bernoulli_distribution<float> splittingFactorBernoulli(sptittingFactorRemainder);
 
-				::discreteGermGrain::subObs::withWeightConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack, subGraph);
-				::discreteGermGrain::obs::withWeightConstructorType getObsHelper;
+				::residualConnectivity::subObs::withWeightConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack, subGraph);
+				::residualConnectivity::obs::withWeightConstructorType getObsHelper;
 #ifdef USE_OPENMP
 				//per-thread random number generation
 				boost::mt19937 perThreadSource;
@@ -188,17 +188,17 @@ namespace discreteGermGrain
 					int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(outputs.randomSource);
 #endif
 					//get out the current observation
-					const ::discreteGermGrain::subObs::articulationConditioningForSplitting& currentObs = outputs.subObservations[j];
+					const ::residualConnectivity::subObs::articulationConditioningForSplitting& currentObs = outputs.subObservations[j];
 					for(int k = 0; k < nThisObservation; k++)
 					{
-						::discreteGermGrain::obs::articulationConditioningForSplitting obs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::articulationConditioningForSplitting>::get(currentObs, 
+						::residualConnectivity::obs::articulationConditioningForSplitting obs = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::articulationConditioningForSplitting>::get(currentObs, 
 #ifdef USE_OPENMP
 								perThreadSource
 #else
 								outputs.randomSource
 #endif
 						, getObsHelper);
-						::discreteGermGrain::subObs::articulationConditioningForSplitting subObs = ::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::articulationConditioningForSplitting>::get(obs, inputs.initialRadius - i, getSubObsHelper);
+						::residualConnectivity::subObs::articulationConditioningForSplitting subObs = ::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningForSplitting>::get(obs, inputs.initialRadius - i, getSubObsHelper);
 #ifdef USE_OPENMP
 						#pragma omp critical
 #endif
@@ -235,7 +235,7 @@ namespace discreteGermGrain
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
 			subGraphType subGraph;
-			::discreteGermGrain::subObs::withWeightConstructorType helper(connectedComponents, stack, subGraphStack, subGraph);
+			::residualConnectivity::subObs::withWeightConstructorType helper(connectedComponents, stack, subGraphStack, subGraph);
 #ifdef USE_OPENMP
 			//per-thread random number generation
 			boost::mt19937 perThreadSource;
@@ -244,14 +244,14 @@ namespace discreteGermGrain
 #endif
 			for(int i = 0; i < inputs.n; i++)
 			{
-				::discreteGermGrain::obs::articulationConditioningForSplitting obs(inputs.context, 
+				::residualConnectivity::obs::articulationConditioningForSplitting obs(inputs.context, 
 #ifdef USE_OPENMP
 						perThreadSource
 #else
 						outputs.randomSource
 #endif
 						);
-				::discreteGermGrain::subObs::articulationConditioningForSplitting subObs(::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::articulationConditioningForSplitting>::get(obs, inputs.initialRadius, helper));
+				::residualConnectivity::subObs::articulationConditioningForSplitting subObs(::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningForSplitting>::get(obs, inputs.initialRadius, helper));
 #ifdef USE_OPENMP
 				#pragma omp critical
 #endif
@@ -355,8 +355,8 @@ namespace discreteGermGrain
 		//1. initialRadius = 0, only crude MC step
 		//2. initialRadius = 1, only the crude MC and then one type of algorithm
 		//3. initialRadius >= 2, crude MC and then two types of algorithm
-		std::vector<::discreteGermGrain::subObs::articulationConditioningForSplitting> subObservations;
-		std::vector<::discreteGermGrain::obs::articulationConditioningForSplitting> observations;
+		std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting> subObservations;
+		std::vector<::residualConnectivity::obs::articulationConditioningForSplitting> observations;
 
 		stepInputs inputs(context, splittingFactors);
 		inputs.initialRadius = initialRadius;
@@ -379,7 +379,7 @@ namespace discreteGermGrain
 			std::cout << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << observations.size() << " / " << outputs.totalGenerated  << " observations had non-zero probability" << std::endl;
 
 			mpfr_class probabilitySum = 0;
-			for(std::vector<::discreteGermGrain::obs::articulationConditioningForSplitting>::iterator i = observations.begin(); i != observations.end(); i++)
+			for(std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>::iterator i = observations.begin(); i != observations.end(); i++)
 			{
 				probabilitySum += i->getWeight();
 			}
@@ -394,7 +394,7 @@ namespace discreteGermGrain
 		else
 		{
 			mpfr_class probabilitySum = 0;
-			for(std::vector<::discreteGermGrain::subObs::articulationConditioningForSplitting>::iterator i = subObservations.begin(); i != subObservations.end(); i++)
+			for(std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>::iterator i = subObservations.begin(); i != subObservations.end(); i++)
 			{
 				probabilitySum += i->getWeight();
 			}
@@ -412,14 +412,14 @@ namespace discreteGermGrain
 				empiricalDistribution distribution(true, context.nVertices(), context);
 				if(initialRadius == 0)
 				{
-					for(std::vector<::discreteGermGrain::subObs::articulationConditioningForSplitting>::const_iterator i = subObservations.begin(); i != subObservations.end(); i++)
+					for(std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>::const_iterator i = subObservations.begin(); i != subObservations.end(); i++)
 					{
 						distribution.add(i->getState());
 					}
 				}
 				else
 				{
-					for(std::vector<::discreteGermGrain::obs::articulationConditioningForSplitting>::const_iterator i = observations.begin(); i != observations.end(); i++)
+					for(std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>::const_iterator i = observations.begin(); i != observations.end(); i++)
 					{
 						distribution.add(i->getState());
 					}
@@ -462,5 +462,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char **argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

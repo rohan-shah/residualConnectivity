@@ -5,7 +5,7 @@
 #include <iomanip>
 #include "Context.h"
 #include <string>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	typedef long long counterType;
 	bool exhaustiveSearch(const Context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error);

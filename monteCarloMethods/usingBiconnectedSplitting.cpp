@@ -19,7 +19,7 @@
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct stepInputs
 	{
@@ -34,11 +34,11 @@ namespace discreteGermGrain
 	};
 	struct stepOutputs
 	{
-		stepOutputs(std::vector< ::discreteGermGrain::subObs::usingBiconnectedComponents>& subObservations, std::vector< ::discreteGermGrain::obs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, observationTree& tree, outputObject& outputStream)
+		stepOutputs(std::vector< ::residualConnectivity::subObs::usingBiconnectedComponents>& subObservations, std::vector< ::residualConnectivity::obs::usingBiconnectedComponents>& observations, boost::mt19937& randomSource, observationTree& tree, outputObject& outputStream)
 			:subObservations(subObservations), observations(observations), randomSource(randomSource), tree(tree), outputStream(outputStream)
 		{}
-		std::vector< ::discreteGermGrain::subObs::usingBiconnectedComponents>& subObservations;
-		std::vector< ::discreteGermGrain::obs::usingBiconnectedComponents>& observations;
+		std::vector< ::residualConnectivity::subObs::usingBiconnectedComponents>& subObservations;
+		std::vector< ::residualConnectivity::obs::usingBiconnectedComponents>& observations;
 		std::vector<int> potentiallyConnectedIndices;
 		boost::mt19937& randomSource;
 		observationTree& tree;
@@ -60,7 +60,7 @@ namespace discreteGermGrain
 		#pragma omp parallel
 #endif
 		{
-			std::vector< ::discreteGermGrain::obs::usingBiconnectedComponents> observationsThisThread;
+			std::vector< ::residualConnectivity::obs::usingBiconnectedComponents> observationsThisThread;
 			std::vector<int> parentIndicesThisThread;
 			//vector that we re-use to avoid allocations
 			std::vector<int> connectedComponents(inputs.context.nVertices());
@@ -142,7 +142,7 @@ namespace discreteGermGrain
 		boost::mt19937 perThreadSeeds[100];
 		for(int j = 0; j < 100; j++) perThreadSeeds[j] = outputs.randomSource();
 #endif
-		std::vector< ::discreteGermGrain::subObs::usingBiconnectedComponents> nextSetObservations;
+		std::vector< ::residualConnectivity::subObs::usingBiconnectedComponents> nextSetObservations;
 		std::vector<int> nextStepPotentiallyConnectedIndices;
 		//Loop over the splitting steps (the different nested events)
 		for(int i = 1; i < inputs.initialRadius/*+1*/; i++)
@@ -169,8 +169,8 @@ namespace discreteGermGrain
 				//used to calculate the splitting factor (which is random)
 				boost::random::bernoulli_distribution<float> splittingFactorBernoulli(sptittingFactorRemainder);
 
-				::discreteGermGrain::subObs::withWeightConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack, subGraph);
-				::discreteGermGrain::obs::withWeightConstructorType getObsHelper;
+				::residualConnectivity::subObs::withWeightConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack, subGraph);
+				::residualConnectivity::obs::withWeightConstructorType getObsHelper;
 #ifdef USE_OPENMP
 				//per-thread random number generation
 				boost::mt19937 perThreadSource;
@@ -187,17 +187,17 @@ namespace discreteGermGrain
 					int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(outputs.randomSource);
 #endif
 					//get out the current observation
-					const ::discreteGermGrain::subObs::usingBiconnectedComponents& currentObs = outputs.subObservations[j];
+					const ::residualConnectivity::subObs::usingBiconnectedComponents& currentObs = outputs.subObservations[j];
 					for(int k = 0; k < nThisObservation; k++)
 					{
-						::discreteGermGrain::obs::usingBiconnectedComponents obs = ::discreteGermGrain::subObs::getObservation< ::discreteGermGrain::subObs::usingBiconnectedComponents>::get(currentObs, 
+						::residualConnectivity::obs::usingBiconnectedComponents obs = ::residualConnectivity::subObs::getObservation< ::residualConnectivity::subObs::usingBiconnectedComponents>::get(currentObs, 
 #ifdef USE_OPENMP
 								perThreadSource
 #else
 								outputs.randomSource
 #endif
 						, getObsHelper);
-						::discreteGermGrain::subObs::usingBiconnectedComponents subObs = ::discreteGermGrain::obs::getSubObservation< ::discreteGermGrain::obs::usingBiconnectedComponents>::get(obs, inputs.initialRadius - i, getSubObsHelper);
+						::residualConnectivity::subObs::usingBiconnectedComponents subObs = ::residualConnectivity::obs::getSubObservation< ::residualConnectivity::obs::usingBiconnectedComponents>::get(obs, inputs.initialRadius - i, getSubObsHelper);
 #ifdef USE_OPENMP
 						#pragma omp critical
 #endif
@@ -234,7 +234,7 @@ namespace discreteGermGrain
 			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
 			subGraphType subGraph;
-			::discreteGermGrain::subObs::withWeightConstructorType helper(connectedComponents, stack, subGraphStack, subGraph);
+			::residualConnectivity::subObs::withWeightConstructorType helper(connectedComponents, stack, subGraphStack, subGraph);
 #ifdef USE_OPENMP
 			//per-thread random number generation
 			boost::mt19937 perThreadSource;
@@ -243,14 +243,14 @@ namespace discreteGermGrain
 #endif
 			for(int i = 0; i < inputs.n; i++)
 			{
-				::discreteGermGrain::obs::usingBiconnectedComponents obs(inputs.context, 
+				::residualConnectivity::obs::usingBiconnectedComponents obs(inputs.context, 
 #ifdef USE_OPENMP
 						perThreadSource
 #else
 						outputs.randomSource
 #endif
 						);
-				::discreteGermGrain::subObs::usingBiconnectedComponents subObs(::discreteGermGrain::obs::getSubObservation< ::discreteGermGrain::obs::usingBiconnectedComponents>::get(obs, inputs.initialRadius, helper));
+				::residualConnectivity::subObs::usingBiconnectedComponents subObs(::residualConnectivity::obs::getSubObservation< ::residualConnectivity::obs::usingBiconnectedComponents>::get(obs, inputs.initialRadius, helper));
 #ifdef USE_OPENMP
 				#pragma omp critical
 #endif
@@ -282,8 +282,8 @@ namespace discreteGermGrain
 		//1. initialRadius = 0, only crude MC step
 		//2. initialRadius = 1, only the crude MC and then one type of algorithm
 		//3. initialRadius >= 2, crude MC and then two types of algorithm
-		std::vector< ::discreteGermGrain::subObs::usingBiconnectedComponents> subObservations;
-		std::vector< ::discreteGermGrain::obs::usingBiconnectedComponents> observations;
+		std::vector< ::residualConnectivity::subObs::usingBiconnectedComponents> subObservations;
+		std::vector< ::residualConnectivity::obs::usingBiconnectedComponents> observations;
 
 		stepInputs inputs(context, splittingFactors);
 		inputs.initialRadius = initialRadius;
@@ -307,7 +307,7 @@ namespace discreteGermGrain
 			args.outputStream << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << observations.size() << " / " << outputs.totalGenerated  << " observations had non-zero probability" << outputObject::endl;
 
 			mpfr_class probabilitySum = 0;
-			for(std::vector< ::discreteGermGrain::obs::usingBiconnectedComponents>::iterator i = observations.begin(); i != observations.end(); i++)
+			for(std::vector< ::residualConnectivity::obs::usingBiconnectedComponents>::iterator i = observations.begin(); i != observations.end(); i++)
 			{
 				probabilitySum += i->getWeight();
 			}
@@ -334,14 +334,14 @@ namespace discreteGermGrain
 				empiricalDistribution distribution(true, context.nVertices(), context);
 				if(initialRadius == 0)
 				{
-					for(std::vector< ::discreteGermGrain::subObs::usingBiconnectedComponents>::const_iterator i = subObservations.begin(); i != subObservations.end(); i++)
+					for(std::vector< ::residualConnectivity::subObs::usingBiconnectedComponents>::const_iterator i = subObservations.begin(); i != subObservations.end(); i++)
 					{
 						distribution.add(i->getState());
 					}
 				}
 				else
 				{
-					for(std::vector< ::discreteGermGrain::obs::usingBiconnectedComponents>::const_iterator i = observations.begin(); i != observations.end(); i++)
+					for(std::vector< ::residualConnectivity::obs::usingBiconnectedComponents>::const_iterator i = observations.begin(); i != observations.end(); i++)
 					{
 						distribution.add(i->getState());
 					}

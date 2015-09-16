@@ -7,7 +7,7 @@
 #include <boost/graph/connected_components.hpp>
 #include "connected_components_restricted.hpp"
 #include "monteCarloMethods/recursiveVarianceReduction.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	int main(int argc, char **argv)
 	{
@@ -80,5 +80,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char **argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

@@ -5,14 +5,14 @@ SEXP createHexagonalLattice(SEXP x_sexp, SEXP y_sexp)
 BEGIN_RCPP
 	int x = Rcpp::as<int>(x_sexp), y = Rcpp::as<int>(y_sexp);
 
-	boost::shared_ptr<std::vector<discreteGermGrain::Context::vertexPosition> > vertexPositions;
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph;
-	discreteGermGrain::constructGraphs::hexagonalTiling(x, y, graph, vertexPositions);
+	boost::shared_ptr<std::vector<residualConnectivity::Context::vertexPosition> > vertexPositions;
+	boost::shared_ptr<residualConnectivity::Context::inputGraph> graph;
+	residualConnectivity::constructGraphs::hexagonalTiling(x, y, graph, vertexPositions);
 
 	std::size_t nEdges = boost::num_edges(*graph), nVertices = boost::num_vertices(*graph);
 	Rcpp::NumericMatrix edges(2, (int)nEdges), positions((int)nVertices, 2);
 
-	discreteGermGrain::Context::inputGraph::edge_iterator current, end;
+	residualConnectivity::Context::inputGraph::edge_iterator current, end;
 	boost::tie(current, end) = boost::edges(*graph);
 	int index = 0;
 	while(current != end)

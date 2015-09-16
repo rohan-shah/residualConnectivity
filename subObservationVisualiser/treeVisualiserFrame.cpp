@@ -3,7 +3,7 @@
 #include <QEvent>
 #include <QKeyEvent>
 #include <QGraphicsSceneMouseEvent>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class treeVisualiserVertex : public QGraphicsEllipseItem
 	{

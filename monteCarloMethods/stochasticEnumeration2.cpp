@@ -5,7 +5,7 @@
 #include <boost/random/random_number_generator.hpp>
 #include <boost/graph/connected_components.hpp>
 #include "connected_components_restricted.hpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	bool stochasticEnumeration2(stochasticEnumerationArgs& args)
 	{

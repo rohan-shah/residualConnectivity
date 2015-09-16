@@ -1,10 +1,10 @@
-#ifndef DISCRETE_GERM_GRAIN_SUB_OBS_TYPES_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUB_OBS_TYPES_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUB_OBS_TYPES_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUB_OBS_TYPES_HEADER_GUARD
 #include <vector>
 #include "depth_first_search_restricted.hpp"
 #include "Context.h"
 #include "constructSubGraph.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace obs
 	{

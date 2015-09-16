@@ -6,7 +6,7 @@
 #include "includeNumerics.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "outputObject.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct usingBiconnectedSplittingArgs
 	{

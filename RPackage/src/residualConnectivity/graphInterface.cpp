@@ -2,7 +2,7 @@
 #include "igraphInterface.h"
 #include "graphAMInterface.h"
 #include "graphNELInterface.h"
-discreteGermGrain::Context graphInterface(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, graphType type)
+residualConnectivity::Context graphInterface(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, graphType type)
 {
 	//Convert probability
 	double probability;
@@ -15,7 +15,7 @@ discreteGermGrain::Context graphInterface(SEXP graph_sexp, SEXP vertexCoordinate
 		throw std::runtime_error("Unable to convert input probability to a number");
 	}
 
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> boostGraph;
+	boost::shared_ptr<residualConnectivity::Context::inputGraph> boostGraph;
 	if(type == GRAPHAM) boostGraph = graphAMConvert(graph_sexp);
 	else if(type == GRAPHNEL) boostGraph = graphNELConvert(graph_sexp);
 	else if(type == IGRAPH) boostGraph = igraphConvert(graph_sexp);
@@ -25,7 +25,7 @@ discreteGermGrain::Context graphInterface(SEXP graph_sexp, SEXP vertexCoordinate
 
 
 	//Convert vertex coordinates
-	boost::shared_ptr<std::vector<discreteGermGrain::Context::vertexPosition> > vertexCoordinates;
+	boost::shared_ptr<std::vector<residualConnectivity::Context::vertexPosition> > vertexCoordinates;
 	if(Rf_isNull(vertexCoordinates_sexp) == 0)
 	{
 		Rcpp::NumericMatrix vertexCoordinates_matrix;
@@ -38,12 +38,12 @@ discreteGermGrain::Context graphInterface(SEXP graph_sexp, SEXP vertexCoordinate
 			throw std::runtime_error("Input vertexCoordinates must be a numeric matrix");
 		}
 		//change format
-		vertexCoordinates = boost::shared_ptr<std::vector<discreteGermGrain::Context::vertexPosition> >(new std::vector<discreteGermGrain::Context::vertexPosition>());
-		std::vector<discreteGermGrain::Context::vertexPosition>& vertexCoordinatesRef = *vertexCoordinates;
+		vertexCoordinates = boost::shared_ptr<std::vector<residualConnectivity::Context::vertexPosition> >(new std::vector<residualConnectivity::Context::vertexPosition>());
+		std::vector<residualConnectivity::Context::vertexPosition>& vertexCoordinatesRef = *vertexCoordinates;
 		vertexCoordinatesRef.reserve(vertexCoordinates_matrix.nrow());
 		for(std::size_t i = 0; i < nVertices; i++)
 		{
-			vertexCoordinatesRef.push_back(discreteGermGrain::Context::vertexPosition((discreteGermGrain::Context::vertexPosition::first_type)vertexCoordinates_matrix((int)i, 0), (discreteGermGrain::Context::vertexPosition::second_type)vertexCoordinates_matrix((int)i, 1)));
+			vertexCoordinatesRef.push_back(residualConnectivity::Context::vertexPosition((residualConnectivity::Context::vertexPosition::first_type)vertexCoordinates_matrix((int)i, 0), (residualConnectivity::Context::vertexPosition::second_type)vertexCoordinates_matrix((int)i, 1)));
 		}
 	}
 
@@ -55,6 +55,6 @@ discreteGermGrain::Context graphInterface(SEXP graph_sexp, SEXP vertexCoordinate
 		defaultOrderingRef.push_back((int)i);
 	}
 
-	discreteGermGrain::Context context(boostGraph, defaultOrdering, vertexCoordinates, probability);
+	residualConnectivity::Context context(boostGraph, defaultOrdering, vertexCoordinates, probability);
 	return context;
 }

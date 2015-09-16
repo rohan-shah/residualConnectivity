@@ -4,7 +4,7 @@
 #include <boost/graph/graphml.hpp>
 #include <boost/property_map/vector_property_map.hpp>
 #include "constructGraphs.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace ContextImpl
 	{

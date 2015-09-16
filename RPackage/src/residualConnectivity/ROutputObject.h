@@ -2,7 +2,7 @@
 #define RPACKAGE_R_OUTPUT_OBJECT
 #include "outputObject.h"
 #include "Rcpp.h"
-struct ROutputObject : public discreteGermGrain::outputObject
+struct ROutputObject : public residualConnectivity::outputObject
 {
 public:
 	virtual outputObject& operator<<(int i)

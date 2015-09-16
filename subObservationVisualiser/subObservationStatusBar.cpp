@@ -1,6 +1,6 @@
 #include "subObservationStatusBar.h"
 #include <sstream>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	subObservationStatusBar::subObservationStatusBar(std::string text)
 		:text(text)

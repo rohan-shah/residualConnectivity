@@ -1,6 +1,6 @@
 #ifndef VERTEX_STATE_HEADER_GUARD
 #define VERTEX_STATE_HEADER_GUARD
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	enum
 	{

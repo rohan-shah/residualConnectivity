@@ -1,7 +1,7 @@
 #include "ZoomGraphicsView.h"
 #include <QWheelEvent>
 #include <QGraphicsScene>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	ZoomGraphicsView::ZoomGraphicsView(QGraphicsScene* scene)
 		:QGraphicsView(scene)

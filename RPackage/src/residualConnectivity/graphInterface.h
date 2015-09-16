@@ -3,5 +3,5 @@
 #include "Context.h"
 #include "graphType.h"
 #include <Rcpp.h>
-discreteGermGrain::Context graphInterface(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, graphType type);
+residualConnectivity::Context graphInterface(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, graphType type);
 #endif

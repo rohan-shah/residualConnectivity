@@ -11,7 +11,7 @@
 #include "includeNumerics.h"
 #include "argumentsMPFR.h"
 #include <boost/noncopyable.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct TransferEstimationData : public boost::noncopyable
 	{
@@ -295,5 +295,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char **argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

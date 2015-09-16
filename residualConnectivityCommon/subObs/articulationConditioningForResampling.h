@@ -1,12 +1,12 @@
-#ifndef DISCRETE_GERM_GRAIN_SUB_OBS_ARTICULATION_CONDITIONING_FOR_RESAMPLING_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUB_OBS_ARTICULATION_CONDITIONING_FOR_RESAMPLING_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUB_OBS_ARTICULATION_CONDITIONING_FOR_RESAMPLING_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUB_OBS_ARTICULATION_CONDITIONING_FOR_RESAMPLING_HEADER_GUARD
 #include "subObs/subObs.h"
 #include "Context.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
 #include "obs/getSubObservation.hpp"
 #include "subObs/withWeight.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace obs
 	{
@@ -14,18 +14,18 @@ namespace discreteGermGrain
 	}
 	namespace subObs
 	{
-		class articulationConditioningForResampling : public ::discreteGermGrain::subObs::withWeight
+		class articulationConditioningForResampling : public ::residualConnectivity::subObs::withWeight
 		{
 		public:
-			template<class T> friend class ::discreteGermGrain::subObs::getObservation;
-			template<class T> friend class ::discreteGermGrain::obs::getSubObservation;
+			template<class T> friend class ::residualConnectivity::subObs::getObservation;
+			template<class T> friend class ::residualConnectivity::obs::getSubObservation;
 
-			typedef ::discreteGermGrain::obs::articulationConditioningForResampling observationType;
-			typedef ::discreteGermGrain::obs::withWeightConstructorType observationConstructorType;
+			typedef ::residualConnectivity::obs::articulationConditioningForResampling observationType;
+			typedef ::residualConnectivity::obs::withWeightConstructorType observationConstructorType;
 
 			articulationConditioningForResampling(articulationConditioningForResampling&& other);
 			bool isPotentiallyConnected() const;
-			articulationConditioningForResampling(Context const& context, boost::shared_array<vertexState> state, int radius, ::discreteGermGrain::subObs::articulationConditioningForResamplingConstructorType &);
+			articulationConditioningForResampling(Context const& context, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::articulationConditioningForResamplingConstructorType &);
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
 			articulationConditioningForResampling copyWithWeight(mpfr_class weight) const;
 		protected:

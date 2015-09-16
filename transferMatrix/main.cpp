@@ -7,7 +7,7 @@
 #include "countSubgraphsCommon.h"
 #include "constructMatrices.h"
 #include <fstream>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class transferMatrixLogger : public countSubgraphsBySizeLogger, public countSubgraphsLogger
 	{
@@ -132,5 +132,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char **argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

@@ -1,5 +1,5 @@
-#ifndef DISCRETE_GERM_GRAIN_OBS_TREE_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_OBS_TREE_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_OBS_TREE_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_OBS_TREE_HEADER_GUARD
 #include "observationCollection.h"
 #include "observation.h"
 #include <stdexcept>
@@ -8,7 +8,7 @@
 #include <boost/serialization/split_member.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class observationTree : public boost::noncopyable
 	{

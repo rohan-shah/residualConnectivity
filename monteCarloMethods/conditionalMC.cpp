@@ -6,7 +6,7 @@
 #include "subObs/subObs.h"
 #include "isSingleComponentWithRadius.h"
 #include <boost/iterator/counting_iterator.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {	
 	void conditionalMC(conditionalMCArgs& args)
 	{
@@ -64,9 +64,9 @@ namespace discreteGermGrain
 				}
 				
 				//represents partial knowledge
-				::discreteGermGrain::subObs::subObs subObs(args.context, state);
+				::residualConnectivity::subObs::subObs subObs(args.context, state);
 				//generate complete knowledge
-				::discreteGermGrain::observation obs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::subObs>::get(subObs, args.randomSource);
+				::residualConnectivity::observation obs = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::subObs>::get(subObs, args.randomSource);
 				const vertexState* obsState = obs.getState();
 				std::fill(connectedComponents.begin(), connectedComponents.end(), -1);
 				

@@ -1,5 +1,5 @@
 #include "calculateFactorials.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	void calculateFactorials(std::vector<mpz_class>& factorials, int upperLimit)
 	{

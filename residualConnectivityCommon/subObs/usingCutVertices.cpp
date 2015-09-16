@@ -6,12 +6,12 @@
 #include <boost/range/algorithm/random_shuffle.hpp>
 #include <boost/random/random_number_generator.hpp>
 #include "obs/usingCutVertices.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
-		usingCutVertices::usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::withWeightConstructorType& otherData)
-			: ::discreteGermGrain::subObs::subObsWithRadius(context, state, radius)
+		usingCutVertices::usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
+			: ::residualConnectivity::subObs::subObsWithRadius(context, state, radius)
 		{
 			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
 		}
@@ -20,7 +20,7 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		usingCutVertices::usingCutVertices(usingCutVertices&& other)
-			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast< ::discreteGermGrain::subObs::subObsWithRadius&&>(other))
+			: ::residualConnectivity::subObs::subObsWithRadius(static_cast< ::residualConnectivity::subObs::subObsWithRadius&&>(other))
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}
@@ -147,7 +147,7 @@ namespace discreteGermGrain
 		
 			mpfr_class opProbability = context.getOperationalProbability();
 			mpfr_class weight = boost::multiprecision::pow(opProbability, nNotAlreadyFixedArticulation);
-			::discreteGermGrain::obs::withWeightConstructorType weightObject;
+			::residualConnectivity::obs::withWeightConstructorType weightObject;
 			for(int simulationCounter = 0; simulationCounter < nSimulations; simulationCounter++)
 			{
 				boost::shared_array<vertexState> observationState(new vertexState[nVertices]);

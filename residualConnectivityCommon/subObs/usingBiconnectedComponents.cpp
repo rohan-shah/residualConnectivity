@@ -4,12 +4,12 @@
 #include "isSingleComponentWithRadius.h"
 #include "obs/usingBiconnectedComponents.h"
 #include "subObs/withFinalConditioning.hpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
-		usingBiconnectedComponents::usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::withWeightConstructorType& otherData)
-			: ::discreteGermGrain::subObs::withWeight(context, state, radius, otherData.weight)
+		usingBiconnectedComponents::usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
+			: ::residualConnectivity::subObs::withWeight(context, state, radius, otherData.weight)
 		{
 			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
 		}
@@ -18,7 +18,7 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		usingBiconnectedComponents::usingBiconnectedComponents(usingBiconnectedComponents&& other)
-			: ::discreteGermGrain::subObs::withWeight(static_cast< ::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
+			: ::residualConnectivity::subObs::withWeight(static_cast< ::residualConnectivity::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}

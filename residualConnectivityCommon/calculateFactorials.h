@@ -2,7 +2,7 @@
 #define CALCULATE_FACTORIALS_HEADER_GUARD
 #include "includeNumerics.h"
 #include <vector>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	void calculateFactorials(std::vector<mpz_class>& factorials, int upperLimit);
 }

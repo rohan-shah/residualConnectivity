@@ -5,7 +5,7 @@
 SEXP PMC(SEXP graph_sexp, SEXP n_sexp, SEXP seed_sexp, graphType type)
 {
 BEGIN_RCPP
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph = graphConvert(graph_sexp, type);
+	boost::shared_ptr<residualConnectivity::Context::inputGraph> graph = graphConvert(graph_sexp, type);
 	boost::mt19937 randomSource;
 
 	/*convert seed*/
@@ -31,10 +31,10 @@ BEGIN_RCPP
 	}
 
 	randomSource.seed(seed);
-	discreteGermGrain::pmcArguments arguments(*graph, randomSource);
+	residualConnectivity::pmcArguments arguments(*graph, randomSource);
 	arguments.n = n;
 
-	discreteGermGrain::PMC(arguments);
+	residualConnectivity::PMC(arguments);
 
 	std::vector<std::string> spectraStrings;
 	for (std::vector<unsigned long long>::iterator i = arguments.counts.begin(); i != arguments.counts.end(); i++)

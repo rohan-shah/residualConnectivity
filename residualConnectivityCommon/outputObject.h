@@ -2,7 +2,7 @@
 #define OUTPUT_OBJECT_HEADER_GUARD
 #include <iostream>
 #include <string>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct outputObject
 	{

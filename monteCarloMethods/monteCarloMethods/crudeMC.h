@@ -2,7 +2,7 @@
 #define CRUDE_MC_LIB_HEADER_GUARD
 #include "Context.h"
 #include <boost/random/mersenne_twister.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct crudeMCArgs
 	{

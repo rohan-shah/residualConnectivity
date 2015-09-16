@@ -44,8 +44,8 @@ BEGIN_MEX_WRAPPER
 	int seed = (int)round(seedDouble);
 	if(fabs(seed - seedDouble) > 1e-5 || n <= 0) THIRD_INPUT_ERROR;
 	
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph(new discreteGermGrain::Context::inputGraph());
-	boost::shared_ptr<std::vector<discreteGermGrain::Context::vertexPosition> > vertexPositions(new std::vector<discreteGermGrain::Context::vertexPosition>());
+	boost::shared_ptr<residualConnectivity::Context::inputGraph> graph(new residualConnectivity::Context::inputGraph());
+	boost::shared_ptr<std::vector<residualConnectivity::Context::vertexPosition> > vertexPositions(new std::vector<residualConnectivity::Context::vertexPosition>());
 	if(nrhs == 4)
 	{
 		std::string error;
@@ -60,14 +60,14 @@ BEGIN_MEX_WRAPPER
 	}
 	boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(boost::num_vertices(*graph)));
 	for(int i = 0; i < (int)boost::num_vertices(*graph); i++) (*ordering)[i] = i;
-	discreteGermGrain::Context context = discreteGermGrain::Context(graph, ordering, vertexPositions, probabilityMpfr);
+	residualConnectivity::Context context = residualConnectivity::Context(graph, ordering, vertexPositions, probabilityMpfr);
 
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
-	discreteGermGrain::crudeMCArgs args(context, randomSource);
+	residualConnectivity::crudeMCArgs args(context, randomSource);
 	args.n = n;
 
-	std::size_t connected = discreteGermGrain::crudeMC(args);
+	std::size_t connected = residualConnectivity::crudeMC(args);
 	plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	double* output = mxGetPr(plhs[0]);
 	*output = (double)connected / (double)n;
