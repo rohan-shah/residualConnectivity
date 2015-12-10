@@ -1,5 +1,5 @@
 #include "mex.h"
-#include "monteCarloMethods/crudeMC.h"
+#include "monteCarloMethods/recursiveVarianceReduction.h"
 #include "convertGraph.h"
 #include "exceptionHandling.h"
 void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[])
@@ -8,12 +8,12 @@ BEGIN_MEX_WRAPPER
 	//We need three inputs
 	if(nrhs != 4 && nrhs != 5)
 	{
-		throw std::runtime_error("Function crudeMCImpl requires four or five inputs");
+		throw std::runtime_error("Function conditionalMCImpl requires four or five inputs");
 	}
 	//Only one output
 	if(nlhs > 1)
 	{
-		throw std::runtime_error("Function crudeMCImpl returns only one value");
+		throw std::runtime_error("Function conditionalMCImpl returns only one value");
 	}
 	//First input must be a probability
 	bool probabilityValid = !mxIsComplex(prhs[0]) && !mxIsSparse(prhs[0]) && mxIsNumeric(prhs[0]) && mxGetNumberOfDimensions(prhs[0]) == 2 && mxGetNumberOfElements(prhs[0]) == 1;
@@ -64,13 +64,13 @@ BEGIN_MEX_WRAPPER
 
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
-	residualConnectivity::crudeMCArgs args(context, randomSource);
+	residualConnectivity::recursiveVarianceReductionArgs args(context, randomSource);
 	args.n = n;
 
-	std::size_t connected = residualConnectivity::crudeMC(args);
+	residualConnectivity::recursiveVarianceReduction(args);
 	plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	double* output = mxGetPr(plhs[0]);
-	*output = (double)connected / (double)n;
+	*output = args.estimate.convert_to<double>();
 	return;
 END_MEX_WRAPPER
 }

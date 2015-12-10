@@ -6,7 +6,7 @@
 #include <QGraphicsRectItem>
 #include <boost/lexical_cast.hpp>
 #include <QGraphicsSceneMouseEvent>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	subObservationVisualiserCollection::subObservationVisualiserCollection(const observationCollection& inputCollection, float pointSize, std::string text)
 		: collection(inputCollection), currentIndex(0), text(text)

@@ -3,7 +3,7 @@
 #include "monteCarloMethods/crudeMC.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	int main(int argc, char **argv)
 	{
@@ -67,5 +67,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char **argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

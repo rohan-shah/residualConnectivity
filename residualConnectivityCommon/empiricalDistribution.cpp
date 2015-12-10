@@ -1,7 +1,7 @@
 #include "empiricalDistribution.h"
 #include <stdexcept>
 #include <fstream>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	empiricalDistribution::empiricalDistribution(bool _isWeighted, std::size_t nVertices, const Context& context)
 	:nVertices(nVertices), sampleSize(0), _isWeighted(_isWeighted), externalContext(&context)

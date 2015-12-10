@@ -4,7 +4,7 @@
 #include <boost/range/algorithm/random_shuffle.hpp>
 #include <boost/random/random_number_generator.hpp>
 #include "monteCarloMethods/PMC.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	pmcArguments::pmcArguments(const Context::inputGraph& graph, boost::mt19937& randomSource)
 		:graph(graph), randomSource(randomSource)

@@ -4,7 +4,7 @@
 #include <vector>
 #include <boost/serialization/split_member.hpp>
 #include <boost/serialization/access.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class binaryDataSet
 	{

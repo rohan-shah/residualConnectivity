@@ -2,12 +2,12 @@
 #include <boost/random/bernoulli_distribution.hpp>
 #include <boost/graph/biconnected_components.hpp>
 #include "isSingleComponentWithRadius.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
-		basic::basic(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::basicConstructorType& otherData)
-			: ::discreteGermGrain::subObs::subObsWithRadius(context, state, radius)
+		basic::basic(Context const& context, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::basicConstructorType& otherData)
+			: ::residualConnectivity::subObs::subObsWithRadius(context, state, radius)
 		{
 			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
 		}
@@ -16,7 +16,7 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		basic::basic(basic&& other)
-			: ::discreteGermGrain::subObs::subObsWithRadius(static_cast< ::discreteGermGrain::subObs::subObsWithRadius&&>(other))
+			: ::residualConnectivity::subObs::subObsWithRadius(static_cast< ::residualConnectivity::subObs::subObsWithRadius&&>(other))
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}

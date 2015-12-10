@@ -1,5 +1,5 @@
 #include "outputObject.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	outputObject::outputObject()
 	{}

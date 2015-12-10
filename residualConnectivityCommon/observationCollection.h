@@ -1,5 +1,5 @@
-#ifndef DISCRETE_GERM_GRAIN_SUBOBS_COLLECTION_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUBOBS_COLLECTION_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUBOBS_COLLECTION_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUBOBS_COLLECTION_HEADER_GUARD
 #include "vertexState.h"
 #include "empiricalDistribution.h"
 #include "observation.h"
@@ -8,7 +8,7 @@
 #include <boost/serialization/split_member.hpp>
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class observationCollection : protected binaryDataSet2, public boost::noncopyable
 	{
@@ -30,7 +30,7 @@ namespace discreteGermGrain
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		template<class Archive> void save(Archive& ar, const unsigned int version) const
 		{
-			std::string typeString = "discreteGermGrainSubObsCollection";
+			std::string typeString = "residualConnectivitySubObsCollection";
 			ar << typeString;
 			ar << sampleSize;
 			ar << radius;
@@ -40,14 +40,14 @@ namespace discreteGermGrain
 			}
 			else ar << *externalContext;
 			ar << *static_cast<const binaryDataSet2*>(this);
-			typeString = "discreteGermGrainSubObsCollection_end";
+			typeString = "residualConnectivitySubObsCollection_end";
 			ar << typeString;
 		}
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
 			std::string typeString;
 			ar >> typeString;
-			if(typeString != "discreteGermGrainSubObsCollection")
+			if(typeString != "residualConnectivitySubObsCollection")
 			{
 				throw std::runtime_error("Incorrect type specifier");
 			}
@@ -56,7 +56,7 @@ namespace discreteGermGrain
 			containedContext.reset(new Context(ar));
 			ar >> *static_cast<binaryDataSet2*>(this);
 			ar >> typeString;
-			if(typeString != "discreteGermGrainSubObsCollection_end")
+			if(typeString != "residualConnectivitySubObsCollection_end")
 			{
 				throw std::runtime_error("Incorrect type specifier");
 			}

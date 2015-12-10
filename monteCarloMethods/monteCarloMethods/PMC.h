@@ -4,7 +4,7 @@
 #include <vector>
 #include "includeNumerics.h"
 #include <boost/random/mersenne_twister.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct pmcArguments
 	{

@@ -53,15 +53,15 @@ BEGIN_RCPP
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
-	discreteGermGrain::Context context = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
-	discreteGermGrain::observationTree tree(&context, (int)initialRadius);
+	residualConnectivity::Context context = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
+	residualConnectivity::observationTree tree(&context, (int)initialRadius);
 	ROutputObject output;
-	discreteGermGrain::articulationConditioningResamplingArgs args(context, randomSource, tree, output);
+	residualConnectivity::articulationConditioningResamplingArgs args(context, randomSource, tree, output);
 	args.n = (int)n;
 	args.initialRadius = (int)initialRadius;
 	randomSource.seed(seed);
 
-	discreteGermGrain::articulationConditioningResampling(args);
+	residualConnectivity::articulationConditioningResampling(args);
 	double result = args.estimate.convert_to<double>();
 	return Rcpp::wrap(result);
 END_RCPP

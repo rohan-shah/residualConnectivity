@@ -1,7 +1,7 @@
 #ifndef CONSTRUCT_GRAPHS_HEADER_GUARD
 #define CONSTRUCT_GRAPHS_HEADER_GUARD
 #include "Context.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace constructGraphs
 	{

@@ -4,7 +4,7 @@
 #include <boost/graph/connected_components.hpp>
 #include "connected_components_restricted.hpp"
 #include "monteCarloMethods/recursiveVarianceReduction.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	void recursiveVarianceReduction(recursiveVarianceReductionArgs& args)
 	{

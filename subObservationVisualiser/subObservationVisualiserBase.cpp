@@ -13,7 +13,7 @@
 #include <QGraphicsRectItem>
 #include <boost/lexical_cast.hpp>
 #include <QGraphicsSceneMouseEvent>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	bool sortByFirst(Context::vertexPosition const& first, Context::vertexPosition const& second)
 	{

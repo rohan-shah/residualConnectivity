@@ -3,7 +3,7 @@
 #include "Context.h"
 #include "observationTree.h"
 #include "outputObject.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct articulationConditioningResamplingArgs
 	{

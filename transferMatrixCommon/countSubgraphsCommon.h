@@ -4,7 +4,7 @@
 #include <Eigen/Core>
 #include <vector>
 #include "states.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	typedef ::Eigen::Matrix<mpz_class, -1, -1, ::Eigen::RowMajor, -1, -1> LargeDenseIntMatrix;
 	enum VertexState

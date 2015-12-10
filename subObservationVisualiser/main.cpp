@@ -14,7 +14,7 @@
 		#include "windowsConsoleOutput.h"
 	#endif
 #endif
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 #if defined(_WIN32)
 	void registerQTPluginDir()
@@ -193,5 +193,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char** argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

@@ -1,6 +1,6 @@
 #include "observationCollection.h"
 #include <boost/scoped_array.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	observationCollection::observationCollection(Context const* externalContext, double radius)
 		:sampleSize(0), externalContext(externalContext), radius(radius)

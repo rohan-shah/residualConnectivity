@@ -1,5 +1,5 @@
 #include "graphNELInterface.h"
-boost::shared_ptr<discreteGermGrain::Context::inputGraph> graphNELConvert(SEXP graph_sexp)
+boost::shared_ptr<residualConnectivity::Context::inputGraph> graphNELConvert(SEXP graph_sexp)
 {
 	Rcpp::S4 graph_s4;
 	try
@@ -66,8 +66,8 @@ boost::shared_ptr<discreteGermGrain::Context::inputGraph> graphNELConvert(SEXP g
 	}
 	Rcpp::CharacterVector edges_list_names = Rcpp::as<Rcpp::CharacterVector>(edges_list.attr("names"));
 
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> boostGraph(new discreteGermGrain::Context::inputGraph(nVertices));
-	discreteGermGrain::Context::inputGraph& boostGraphRef = *boostGraph;
+	boost::shared_ptr<residualConnectivity::Context::inputGraph> boostGraph(new residualConnectivity::Context::inputGraph(nVertices));
+	residualConnectivity::Context::inputGraph& boostGraphRef = *boostGraph;
 	for(int i = 0; i < edges_list.size(); i++)
 	{
 		int nodeIndex = std::distance(nodeNames.begin(), std::find(nodeNames.begin(), nodeNames.end(), edges_list_names(i)));

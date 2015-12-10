@@ -1,8 +1,8 @@
-#ifndef DISCRETE_GERM_GRAIN_OBS_GET_SUB_OBSERVATION_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_OBS_GET_SUB_OBSERVATION_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_OBS_GET_SUB_OBSERVATION_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_OBS_GET_SUB_OBSERVATION_HEADER_GUARD
 #include "Context.h"
 #include <boost/noncopyable.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace obs
 	{

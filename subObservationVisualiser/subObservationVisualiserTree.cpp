@@ -7,7 +7,7 @@
 #include <boost/lexical_cast.hpp>
 #include <QGraphicsSceneMouseEvent>
 #include <QSizePolicy>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	subObservationVisualiserTree::subObservationVisualiserTree(const observationTree& inputTree, float graphPointSize, float treePointSize)
 		:tree(inputTree), currentLevel(0), currentIndex(0)

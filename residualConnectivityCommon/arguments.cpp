@@ -1,5 +1,5 @@
 #include "arguments.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	bool readN(boost::program_options::variables_map& variableMap, int& out)
 	{

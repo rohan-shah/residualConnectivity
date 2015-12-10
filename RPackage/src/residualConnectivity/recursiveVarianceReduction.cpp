@@ -34,13 +34,13 @@ BEGIN_RCPP
 		throw std::runtime_error("Input seed must be an integer");
 	}
 
-	discreteGermGrain::Context context = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
+	residualConnectivity::Context context = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
-	discreteGermGrain::recursiveVarianceReductionArgs args(context, randomSource);
+	residualConnectivity::recursiveVarianceReductionArgs args(context, randomSource);
 	args.n = n;
 
-	discreteGermGrain::recursiveVarianceReduction(args);
+	residualConnectivity::recursiveVarianceReduction(args);
 	return Rcpp::wrap(args.estimate.convert_to<double>());
 END_RCPP
 }

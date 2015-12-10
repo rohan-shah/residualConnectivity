@@ -7,7 +7,7 @@
 #include <QLabel>
 #include "observation.h"
 #include <QHBoxLayout>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	enum visualisationMode
 	{

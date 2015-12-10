@@ -12,7 +12,7 @@
 #include "subObservationStatusBar.h"
 #include "observationTree.h"
 #include "treeVisualiserFrame.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	//If the next state is RESIMULATE, then we resimulate until we observe something that hits the next level, BUT
 	class subObservationVisualiserTree : public QMainWindow

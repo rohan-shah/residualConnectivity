@@ -7,7 +7,7 @@
 #include "isSingleComponentWithRadius.h"
 #include <cstdio>
 #include <omp.h>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	inline int countSetBits(std::size_t i)
 	{
@@ -163,5 +163,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char **argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

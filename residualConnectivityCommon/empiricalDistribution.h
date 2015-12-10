@@ -1,5 +1,5 @@
-#ifndef DISCRETE_GERM_GRAIN_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
 #include <boost/noncopyable.hpp>
 #include "Context.h"
 #include "vertexState.h"
@@ -10,7 +10,7 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include "binaryDataSet.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class empiricalDistribution : protected binaryDataSet1, public boost::noncopyable
 	{
@@ -39,7 +39,7 @@ namespace discreteGermGrain
 	private:
 		template<class Archive> void save(Archive & ar, const unsigned int version) const
 		{
-			std::string typeString = "discreteGermGrain::empiricalDistribution";
+			std::string typeString = "residualConnectivity::empiricalDistribution";
 			ar << typeString;
 			if(containedContext)
 			{
@@ -64,14 +64,14 @@ namespace discreteGermGrain
 				ar << endWeights;
 			}
 			ar << *static_cast<const binaryDataSet1*>(this);
-			std::string endFile = "discreteGermGrain::end_distributions";
+			std::string endFile = "residualConnectivity::end_distributions";
 			ar << endFile;
 		}
 		template<class Archive> void load(Archive & ar, const unsigned int version)
 		{
 			std::string typeString;
 			ar >> typeString;
-			if(typeString != "discreteGermGrain::empiricalDistribution")
+			if(typeString != "residualConnectivity::empiricalDistribution")
 			{
 				throw std::runtime_error("File did not start with correct type specifier");
 			}
@@ -125,7 +125,7 @@ namespace discreteGermGrain
 			}
 			std::string endDistributions;
 			ar >> endDistributions;
-			if(endDistributions != "discreteGermGrain::end_distributions")
+			if(endDistributions != "residualConnectivity::end_distributions")
 			{
 				throw std::runtime_error("Distributions file must end with the string 'end_distributions'");
 			}

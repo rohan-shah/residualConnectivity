@@ -1,12 +1,12 @@
-#ifndef DISCRETE_GERM_GRAIN_WITH_SUB_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_WITH_SUB_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_WITH_SUB_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_WITH_SUB_HEADER_GUARD
 #include "observation.h"
 #include "Context.h"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/shared_array.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
-	class withSub : public ::discreteGermGrain::observation
+	class withSub : public ::residualConnectivity::observation
 	{
 	public:
 		static void getSubObservation(int radius, vertexState* newState, const Context& context, const vertexState* oldStatesPtr);

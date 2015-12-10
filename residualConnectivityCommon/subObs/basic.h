@@ -1,11 +1,11 @@
-#ifndef DISCRETE_GERM_GRAIN_SUB_OBS_BASIC_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUB_OBS_BASIC_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUB_OBS_BASIC_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUB_OBS_BASIC_HEADER_GUARD
 #include "subObs/subObs.h"
 #include "Context.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
 #include "obs/getSubObservation.hpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace obs
 	{
@@ -13,18 +13,18 @@ namespace discreteGermGrain
 	}
 	namespace subObs
 	{
-		class basic : public ::discreteGermGrain::subObs::subObsWithRadius
+		class basic : public ::residualConnectivity::subObs::subObsWithRadius
 		{
 		public:
-			template<class T> friend class ::discreteGermGrain::subObs::getObservation;
-			template<class T> friend class ::discreteGermGrain::obs::getSubObservation;
+			template<class T> friend class ::residualConnectivity::subObs::getObservation;
+			template<class T> friend class ::residualConnectivity::obs::getSubObservation;
 
-			typedef ::discreteGermGrain::obs::basic observationType;
-			typedef ::discreteGermGrain::obs::basicConstructorType observationConstructorType;
+			typedef ::residualConnectivity::obs::basic observationType;
+			typedef ::residualConnectivity::obs::basicConstructorType observationConstructorType;
 
 			basic(basic&& other);
 			bool isPotentiallyConnected() const;
-			basic(Context const& context, boost::shared_array<const vertexState> state, int radius, ::discreteGermGrain::subObs::basicConstructorType&);
+			basic(Context const& context, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::basicConstructorType&);
 		private:
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
 			bool potentiallyConnected;

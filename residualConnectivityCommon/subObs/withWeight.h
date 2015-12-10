@@ -1,15 +1,15 @@
-#ifndef DISCRETE_GERM_GRAIN_SUB_OBS_WITH_WEIGHT_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUB_OBS_WITH_WEIGHT_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUB_OBS_WITH_WEIGHT_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUB_OBS_WITH_WEIGHT_HEADER_GUARD
 #include "subObs/subObs.h"
 #include "Context.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
 #include "obs/getSubObservation.hpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
-		class withWeight : public ::discreteGermGrain::subObs::subObsWithRadius
+		class withWeight : public ::residualConnectivity::subObs::subObsWithRadius
 		{
 		public:
 			withWeight(withWeight&& other);

@@ -36,12 +36,12 @@ BEGIN_RCPP
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
-	discreteGermGrain::Context context = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
-	discreteGermGrain::conditionalMCArgs args(context, randomSource);
+	residualConnectivity::Context context = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
+	residualConnectivity::conditionalMCArgs args(context, randomSource);
 	args.n = n;
 	randomSource.seed(seed);
 
-	discreteGermGrain::conditionalMC(args);
+	residualConnectivity::conditionalMC(args);
 	double result = args.estimate.convert_to<double>();
 	return Rcpp::wrap(result);
 END_RCPP

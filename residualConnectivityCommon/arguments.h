@@ -19,7 +19,7 @@
 #define HELP_OPTION ("help", "Display this message")
 #define INPUT_GRAPH_OPTION GRID_GRAPH_OPTION GRAPH_FILE_OPTION TORUS_GRAPH_OPTION HEXAGONAL_GRID_OPTION
 
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	bool readN(boost::program_options::variables_map& map, int& out);
 	bool readGridGraph(boost::program_options::variables_map& variableMap, int& gridDimension, std::string& message);

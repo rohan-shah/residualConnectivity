@@ -1,5 +1,5 @@
 #include "subObsTypes.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{

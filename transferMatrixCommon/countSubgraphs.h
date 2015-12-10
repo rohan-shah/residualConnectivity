@@ -2,7 +2,7 @@
 #define COUNT_SUBGRAPHS_HEADER_GUARD
 #include <vector>
 #include "countSubgraphsCommon.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class countSubgraphsLogger
 	{

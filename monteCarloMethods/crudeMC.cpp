@@ -1,7 +1,7 @@
 #include "observation.h"
 #include "isSingleComponentWithRadius.h"
 #include "monteCarloMethods/crudeMC.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	std::size_t crudeMC(crudeMCArgs& args)
 	{

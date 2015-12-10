@@ -1,12 +1,12 @@
-#ifndef DISCRETE_GERM_GRAIN_TREE_VISUALISER_GRAPHICS_VIEW_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_TREE_VISUALISER_GRAPHICS_VIEW_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_TREE_VISUALISER_GRAPHICS_VIEW_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_TREE_VISUALISER_GRAPHICS_VIEW_HEADER_GUARD
 #include <QFrame>
 #include <QGraphicsView>
 #include <QGraphicsScene>
 #include "observationTree.h"
 #include <QHBoxLayout>
 #include <QGraphicsEllipseItem>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class treeVisualiserFrame : public QFrame
 	{

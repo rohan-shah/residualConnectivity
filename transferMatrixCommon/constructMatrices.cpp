@@ -3,7 +3,7 @@
 #include "subgraphMacros.hpp"
 #include "isConnectedState.h"
 #include "isConnectedState.cpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	template<class T> void constructMatricesInternal(typename T::LargeIntMatrix& outputTransitionMatrix, FinalColumnVector& outputFinal, InitialRowVector& outputInitial, const transferStates& states, std::size_t& nonZeroCount)
 	{

@@ -2,7 +2,7 @@
 #include "igraphInterface.h"
 #include "graphAMInterface.h"
 #include "graphNELInterface.h"
-boost::shared_ptr<discreteGermGrain::Context::inputGraph> graphConvert(SEXP graph_sexp, graphType type)
+boost::shared_ptr<residualConnectivity::Context::inputGraph> graphConvert(SEXP graph_sexp, graphType type)
 {
 	if(type == IGRAPH) return igraphConvert(graph_sexp);
 	else if(type == GRAPHNEL) return graphNELConvert(graph_sexp);

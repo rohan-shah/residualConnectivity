@@ -7,7 +7,7 @@
 #include <boost/tokenizer.hpp>
 #include <boost/foreach.hpp>
 #include <boost/lexical_cast.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	observation::observation(Context const& context, boost::archive::binary_iarchive& archive)
 		:context(context)
@@ -40,7 +40,7 @@ namespace discreteGermGrain
 			else state[i].state = UNFIXED_OFF;
 		}
 	}
-	observation::observation(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::basicConstructorType&)
+	observation::observation(Context const& context, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::basicConstructorType&)
 		:context(context), state(state)
 	{
 	}
