@@ -5,7 +5,8 @@
 #include "graphConvert.h"
 #include "calculateFactorials.h"
 #include "graphType.h"
-SEXP stochasticEnumeration(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, graphType type)
+#include "ROutputObject.h"
+SEXP stochasticEnumeration(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, SEXP outputStatus_sexp, graphType type)
 {
 BEGIN_RCPP
 	/*convert budget*/
@@ -73,6 +74,16 @@ BEGIN_RCPP
 	{
 		throw std::runtime_error("Input nPermutations must be at least 1");
 	}
+	/*Convert outputStatus*/
+	bool outputStatus;
+	try
+	{
+		outputStatus = Rcpp::as<bool>(outputStatus_sexp);
+	}
+	catch (Rcpp::not_compatible&)
+	{
+		throw std::runtime_error("Input outputStatus must be a boolean");
+	}
 
 	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph = graphConvert(graph_sexp, type);
 	const std::size_t nVertices = boost::num_vertices(*graph);
@@ -97,6 +108,10 @@ BEGIN_RCPP
 		else
 		{
 			throw std::runtime_error(args.message);
+		}
+		if(outputStatus)
+		{
+			Rcpp::Rcout << "Finished couting subgraphs of size " << i << " / " << nVertices << std::endl;
 		}
 	}
 
@@ -136,15 +151,15 @@ BEGIN_RCPP
 	}
 END_RCPP
 }
-SEXP stochasticEnumeration_igraph(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp)
+SEXP stochasticEnumeration_igraph(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, SEXP outputStatus_sexp)
 {
-	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, nPermutations_sexp, IGRAPH);
+	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, nPermutations_sexp, outputStatus_sexp, IGRAPH);
 }
-SEXP stochasticEnumeration_graphAM(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp)
+SEXP stochasticEnumeration_graphAM(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, SEXP outputStatus_sexp)
 {
-	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, nPermutations_sexp, GRAPHAM);
+	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, nPermutations_sexp, outputStatus_sexp, GRAPHAM);
 }
-SEXP stochasticEnumeration_graphNEL(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp)
+SEXP stochasticEnumeration_graphNEL(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, SEXP outputStatus_sexp)
 {
-	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, nPermutations_sexp, GRAPHNEL);
+	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, nPermutations_sexp, outputStatus_sexp, GRAPHNEL);
 }

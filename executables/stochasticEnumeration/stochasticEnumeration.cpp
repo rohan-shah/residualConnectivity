@@ -19,6 +19,7 @@ namespace discreteGermGrain
 			("vertexCount", boost::program_options::value<int>(), "(int) Number of UP vertices")
 			("optimized", boost::program_options::bool_switch()->default_value(true)->implicit_value(true))
 			("nPermutations", boost::program_options::value<int>()->default_value(1)->implicit_value(1), "(int) Number of permutations")
+			("outputStatus", boost::program_options::bool_switch()->default_value(false)->implicit_value(true), "Should we display progress?")
 			;
 
 		boost::program_options::variables_map variableMap;
@@ -86,6 +87,7 @@ namespace discreteGermGrain
 		stochasticEnumerationArgs args(graph, randomSource);
 		args.n = n;
 		args.nPermutations = nPermutations;
+		bool outputStatus = variableMap["outputStatus"].as<bool>();
 		//Do we want whole spectra, or just a component?
 		if (variableMap.count("vertexCount") < 1)
 		{
@@ -103,6 +105,10 @@ namespace discreteGermGrain
 					return 0;
 				}
 				estimates.push_back(args.estimate);
+				if(outputStatus)
+				{
+					std::cout << "Finished couting subgraphs of size " << i << " / " << nVertices << std::endl;
+				}
 			}
 			std::cout << "Estimated spectra is " << std::endl;
 			for (int i = 0; i < (int)nVertices + 1; i++)
