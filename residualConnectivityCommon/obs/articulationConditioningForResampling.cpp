@@ -3,11 +3,11 @@ namespace residualConnectivity
 {
 	namespace obs
 	{
-		articulationConditioningForResampling::articulationConditioningForResampling(Context const& context, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType& otherData)
-			: ::residualConnectivity::withSub(context, state), weight(otherData.weight)
+		articulationConditioningForResampling::articulationConditioningForResampling(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType& otherData)
+			: ::residualConnectivity::withSub(contextObj, state), weight(otherData.weight)
 		{}
-		articulationConditioningForResampling::articulationConditioningForResampling(Context const& context, boost::mt19937& randomSource)
-			: ::residualConnectivity::withSub(context, randomSource), weight(1)
+		articulationConditioningForResampling::articulationConditioningForResampling(context const& contextObj, boost::mt19937& randomSource)
+			: ::residualConnectivity::withSub(contextObj, randomSource), weight(1)
 		{}
 		void articulationConditioningForResampling::getSubObservation(vertexState* newState, int radius, subObservationConstructorType& other) const
 		{

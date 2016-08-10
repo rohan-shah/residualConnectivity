@@ -1,7 +1,7 @@
 #ifndef RESIDUAL_CONNECTIVITY_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
 #define RESIDUAL_CONNECTIVITY_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
 #include <boost/noncopyable.hpp>
-#include "Context.h"
+#include "context.h"
 #include "vertexState.h"
 #include <string>
 #include <boost/serialization/split_member.hpp>
@@ -26,7 +26,7 @@ namespace residualConnectivity
 		friend class boost::serialization::access;
 		empiricalDistribution(empiricalDistribution&& other);
 		empiricalDistribution& operator=(empiricalDistribution&& other);
-		empiricalDistribution(bool isWeighted, std::size_t nVertices, const Context& context);
+		empiricalDistribution(bool isWeighted, std::size_t nVertices, const context& contextObj);
 		void hintDataCount(std::size_t size);
 		void add(const vertexState* state);
 		void add(const vertexState* state, double weight);
@@ -35,7 +35,7 @@ namespace residualConnectivity
 		std::size_t getNEdges() const;
 		bool isWeighted() const;
 		double getWeight(std::size_t index) const;
-		const Context& getContext() const;
+		const context& getContext() const;
 	private:
 		template<class Archive> void save(Archive & ar, const unsigned int version) const
 		{
@@ -75,7 +75,7 @@ namespace residualConnectivity
 			{
 				throw std::runtime_error("File did not start with correct type specifier");
 			}
-			containedContext.reset(new Context(ar));
+			containedContext.reset(new context(ar));
 			std::string weightString;
 			ar >> weightString;
 			if(weightString == "weighted")
@@ -137,8 +137,8 @@ namespace residualConnectivity
 		bool _isWeighted;
 		std::vector<double> weights;
 
-		std::shared_ptr<Context> containedContext;
-		Context const* externalContext;
+		std::shared_ptr<context> containedContext;
+		context const* externalContext;
 	};
 }
 #endif

@@ -47,8 +47,8 @@ namespace residualConnectivity
 			std::cout << message << std::endl;
 			return 0;
 		}
-		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, probability, message))
+		context contextObj = context::gridContext(1, probability);
+		if(!readContext(variableMap, contextObj, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
@@ -82,10 +82,10 @@ namespace residualConnectivity
 			std::cout << "Wrong number of values entered for input splittingFactor" << std::endl;
 			return 0;
 		}
-		observationTree tree(&context, initialRadius);
+		observationTree tree(&contextObj, initialRadius);
 
 		commandLineOutput outputStream;
-		usingBiconnectedSplittingArgs args(context, tree, outputStream);
+		usingBiconnectedSplittingArgs args(contextObj, tree, outputStream);
 		args.outputTree = variableMap.count("outputTree");
 		args.outputTreeFile = variableMap["outputTree"].as<std::string>();
 		args.n = n;

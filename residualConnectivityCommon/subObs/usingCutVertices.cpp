@@ -10,10 +10,10 @@ namespace residualConnectivity
 {
 	namespace subObs
 	{
-		usingCutVertices::usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
-			: ::residualConnectivity::subObs::subObsWithRadius(context, state, radius)
+		usingCutVertices::usingCutVertices(context const& contextObj, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
+			: ::residualConnectivity::subObs::subObsWithRadius(contextObj, state, radius)
 		{
-			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
+			potentiallyConnected = isSingleComponentPossible(contextObj, state.get(), otherData.components, otherData.stack);
 		}
 		bool usingCutVertices::isPotentiallyConnected() const
 		{
@@ -31,7 +31,7 @@ namespace residualConnectivity
 				throw std::runtime_error("Radius must be 1 to call constructRadius1Graph");
 			}
 			graphVertices.clear();
-			std::size_t nVertices = context.nVertices();
+			std::size_t nVertices = contextObj.nVertices();
 			const vertexState* stateRef = state.get();
 
 			//graphVertices[i] is the vertex in the global graph that corresponds to vertex i in the returned graph
@@ -50,10 +50,10 @@ namespace residualConnectivity
 			}
 
 			graph = radiusOneGraphType(graphVertices.size());
-			const Context::inputGraph& originalGraph = context.getGraph();
+			const context::inputGraph& originalGraph = contextObj.getGraph();
 			for(std::size_t i = 0; i < graphVertices.size(); i++)
 			{
-				Context::inputGraph::out_edge_iterator start, end;
+				context::inputGraph::out_edge_iterator start, end;
 				boost::tie(start, end) = boost::out_edges(graphVertices[i], originalGraph);
 				while(start != end)
 				{
@@ -67,8 +67,8 @@ namespace residualConnectivity
 		}
 		void usingCutVertices::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&)const
 		{
-			boost::random::bernoulli_distribution<double> vertexDistribution(context.getOperationalProbabilityD());
-			std::size_t nVertices = context.nVertices();
+			boost::random::bernoulli_distribution<double> vertexDistribution(contextObj.getOperationalProbabilityD());
+			std::size_t nVertices = contextObj.nVertices();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 
 			for(std::size_t i = 0; i < nVertices; i++)
@@ -83,9 +83,9 @@ namespace residualConnectivity
 				}
 			}
 		}
-		void usingCutVertices::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
+		void usingCutVertices::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
 		{
-			double openProbability = context.getOperationalProbabilityD();
+			double openProbability = contextObj.getOperationalProbabilityD();
 			boost::bernoulli_distribution<double> bern(openProbability);
 			if(radius != 1)
 			{
@@ -105,7 +105,7 @@ namespace residualConnectivity
 			}
 
 			const vertexState* stateRef = state.get();
-			std::size_t nVertices = context.nVertices();
+			std::size_t nVertices = contextObj.nVertices();
 			//get out biconnected components of helper graph
 			typedef std::vector<boost::graph_traits<radiusOneGraphType>::edges_size_type> component_storage_t;
 			typedef boost::iterator_property_map<component_storage_t::iterator, boost::property_map<radiusOneGraphType, boost::edge_index_t>::type> component_map_t;
@@ -118,8 +118,8 @@ namespace residualConnectivity
 
 			int nNotAlreadyFixedArticulation = 0;
 			//convert list of articulation vertices across to a bitset
-			std::vector<Context::inputGraph::vertex_descriptor> unfixedVertices;
-			std::vector<Context::inputGraph::vertex_descriptor> fixedVertices;
+			std::vector<context::inputGraph::vertex_descriptor> unfixedVertices;
+			std::vector<context::inputGraph::vertex_descriptor> fixedVertices;
 			
 			std::vector<bool> isArticulationVertex(nVertices, false);
 			//Mark off each articulation point in the above vector, and count the number of extra points that we're fixing.
@@ -145,7 +145,7 @@ namespace residualConnectivity
 			boost::random::binomial_distribution<> extraVertexCountDistribution((int)unfixedVertices.size(), openProbability);
 			boost::random_number_generator<boost::mt19937> generator(randomSource);
 		
-			mpfr_class opProbability = context.getOperationalProbability();
+			mpfr_class opProbability = contextObj.getOperationalProbability();
 			mpfr_class weight = boost::multiprecision::pow(opProbability, nNotAlreadyFixedArticulation);
 			::residualConnectivity::obs::withWeightConstructorType weightObject;
 			for(int simulationCounter = 0; simulationCounter < nSimulations; simulationCounter++)
@@ -167,11 +167,11 @@ namespace residualConnectivity
 					observationState[unfixedVertices[i]].state = FIXED_OFF;
 				}
 
-				bool currentSimulationConnected = isSingleComponentAllOn(context, observationState.get(), scratchMemory, stack);
+				bool currentSimulationConnected = isSingleComponentAllOn(contextObj, observationState.get(), scratchMemory, stack);
 				weightObject.weight = weight;
 				if(currentSimulationConnected)
 				{
-					observationType obs(context, observationState, weightObject);
+					observationType obs(contextObj, observationState, weightObject);
 				}
 			}
 		}

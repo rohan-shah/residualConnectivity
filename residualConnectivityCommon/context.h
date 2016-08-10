@@ -17,19 +17,19 @@
 #include "serializeGMP.hpp"
 namespace residualConnectivity
 {
-	class Context : public boost::noncopyable
+	class context : public boost::noncopyable
 	{
 	public:
 		friend class boost::serialization::access;
 		typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> inputGraph;
 		typedef std::pair<float, float> vertexPosition;
-		Context(boost::shared_ptr<const inputGraph> graph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, mpfr_class opProbability);
-		Context(Context&& other);
-		Context(boost::archive::text_iarchive& ar)
+		context(boost::shared_ptr<const inputGraph> graph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, mpfr_class opProbability);
+		context(context&& other);
+		context(boost::archive::text_iarchive& ar)
 		{
 			ar >> *this;
 		}
-		Context(boost::archive::binary_iarchive& ar)
+		context(boost::archive::binary_iarchive& ar)
 		{
 			ar >> *this;
 		}
@@ -74,16 +74,16 @@ namespace residualConnectivity
 		std::size_t nVertices() const;
 		const int* getShortestDistances() const;
 		const inputGraph& getGraph() const;
-		static Context gridContext(int gridDimension, mpfr_class opProbability);
-		static Context hexagonalGridcontext(int gridDimensionX, int gridDimensionY, mpfr_class opProbability);
-		static Context torusContext(int dimension, mpfr_class opProbability);
-		static Context fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message);
-		Context& operator=(Context&& other);
+		static context gridContext(int gridDimension, mpfr_class opProbability);
+		static context hexagonalGridcontext(int gridDimensionX, int gridDimensionY, mpfr_class opProbability);
+		static context torusContext(int dimension, mpfr_class opProbability);
+		static context fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message);
+		context& operator=(context&& other);
 		const std::vector<vertexPosition>& getVertexPositions() const;
 		const mpfr_class& getOperationalProbability() const;
 		double getOperationalProbabilityD() const;
 	private:
-		Context();
+		context();
 		mpfr_class opProbability;
 		double opProbabilityD;
 		boost::shared_ptr<const inputGraph> graph;

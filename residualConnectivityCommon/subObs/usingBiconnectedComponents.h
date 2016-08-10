@@ -1,7 +1,7 @@
 #ifndef RESIDUAL_CONNECTIVITY_SUB_OBS_USING_BICONNECTED_COMPONENTS_HEADER_GUARD
 #define RESIDUAL_CONNECTIVITY_SUB_OBS_USING_BICONNECTED_COMPONENTS_HEADER_GUARD
 #include "subObs/subObs.h"
-#include "Context.h"
+#include "context.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
 #include "obs/getSubObservation.hpp"
@@ -24,9 +24,9 @@ namespace residualConnectivity
 			typedef ::residualConnectivity::obs::withWeightConstructorType observationConstructorType;
 
 			usingBiconnectedComponents(usingBiconnectedComponents&& other);
-			void estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const;
+			void estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const;
 			bool isPotentiallyConnected() const;
-			usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType &);
+			usingBiconnectedComponents(context const& contextObj, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType &);
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
 		private:
 			bool potentiallyConnected;

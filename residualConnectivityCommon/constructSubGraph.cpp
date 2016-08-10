@@ -1,10 +1,10 @@
 #include "constructSubGraph.h"
 namespace residualConnectivity
 {
-	void constructSubGraph(subGraphType& graph, std::vector<int>& graphVertices, const Context& context, const vertexState* stateRef)
+	void constructSubGraph(subGraphType& graph, std::vector<int>& graphVertices, const context& contextObj, const vertexState* stateRef)
 	{
 		graphVertices.clear();
-		std::size_t nVertices = context.nVertices();
+		std::size_t nVertices = contextObj.nVertices();
 
 		//graphVertices[i] is the vertex in the global graph that corresponds to vertex i in the returned graph
 		//inverse is the inverse mapping, with 0's everywhere else. 
@@ -22,10 +22,10 @@ namespace residualConnectivity
 		}
 		graph.clear();
 		//graph = subGraphType(graphVertices.size());
-		const Context::inputGraph& originalGraph = context.getGraph();
+		const context::inputGraph& originalGraph = contextObj.getGraph();
 		for(std::size_t i = 0; i < graphVertices.size(); i++)
 		{
-			Context::inputGraph::out_edge_iterator start, end;
+			context::inputGraph::out_edge_iterator start, end;
 			boost::tie(start, end) = boost::out_edges(graphVertices[i], originalGraph);
 			while(start != end)
 			{

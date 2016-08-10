@@ -4,15 +4,15 @@ namespace residualConnectivity
 {
 	namespace constructGraphs
 	{
-		void squareTorus(int dimension, boost::shared_ptr<Context::inputGraph>& graph, boost::shared_ptr<std::vector<Context::vertexPosition> >& vertexPositions)
+		void squareTorus(int dimension, boost::shared_ptr<context::inputGraph>& graph, boost::shared_ptr<std::vector<context::vertexPosition> >& vertexPositions)
 		{
-			graph.reset(new Context::inputGraph(dimension * dimension));
-			vertexPositions.reset(new std::vector<Context::vertexPosition>(dimension * dimension));
+			graph.reset(new context::inputGraph(dimension * dimension));
+			vertexPositions.reset(new std::vector<context::vertexPosition>(dimension * dimension));
 			for(int i = 0; i < dimension; i++)
 			{
 				for(int j = 0; j < dimension; j++)
 				{
-					(*vertexPositions)[i + j * dimension] = Context::vertexPosition((float)i, (float)j);
+					(*vertexPositions)[i + j * dimension] = context::vertexPosition((float)i, (float)j);
 
 					if(i != dimension - 1) 
 					{
@@ -33,26 +33,26 @@ namespace residualConnectivity
 				}
 			}
 		}
-		void squareGrid(int gridDimension, boost::shared_ptr<Context::inputGraph>& graph, boost::shared_ptr<std::vector<Context::vertexPosition> >& vertexPositions)
+		void squareGrid(int gridDimension, boost::shared_ptr<context::inputGraph>& graph, boost::shared_ptr<std::vector<context::vertexPosition> >& vertexPositions)
 		{
-			graph.reset(new Context::inputGraph(gridDimension * gridDimension));
-			vertexPositions.reset(new std::vector<Context::vertexPosition>(gridDimension * gridDimension));
+			graph.reset(new context::inputGraph(gridDimension * gridDimension));
+			vertexPositions.reset(new std::vector<context::vertexPosition>(gridDimension * gridDimension));
 			for(int i = 0; i < gridDimension; i++)
 			{
 				for(int j = 0; j < gridDimension; j++)
 				{
-					(*vertexPositions)[i + j * gridDimension] = Context::vertexPosition((float)i*100, (float)j*100);
+					(*vertexPositions)[i + j * gridDimension] = context::vertexPosition((float)i*100, (float)j*100);
 
 					if(i != gridDimension - 1) boost::add_edge(i + j*gridDimension, i + 1 +j*gridDimension, *graph);
 					if(j != gridDimension - 1) boost::add_edge(i + j*gridDimension, i + (j+1)*gridDimension, *graph);
 				}
 			}
 		}
-		void hexagonalTiling(int dimensionX, int dimensionY, boost::shared_ptr<Context::inputGraph>& graph, boost::shared_ptr<std::vector<Context::vertexPosition> >& vertexPositions)
+		void hexagonalTiling(int dimensionX, int dimensionY, boost::shared_ptr<context::inputGraph>& graph, boost::shared_ptr<std::vector<context::vertexPosition> >& vertexPositions)
 		{
 			int nVertices = 6 + (4 * (dimensionY-1)) + (4 + 2 * (dimensionY-1)) * (dimensionX- 1);
-			graph.reset(new Context::inputGraph(nVertices));
-			vertexPositions.reset(new std::vector<Context::vertexPosition>(nVertices));
+			graph.reset(new context::inputGraph(nVertices));
+			vertexPositions.reset(new std::vector<context::vertexPosition>(nVertices));
 			for (int i = 0; i < dimensionY * 2; i++)
 			{
 				//Connect up the left side of the first column
@@ -163,9 +163,9 @@ namespace residualConnectivity
 			}
 			//Assign vertex positions
 			double internalAngle = (2.0 / 3.0) * M_PI;
-			Context::vertexPosition upLeft(-0.5f, (float)sqrt(3.0/4.0));
-			Context::vertexPosition upRight(0.5f, (float)sqrt(3.0 / 4.0));
-			Context::vertexPosition current(0.0f, 0.0f);
+			context::vertexPosition upLeft(-0.5f, (float)sqrt(3.0/4.0));
+			context::vertexPosition upRight(0.5f, (float)sqrt(3.0 / 4.0));
+			context::vertexPosition current(0.0f, 0.0f);
 			//j now refers to a column of vertices, ranging from 0 to dimensionX+1
 			for (int j = 0; j < dimensionX + 1; j++)
 			{

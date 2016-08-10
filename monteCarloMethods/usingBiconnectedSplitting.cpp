@@ -23,10 +23,10 @@ namespace residualConnectivity
 {
 	struct stepInputs
 	{
-		stepInputs(Context const& context, const std::vector<float>& splittingFactors)
-			:context(context), splittingFactors(splittingFactors)
+		stepInputs(context const& contextObj, const std::vector<float>& splittingFactors)
+			:contextObj(contextObj), splittingFactors(splittingFactors)
 		{}
-		Context const& context;
+		context const& contextObj;
 		const std::vector<float>& splittingFactors;
 		int initialRadius;
 		long n;
@@ -63,9 +63,9 @@ namespace residualConnectivity
 			std::vector< ::residualConnectivity::obs::usingBiconnectedComponents> observationsThisThread;
 			std::vector<int> parentIndicesThisThread;
 			//vector that we re-use to avoid allocations
-			std::vector<int> connectedComponents(inputs.context.nVertices());
+			std::vector<int> connectedComponents(inputs.contextObj.nVertices());
 			//stack for depth first search
-			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 			//used to calculate the splitting factor (which is random)
 			boost::random::bernoulli_distribution<float> splittingFactorBernoulli(sptittingFactorRemainder);
 			
@@ -161,9 +161,9 @@ namespace residualConnectivity
 #endif
 			{
 				//vector that we re-use to avoid allocations
-				std::vector<int> connectedComponents(inputs.context.nVertices());
+				std::vector<int> connectedComponents(inputs.contextObj.nVertices());
 				//stack for depth first search
-				boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+				boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 				boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
 				subGraphType subGraph;
 				//used to calculate the splitting factor (which is random)
@@ -229,9 +229,9 @@ namespace residualConnectivity
 #endif
 		{
 			//vector that we re-use to avoid allocations
-			std::vector<int> connectedComponents(inputs.context.nVertices());
+			std::vector<int> connectedComponents(inputs.contextObj.nVertices());
 			//stack for depth first search
-			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
 			subGraphType subGraph;
 			::residualConnectivity::subObs::withWeightConstructorType helper(connectedComponents, stack, subGraphStack, subGraph);
@@ -243,7 +243,7 @@ namespace residualConnectivity
 #endif
 			for(int i = 0; i < inputs.n; i++)
 			{
-				::residualConnectivity::obs::usingBiconnectedComponents obs(inputs.context, 
+				::residualConnectivity::obs::usingBiconnectedComponents obs(inputs.contextObj, 
 #ifdef USE_OPENMP
 						perThreadSource
 #else
@@ -270,7 +270,7 @@ namespace residualConnectivity
 	{
 		int n = args.n;
 		std::vector<float>& splittingFactors = args.splittingFactors;
-		Context const& context = args.context;
+		context const& contextObj = args.contextObj;
 		int initialRadius = args.initialRadius;
 		bool outputTree = args.outputTree;
 		boost::mt19937& randomSource = args.randomSource;
@@ -285,7 +285,7 @@ namespace residualConnectivity
 		std::vector< ::residualConnectivity::subObs::usingBiconnectedComponents> subObservations;
 		std::vector< ::residualConnectivity::obs::usingBiconnectedComponents> observations;
 
-		stepInputs inputs(context, splittingFactors);
+		stepInputs inputs(contextObj, splittingFactors);
 		inputs.initialRadius = initialRadius;
 		inputs.outputTree = outputTree;
 		inputs.n = n;
@@ -331,7 +331,7 @@ namespace residualConnectivity
 			if(stream.is_open())
 			{
 				boost::archive::binary_oarchive oarchive(stream);
-				empiricalDistribution distribution(true, context.nVertices(), context);
+				empiricalDistribution distribution(true, contextObj.nVertices(), contextObj);
 				if(initialRadius == 0)
 				{
 					for(std::vector< ::residualConnectivity::subObs::usingBiconnectedComponents>::const_iterator i = subObservations.begin(); i != subObservations.end(); i++)

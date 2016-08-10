@@ -2,7 +2,7 @@
 #include <boost/scoped_array.hpp>
 namespace residualConnectivity
 {
-	observationCollection::observationCollection(Context const* externalContext, double radius)
+	observationCollection::observationCollection(context const* externalContext, double radius)
 		:sampleSize(0), externalContext(externalContext), radius(radius)
 	{}
 	observationCollection::observationCollection(boost::archive::binary_iarchive& ar)
@@ -35,14 +35,14 @@ namespace residualConnectivity
 	}
 	void observationCollection::reserve(std::size_t count)
 	{
-		const Context* currentContext;
+		const context* currentContext;
 		if(externalContext) currentContext = externalContext;
 		else currentContext = &*containedContext;
 		binaryDataSet2::reserve(count * currentContext->nVertices());
 	}
 	void observationCollection::expand(int count, boost::shared_array<vertexState> state) const
 	{
-		const Context* currentContext;
+		const context* currentContext;
 		if(externalContext) currentContext = externalContext;
 		else currentContext = &*containedContext;
 
@@ -51,8 +51,8 @@ namespace residualConnectivity
 	void observationCollection::add(const observation& obs)
 	{
 		//Check that certain key variables are the same - Checking by pointer should be sufficient.
-		Context const& obsContext = obs.getContext();
-		const Context* currentContext;
+		context const& obsContext = obs.getContext();
+		const context* currentContext;
 		if(externalContext) currentContext = externalContext;
 		else currentContext = &*containedContext;
 
@@ -67,7 +67,7 @@ namespace residualConnectivity
 	{
 		return radius;
 	}
-	const Context& observationCollection::getContext() const
+	const context& observationCollection::getContext() const
 	{
 		if(containedContext) return *containedContext.get();
 		if(externalContext) return *externalContext;

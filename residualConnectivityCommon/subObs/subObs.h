@@ -1,7 +1,7 @@
 #ifndef RESIDUAL_CONNECTIVITY_SUB_OBS_SUB_OBS_HEADER_GUARD
 #define RESIDUAL_CONNECTIVITY_SUB_OBS_SUB_OBS_HEADER_GUARD
 #include <boost/shared_array.hpp>
-#include "Context.h"
+#include "context.h"
 #include "observation.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
@@ -17,7 +17,7 @@ namespace residualConnectivity
 			typedef ::residualConnectivity::obs::basicConstructorType observationConstructorType;
 
 			subObs& operator=(subObs&& other);
-			subObs(const Context& context, boost::shared_array<const vertexState> state);
+			subObs(const context& contextObj, boost::shared_array<const vertexState> state);
 			subObs(subObs&& other);
 		protected:
 			subObs(const subObs& other);
@@ -33,7 +33,7 @@ namespace residualConnectivity
 				return radius;
 			}
 		protected:
-			subObsWithRadius(const Context& context, boost::shared_array<const vertexState> state, int radius);
+			subObsWithRadius(const context& contextObj, boost::shared_array<const vertexState> state, int radius);
 			subObsWithRadius(subObsWithRadius&& other);
 			subObsWithRadius(const subObsWithRadius& other);
 			int radius;

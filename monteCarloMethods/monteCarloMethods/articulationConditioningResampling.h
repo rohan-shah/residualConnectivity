@@ -1,6 +1,6 @@
 #ifndef ARTICULATION_CONDITIONING_RESAMPLING_HEADER_GUARD
 #define ARTICULATION_CONDITIONING_RESAMPLING_HEADER_GUARD
-#include "Context.h"
+#include "context.h"
 #include "observationTree.h"
 #include "outputObject.h"
 namespace residualConnectivity
@@ -8,10 +8,10 @@ namespace residualConnectivity
 	struct articulationConditioningResamplingArgs
 	{
 	public:
-		articulationConditioningResamplingArgs(const Context& context, boost::mt19937& randomSource, observationTree& tree, outputObject& output)
-		: context(context), randomSource(randomSource), tree(tree), output(output)
+		articulationConditioningResamplingArgs(const context& contextObj, boost::mt19937& randomSource, observationTree& tree, outputObject& output)
+		: contextObj(contextObj), randomSource(randomSource), tree(tree), output(output)
 		{}
-		const Context& context;
+		const context& contextObj;
 		boost::mt19937& randomSource;
 		observationTree& tree;
 		outputObject& output;

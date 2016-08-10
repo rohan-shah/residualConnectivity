@@ -58,8 +58,8 @@ namespace residualConnectivity
 			std::cout << message << std::endl;
 			return 0;
 		}
-		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, probability, message))
+		context contextObj = context::gridContext(1, probability);
+		if(!readContext(variableMap, contextObj, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
@@ -83,10 +83,10 @@ namespace residualConnectivity
 
 		bool outputExpectedUpNumber = variableMap["expectedUpNumber"].as<bool>();
 		bool outputTree = variableMap.count("outputTree");
-		observationTree tree(&context, initialRadius);
+		observationTree tree(&contextObj, initialRadius);
 		commandLineOutput output;
 
-		articulationConditioningResamplingArgs args(context, randomSource, tree, output);
+		articulationConditioningResamplingArgs args(contextObj, randomSource, tree, output);
 		args.n = n;
 		args.initialRadius = initialRadius;
 		args.outputTree = outputTree;

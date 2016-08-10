@@ -14,14 +14,14 @@ namespace residualConnectivity
 	{
 	public:
 		friend class boost::serialization::access;
-		observationCollection(Context const* externalContext, double radius);
+		observationCollection(context const* externalContext, double radius);
 		observationCollection(boost::archive::binary_iarchive& ar);
 		observationCollection(boost::archive::text_iarchive& ar);
 		observationCollection(observationCollection&& other);
 		observationCollection& operator=(observationCollection&& other);
 		observationCollection(const empiricalDistribution& other);
 		void add(const observation& subObs);
-		const Context& getContext() const;
+		const context& getContext() const;
 		void expand(int count, boost::shared_array<vertexState> state) const;
 		double getRadius() const;
 		std::size_t getSampleSize() const;
@@ -53,7 +53,7 @@ namespace residualConnectivity
 			}
 			ar >> sampleSize;
 			ar >> radius;
-			containedContext.reset(new Context(ar));
+			containedContext.reset(new context(ar));
 			ar >> *static_cast<binaryDataSet2*>(this);
 			ar >> typeString;
 			if(typeString != "residualConnectivitySubObsCollection_end")
@@ -62,8 +62,8 @@ namespace residualConnectivity
 			}
 		}
 		std::size_t sampleSize;
-		std::shared_ptr<Context> containedContext;
-		Context const* externalContext;
+		std::shared_ptr<context> containedContext;
+		context const* externalContext;
 		double radius;
 	};
 }

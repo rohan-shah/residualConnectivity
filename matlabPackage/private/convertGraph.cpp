@@ -79,7 +79,7 @@ void convertToDouble(double* output, const mxArray* input)
 	}
 }
 #undef callForDoubleConvert
-bool convertGraphNoPositions(const mxArray *input, residualConnectivity::Context::inputGraph& outputGraph, std::vector<residualConnectivity::Context::vertexPosition>& positions, std::string& error)
+bool convertGraphNoPositions(const mxArray *input, residualConnectivity::context::inputGraph& outputGraph, std::vector<residualConnectivity::context::vertexPosition>& positions, std::string& error)
 {
 	//Input must be an adjacency matrix
 	bool adjMatValid = !mxIsComplex(input) && !mxIsSparse(input) && mxIsNumeric(input) && mxGetNumberOfDimensions(input) == 2;
@@ -99,10 +99,10 @@ bool convertGraphNoPositions(const mxArray *input, residualConnectivity::Context
 
 	positions.clear();
 	positions.resize(adjMatDim1);
-	outputGraph = residualConnectivity::Context::inputGraph(adjMatDim1);
+	outputGraph = residualConnectivity::context::inputGraph(adjMatDim1);
 	for(std::size_t i = 0; i < adjMatDim1; i++)
 	{
-		positions[i] = residualConnectivity::Context::vertexPosition((residualConnectivity::Context::vertexPosition::first_type)i, (residualConnectivity::Context::vertexPosition::second_type)0);
+		positions[i] = residualConnectivity::context::vertexPosition((residualConnectivity::context::vertexPosition::first_type)i, (residualConnectivity::context::vertexPosition::second_type)0);
 		for(std::size_t j = 0; j < adjMatDim2; j++)
 		{
 			if(adjMatVector[i + adjMatDim1*j])
@@ -114,7 +114,7 @@ bool convertGraphNoPositions(const mxArray *input, residualConnectivity::Context
 	return true;
 #undef RETURN_ERROR
 }
-bool convertGraph(const mxArray *inputGraph, const mxArray *inputPositions, residualConnectivity::Context::inputGraph& outputGraph, std::vector<residualConnectivity::Context::vertexPosition>& positions, std::string& error)
+bool convertGraph(const mxArray *inputGraph, const mxArray *inputPositions, residualConnectivity::context::inputGraph& outputGraph, std::vector<residualConnectivity::context::vertexPosition>& positions, std::string& error)
 {
 	bool result = convertGraphNoPositions(inputGraph, outputGraph, positions, error);
 	if(!result)
@@ -136,7 +136,7 @@ bool convertGraph(const mxArray *inputGraph, const mxArray *inputPositions, resi
 	//Now convert this into pairs
 	for (std::size_t i = 0; i < positionsDim1; i++)
 	{
-		positions[i] = residualConnectivity::Context::vertexPosition((residualConnectivity::Context::vertexPosition::first_type)positionsVector[i], (residualConnectivity::Context::vertexPosition::second_type)positionsVector[i + positionsDim1]);
+		positions[i] = residualConnectivity::context::vertexPosition((residualConnectivity::context::vertexPosition::first_type)positionsVector[i], (residualConnectivity::context::vertexPosition::second_type)positionsVector[i + positionsDim1]);
 	}
 	return true;
 }

@@ -1,7 +1,7 @@
 #ifndef ARGUMENTS_HEADER_GUARD
 #define ARGUMENTS_HEADER_GUARD
 #include <boost/program_options/variables_map.hpp>
-#include "Context.h"
+#include "context.h"
 #include <boost/random/mersenne_twister.hpp>
 
 #define GRID_GRAPH_OPTION ("gridGraph", boost::program_options::value<int>(), "(int) The dimension of the square grid graph to use. Incompatible with other graph specifiers. ")

@@ -1,6 +1,6 @@
 #include <iostream>
 #include <boost/program_options.hpp>
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include <boost/scoped_array.hpp>
 #include <fstream>
@@ -15,17 +15,17 @@
 #endif
 namespace residualConnectivity
 {
-	mpz_class countSubgraphsBySize(int gridDimension, int size, const Context& context)
+	mpz_class countSubgraphsBySize(int gridDimension, int size, const context& contextObj)
 	{
 		std::size_t connected = 0;
 		std::vector<int> connectedComponents;
 		connectedComponents.resize(gridDimension*gridDimension);
-		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+		boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 
 		typedef boost::color_traits<boost::default_color_type> Color;
 		std::vector<boost::default_color_type> colors;
 		colors.resize(gridDimension*gridDimension);
-		std::vector<Context::inputGraph::vertex_descriptor> initialPoints;
+		std::vector<context::inputGraph::vertex_descriptor> initialPoints;
 		initialPoints.reserve(gridDimension*gridDimension);
 
 		//first permunation
@@ -43,7 +43,7 @@ namespace residualConnectivity
 				}
 				else colors[i] = Color::black();
 			}
-			int nComponents = boost::connected_components_restricted(context.getGraph(), &(connectedComponents[0]), &(colors[0]), stack, initialPoints);
+			int nComponents = boost::connected_components_restricted(contextObj.getGraph(), &(connectedComponents[0]), &(colors[0]), stack, initialPoints);
 			if(nComponents <= 1)
 			{
 				connected++;
@@ -114,8 +114,8 @@ namespace residualConnectivity
 			std::cout << "Input `size' had an invalid value" << std::endl;
 			return 0;
 		}
-		Context context = Context::gridContext(gridDimension, 0.5);
-		mpz_class count = countSubgraphsBySize(gridDimension, size, context);
+		context contextObj = context::gridContext(gridDimension, 0.5);
+		mpz_class count = countSubgraphsBySize(gridDimension, size, contextObj);
 		std::cout << "Number of connected subgraphs of the " << gridDimension << " x " << gridDimension << " grid graph with " << size << " vertices was " << count << std::endl;
 		return 0;
 	}

@@ -5,7 +5,7 @@
 #include "subObs/getObservation.hpp"
 #include "obs/withSub.h"
 #include <boost/shared_array.hpp>
-#include "Context.h"
+#include "context.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "subObsTypes.h"
 namespace residualConnectivity
@@ -25,8 +25,8 @@ namespace residualConnectivity
 			typedef ::residualConnectivity::subObs::usingCutVertices subObservationType;
 			typedef ::residualConnectivity::subObs::withWeightConstructorType subObservationConstructorType;
 
-			usingCutVertices(Context const& context, boost::mt19937& randomSource);
-			usingCutVertices(Context const& context, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType& otherData);
+			usingCutVertices(context const& contextObj, boost::mt19937& randomSource);
+			usingCutVertices(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType& otherData);
 			usingCutVertices(usingCutVertices&& other);
 			usingCutVertices& operator=(usingCutVertices&& other);
 			const mpfr_class& getWeight() const;

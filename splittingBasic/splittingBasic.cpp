@@ -60,8 +60,8 @@ namespace residualConnectivity
 			std::cout << message << std::endl;
 			return 0;
 		}
-		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, probability, message))
+		context contextObj = context::gridContext(1, probability);
+		if(!readContext(variableMap, contextObj, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
@@ -101,11 +101,11 @@ namespace residualConnectivity
 
 		std::vector<::residualConnectivity::subObs::basic> observations, nextStepObservations;
 		//vector that we re-use to avoid allocations
-		std::vector<int> connectedComponents(context.nVertices());
+		std::vector<int> connectedComponents(contextObj.nVertices());
 		std::vector<unsigned long long> retained(initialRadius+1, 0);
 		std::vector<unsigned long long> total(initialRadius+1, 0);
 		//stack for depth first search
-		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+		boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 		::residualConnectivity::subObs::basicConstructorType helper(connectedComponents, stack);
 
 		std::vector<boost::random::bernoulli_distribution<float> > bernoullis;
@@ -118,7 +118,7 @@ namespace residualConnectivity
 			observations.clear();
 			nextStepObservations.clear();
 
-			::residualConnectivity::obs::basic obs(context, randomSource);
+			::residualConnectivity::obs::basic obs(contextObj, randomSource);
 			::residualConnectivity::subObs::basic subObs(::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::basic>::get(obs, initialRadius, helper));
 			total[0]++;
 			if(subObs.isPotentiallyConnected())

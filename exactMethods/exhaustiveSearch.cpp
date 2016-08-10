@@ -1,7 +1,7 @@
 #include "exactMethods/exhaustiveSearch.h"
 namespace residualConnectivity
 {
-	bool exhaustiveSearch(const Context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error)
+	bool exhaustiveSearch(const context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error)
 	{
 		error = "";
 		const std::size_t nVertices = boost::num_vertices(inputGraph);
@@ -46,7 +46,7 @@ namespace residualConnectivity
 				graph.m_num_edges = 0;
 
 				//now the edges
-				Context::inputGraph::edge_iterator start, end;
+				context::inputGraph::edge_iterator start, end;
 				boost::tie(start, end) = boost::edges(inputGraph);
 				while(start != end)
 				{

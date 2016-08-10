@@ -1,6 +1,6 @@
 #include <iostream>
 #include <boost/program_options.hpp>
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include <boost/scoped_array.hpp>
 #include <fstream>
@@ -15,7 +15,7 @@ namespace residualConnectivity
 		i = (i & 0x3333333333333333ULL) + ((i >> 2) & 0x3333333333333333ULL);
 		return (int)((((i + (i >> 4)) & 0xF0F0F0F0F0F0F0FULL) * 0x101010101010101ULL) >> 56);
 	}
-	mpz_class countMultiThreaded(int gridDimension, int size, const Context& context, std::string cacheFile)
+	mpz_class countMultiThreaded(int gridDimension, int size, const context& contextObj, std::string cacheFile)
 	{
 		std::size_t connected = 0;
 		std::size_t maxValue = (1ULL << (gridDimension*gridDimension));
@@ -32,7 +32,7 @@ namespace residualConnectivity
 		#pragma omp parallel firstprivate(start)
 		{
 			std::vector<int> connectedComponents;
-			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 			std::vector<vertexState> state;
 			state.resize(gridDimension*gridDimension);
 			for(; start < maxValue; start += increment)
@@ -48,7 +48,7 @@ namespace residualConnectivity
 							if(((std::size_t)counter) & (1ULL << i)) state[i].state = FIXED_ON;
 							else state[i].state = FIXED_OFF;
 						}
-						if(isSingleComponentPossible(context, &(state[0]), connectedComponents, stack))
+						if(isSingleComponentPossible(contextObj, &(state[0]), connectedComponents, stack))
 						{
 							#pragma omp critical
 							connected++;
@@ -65,13 +65,13 @@ namespace residualConnectivity
 		remove(cacheFile.c_str());
 		return connected;
 	}
-	mpz_class countSingleThreaded(int gridDimension, int size, const Context& context)
+	mpz_class countSingleThreaded(int gridDimension, int size, const context& contextObj)
 	{
 		std::size_t connected = 0;
 		std::size_t maxValue = (1ULL << gridDimension*gridDimension);
 		{
 			std::vector<int> connectedComponents;
-			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 			std::vector<vertexState> state;
 			state.resize(gridDimension*gridDimension);
 			for(std::size_t counter = 0; counter < maxValue; counter++)
@@ -83,7 +83,7 @@ namespace residualConnectivity
 						if(counter & (1ULL << i)) state[i].state = FIXED_ON;
 						else state[i].state = FIXED_OFF;
 					}
-					if(isSingleComponentPossible(context, &(state[0]), connectedComponents, stack))
+					if(isSingleComponentPossible(contextObj, &(state[0]), connectedComponents, stack))
 					{
 						connected++;
 					}
@@ -147,15 +147,15 @@ namespace residualConnectivity
 			return 0;
 		}
 		bool multithreaded = variableMap["multithreaded"].as<bool>();
-		Context context = Context::gridContext(gridDimension, 0.5);
+		context contextObj = context::gridContext(gridDimension, 0.5);
 		mpz_class count;
 		if(multithreaded)
 		{
-			count = countMultiThreaded(gridDimension, size, context, "cacheFile");
+			count = countMultiThreaded(gridDimension, size, contextObj, "cacheFile");
 		}
 		else
 		{
-			count = countSingleThreaded(gridDimension, size, context);
+			count = countSingleThreaded(gridDimension, size, contextObj);
 		}
 		std::cout << "Number of connected subgraphs of the " << gridDimension << " x " << gridDimension << " grid graph with " << size << " vertices was " << count << std::endl;
 		return 0;

@@ -36,8 +36,8 @@ BEGIN_RCPP
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
-	residualConnectivity::Context context = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
-	residualConnectivity::conditionalMCArgs args(context, randomSource);
+	residualConnectivity::context contextObj = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
+	residualConnectivity::conditionalMCArgs args(contextObj, randomSource);
 	args.n = n;
 	randomSource.seed(seed);
 

@@ -1,5 +1,5 @@
 #include "observation.h"
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
 #include <QApplication>

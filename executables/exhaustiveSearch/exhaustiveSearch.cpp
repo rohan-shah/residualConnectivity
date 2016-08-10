@@ -2,7 +2,7 @@
 #include <boost/program_options.hpp>
 #include <iostream>
 #include <iomanip>
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
 namespace residualConnectivity
@@ -33,22 +33,22 @@ namespace residualConnectivity
 			return 0;
 		}
 		std::string message;
-		Context context = Context::gridContext(1, 0.5);
-		if(!readContext(variableMap, context, 0.5, message))
+		context contextObj = context::gridContext(1, 0.5);
+		if(!readContext(variableMap, contextObj, 0.5, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
 		std::vector<counterType> sizeCounters;
 		std::string error;
-		bool result = exhaustiveSearch(context.getGraph(), sizeCounters, error);
+		bool result = exhaustiveSearch(contextObj.getGraph(), sizeCounters, error);
 		if(!result)
 		{
 			std::cout << error << std::endl;
 			return 0;
 		}
 
-		std::size_t nVertices = boost::num_vertices(context.getGraph());
+		std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
 		std::cout << "Number of connected subgraphs with that number of points" << std::endl;
 		for(std::size_t i = 0; i < nVertices+1; i++)
 		{

@@ -15,11 +15,11 @@
 #include <QGraphicsSceneMouseEvent>
 namespace residualConnectivity
 {
-	bool sortByFirst(Context::vertexPosition const& first, Context::vertexPosition const& second)
+	bool sortByFirst(context::vertexPosition const& first, context::vertexPosition const& second)
 	{
 		return first.first < second.first;
 	}
-	bool sortBySecond(Context::vertexPosition const& first, Context::vertexPosition const& second)
+	bool sortBySecond(context::vertexPosition const& first, context::vertexPosition const& second)
 	{
 		return first.second < second.second;
 	}
@@ -34,7 +34,7 @@ namespace residualConnectivity
 		graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 		graphicsView->viewport()->installEventFilter(this);
 
-		const std::vector<Context::vertexPosition>& vertexPositions = context.getVertexPositions();
+		const std::vector<context::vertexPosition>& vertexPositions = contextObj.getVertexPositions();
 		minX = std::min_element(vertexPositions.begin(), vertexPositions.end(), sortByFirst)->first - pointSize;
 		maxX = std::max_element(vertexPositions.begin(), vertexPositions.end(), sortByFirst)->first + pointSize;
 		minY = std::min_element(vertexPositions.begin(), vertexPositions.end(), sortBySecond)->second - pointSize;
@@ -45,11 +45,11 @@ namespace residualConnectivity
 		layout->setContentsMargins(0,0,0,0);
 		setLayout(layout);
 	}
-	subObservationVisualiserBase::subObservationVisualiserBase(const Context& context, float pointSize)
-		:pointSize(pointSize), context(context),standardPointsItem(NULL), standardLinesItem(NULL), backgroundItem(NULL)
+	subObservationVisualiserBase::subObservationVisualiserBase(const context& contextObj, float pointSize)
+		:pointSize(pointSize), contextObj(contextObj),standardPointsItem(NULL), standardLinesItem(NULL), backgroundItem(NULL)
 	{
 		//We don't run this if there are no vertex positions
-		if(context.getVertexPositions().size() == 0)
+		if(contextObj.getVertexPositions().size() == 0)
 		{
 			std::cout << "Specified graph did not have vertex positions, exiting..." << std::endl;
 			QTimer::singleShot(0, this, SLOT(close()));
@@ -108,8 +108,8 @@ namespace residualConnectivity
 	void subObservationVisualiserBase::constructStandardPoints(const observation& subObs)
 	{
 		assert(standardPointsItem);
-		std::size_t nVertices = boost::num_vertices(context.getGraph());
-		const std::vector<Context::vertexPosition>& vertexPositions = context.getVertexPositions();
+		std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
+		const std::vector<context::vertexPosition>& vertexPositions = contextObj.getVertexPositions();
 		const vertexState* state = subObs.getState();
 
 		QPen blackPen(QColor("black"));
@@ -123,7 +123,7 @@ namespace residualConnectivity
 		
 		for(std::size_t vertexCounter = 0; vertexCounter < nVertices; vertexCounter++)
 		{
-			Context::vertexPosition currentPosition = vertexPositions[vertexCounter];
+			context::vertexPosition currentPosition = vertexPositions[vertexCounter];
 			float x = currentPosition.first;
 			float y = currentPosition.second;
 			QGraphicsEllipseItem* newItem = new QGraphicsEllipseItem(x - pointSize/2, y - pointSize/2, pointSize, pointSize, standardPointsItem);
@@ -157,8 +157,8 @@ namespace residualConnectivity
 	{
 		assert(standardLinesItem);
 		const vertexState* state = subObs.getState();
-		const Context::inputGraph& graph = context.getGraph();
-		const std::vector<Context::vertexPosition>& vertexPositions = context.getVertexPositions();
+		const context::inputGraph& graph = contextObj.getGraph();
+		const std::vector<context::vertexPosition>& vertexPositions = contextObj.getVertexPositions();
 
 		QPen blackPen(QColor("black"));
 		blackPen.setWidthF(pointSize/10);
@@ -176,12 +176,12 @@ namespace residualConnectivity
 		QPen dashedRedPen(QColor("red"));
 		dashedRedPen.setDashPattern(dashPattern);
 
-		Context::inputGraph::edge_iterator start, end;
+		context::inputGraph::edge_iterator start, end;
 		boost::tie(start, end) = boost::edges(graph);
 
 		while(start != end)
 		{
-			Context::vertexPosition sourcePosition = vertexPositions[start->m_source], targetPosition = vertexPositions[start->m_target];
+			context::vertexPosition sourcePosition = vertexPositions[start->m_source], targetPosition = vertexPositions[start->m_target];
 			QGraphicsLineItem* newItem = new QGraphicsLineItem(sourcePosition.first, sourcePosition.second, targetPosition.first, targetPosition.second, standardLinesItem);
 			if(state[start->m_source].state == FIXED_ON && state[start->m_target].state == FIXED_ON)
 			{

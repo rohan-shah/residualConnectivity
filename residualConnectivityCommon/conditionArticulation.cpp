@@ -17,14 +17,14 @@ namespace residualConnectivity
 		const vertexState* state;
 		std::vector<int>& graphVertices;
 	};
-	void conditionArticulation(boost::shared_array<vertexState> state, mpfr_class& weight, const Context& context, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& graph)
+	void conditionArticulation(boost::shared_array<vertexState> state, mpfr_class& weight, const context& contextObj, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& graph)
 	{
 		//construct subgraph
 		graph.clear();
 		//Reuse components vector here
 		std::vector<int>& graphVertices = scratch;
 		{
-			constructSubGraph(graph, graphVertices, context, state.get());
+			constructSubGraph(graph, graphVertices, contextObj, state.get());
 			//assign edge indices
 			subGraphType::edge_iterator start, end;
 			int edgeIndex = 0;
@@ -69,6 +69,6 @@ namespace residualConnectivity
 				}
 			}
 		}
-		weight *= boost::multiprecision::pow(context.getOperationalProbability(), nImportanceVertices);
+		weight *= boost::multiprecision::pow(contextObj.getOperationalProbability(), nImportanceVertices);
 	}
 }

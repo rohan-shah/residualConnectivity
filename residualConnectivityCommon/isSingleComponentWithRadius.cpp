@@ -4,11 +4,11 @@
 #include "connected_components_restricted.hpp"
 namespace residualConnectivity
 {
-	bool isSingleComponentPossible(Context const& context, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack)
+	bool isSingleComponentPossible(context const& contextObj, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack)
 	{
-		std::size_t nVertices = context.nVertices();
+		std::size_t nVertices = contextObj.nVertices();
 
-		std::vector<Context::inputGraph::vertex_descriptor> initialPoints;
+		std::vector<context::inputGraph::vertex_descriptor> initialPoints;
 		typedef boost::color_traits<boost::default_color_type> Color;
 		std::vector<boost::default_color_type> colorMap(nVertices, Color::black());
 
@@ -22,15 +22,15 @@ namespace residualConnectivity
 		}
 
 		if(connectedComponents.size() < nVertices) connectedComponents.resize(nVertices);
-		int nComponents = boost::connected_components_restricted(context.getGraph(), &(connectedComponents[0]), &(colorMap[0]), stack, initialPoints);
+		int nComponents = boost::connected_components_restricted(contextObj.getGraph(), &(connectedComponents[0]), &(colorMap[0]), stack, initialPoints);
 		
 		return nComponents <= 1;
 	}
-	bool isSingleComponentAllOn(Context const& context, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack)
+	bool isSingleComponentAllOn(context const& contextObj, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack)
 	{
-		std::size_t nVertices = context.nVertices();
+		std::size_t nVertices = contextObj.nVertices();
 
-		std::vector<Context::inputGraph::vertex_descriptor> initialPoints;
+		std::vector<context::inputGraph::vertex_descriptor> initialPoints;
 		typedef boost::color_traits<boost::default_color_type> Color;
 		std::vector<boost::default_color_type> colorMap(nVertices, Color::black());
 
@@ -45,48 +45,48 @@ namespace residualConnectivity
 		
 
 		if(connectedComponents.size() < nVertices) connectedComponents.resize(nVertices);
-		int nComponents = boost::connected_components_restricted(context.getGraph(), &(connectedComponents[0]), &(colorMap[0]), stack, initialPoints);
+		int nComponents = boost::connected_components_restricted(contextObj.getGraph(), &(connectedComponents[0]), &(colorMap[0]), stack, initialPoints);
 		
 		return nComponents <= 1;
 	}
-	bool isSingleComponentSpecified(Context const& context, const std::vector<Context::inputGraph::vertex_descriptor>& specifiedVertices, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack)
+	bool isSingleComponentSpecified(context const& contextObj, const std::vector<context::inputGraph::vertex_descriptor>& specifiedVertices, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack)
 	{
-		std::size_t nVertices = context.nVertices();
+		std::size_t nVertices = contextObj.nVertices();
 
 		typedef boost::color_traits<boost::default_color_type> Color;
 		std::vector<boost::default_color_type> colorMap(nVertices, Color::black());
 
-		for(std::vector<Context::inputGraph::vertex_descriptor>::const_iterator i = specifiedVertices.begin(); i != specifiedVertices.end(); i++)
+		for(std::vector<context::inputGraph::vertex_descriptor>::const_iterator i = specifiedVertices.begin(); i != specifiedVertices.end(); i++)
 		{
 			colorMap[*i] = Color::white();
 		}
 		
 		if(connectedComponents.size() < nVertices) connectedComponents.resize(nVertices);
-		int nComponents = boost::connected_components_restricted(context.getGraph(), &(connectedComponents[0]), &(colorMap[0]), stack, specifiedVertices);
+		int nComponents = boost::connected_components_restricted(contextObj.getGraph(), &(connectedComponents[0]), &(colorMap[0]), stack, specifiedVertices);
 		
 		return nComponents <= 1;
 	}
-	bool partIsSingleComponent(Context const& context, const vertexState* state, const std::vector<Context::inputGraph::vertex_descriptor>& importantPoints, std::vector<Context::inputGraph::vertex_descriptor>& otherVertices, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack)
+	bool partIsSingleComponent(context const& contextObj, const vertexState* state, const std::vector<context::inputGraph::vertex_descriptor>& importantPoints, std::vector<context::inputGraph::vertex_descriptor>& otherVertices, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack)
 	{
-		std::size_t nVertices = context.nVertices();
+		std::size_t nVertices = contextObj.nVertices();
 
 		typedef boost::color_traits<boost::default_color_type> Color;
 		std::vector<boost::default_color_type> colorMap(nVertices, Color::black());
 
-		for(std::vector<Context::inputGraph::vertex_descriptor>::const_iterator i = importantPoints.begin(); i != importantPoints.end(); i++)
+		for(std::vector<context::inputGraph::vertex_descriptor>::const_iterator i = importantPoints.begin(); i != importantPoints.end(); i++)
 		{
 			if(state[*i].state & ON_MASK)
 			{
 				colorMap[*i] = Color::white();
 			}
 		}
-		for(std::vector<Context::inputGraph::vertex_descriptor>::const_iterator i = otherVertices.begin(); i != otherVertices.end(); i++)
+		for(std::vector<context::inputGraph::vertex_descriptor>::const_iterator i = otherVertices.begin(); i != otherVertices.end(); i++)
 		{
 			if(state[*i].state & ON_MASK) colorMap[*i] = Color::white();
 		}
 		
 		if(connectedComponents.size() < nVertices) connectedComponents.resize(nVertices);
-		int nComponents = boost::connected_components_restricted(context.getGraph(), &(connectedComponents[0]), &(colorMap[0]), stack, importantPoints);
+		int nComponents = boost::connected_components_restricted(contextObj.getGraph(), &(connectedComponents[0]), &(colorMap[0]), stack, importantPoints);
 		return nComponents <= 1;
 
 	}

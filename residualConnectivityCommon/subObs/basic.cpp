@@ -6,10 +6,10 @@ namespace residualConnectivity
 {
 	namespace subObs
 	{
-		basic::basic(Context const& context, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::basicConstructorType& otherData)
-			: ::residualConnectivity::subObs::subObsWithRadius(context, state, radius)
+		basic::basic(context const& contextObj, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::basicConstructorType& otherData)
+			: ::residualConnectivity::subObs::subObsWithRadius(contextObj, state, radius)
 		{
-			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
+			potentiallyConnected = isSingleComponentPossible(contextObj, state.get(), otherData.components, otherData.stack);
 		}
 		bool basic::isPotentiallyConnected() const
 		{
@@ -22,8 +22,8 @@ namespace residualConnectivity
 		}
 		void basic::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&)const
 		{
-			boost::random::bernoulli_distribution<double> vertexDistribution(context.getOperationalProbabilityD());
-			std::size_t nVertices = context.nVertices();
+			boost::random::bernoulli_distribution<double> vertexDistribution(contextObj.getOperationalProbabilityD());
+			std::size_t nVertices = contextObj.nVertices();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 
 			for(std::size_t i = 0; i < nVertices; i++)

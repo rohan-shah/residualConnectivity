@@ -5,7 +5,7 @@
 #include "subObs/getObservation.hpp"
 #include "obs/withSub.h"
 #include <boost/shared_array.hpp>
-#include "Context.h"
+#include "context.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "subObsTypes.h"
 namespace residualConnectivity
@@ -25,13 +25,13 @@ namespace residualConnectivity
 			typedef ::residualConnectivity::subObs::basic subObservationType;
 			typedef ::residualConnectivity::subObs::basicConstructorType subObservationConstructorType;
 
-			basic(Context const& context, boost::mt19937& randomSource);
-			basic(Context const& context, boost::shared_array<const vertexState> state);
+			basic(context const& contextObj, boost::mt19937& randomSource);
+			basic(context const& contextObj, boost::shared_array<const vertexState> state);
 			basic(basic&& other);
 			basic& operator=(basic&& other);
 		private:
 			void getSubObservation(vertexState* newState, int radius, subObservationConstructorType& other) const;
-			basic(Context const& context, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::basicConstructorType&);
+			basic(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::basicConstructorType&);
 		};
 	}
 }

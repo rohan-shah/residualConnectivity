@@ -2,7 +2,7 @@
 #include <iostream>
 namespace residualConnectivity
 {
-	bool readContext(boost::program_options::variables_map& variableMap, Context& out, mpfr_class opProbability, std::string& message)
+	bool readContext(boost::program_options::variables_map& variableMap, context& out, mpfr_class opProbability, std::string& message)
 	{
 		if(variableMap.count("graphFile") + variableMap.count("gridGraph") + variableMap.count("torusGraph") + variableMap.count("hexagonalGrid") != 1)
 		{
@@ -13,7 +13,7 @@ namespace residualConnectivity
 		{
 			bool successful;
 			std::string internalMessage;
-			out = Context::fromFile(variableMap["graphFile"].as<std::string>(), opProbability, successful, internalMessage);
+			out = context::fromFile(variableMap["graphFile"].as<std::string>(), opProbability, successful, internalMessage);
 			if(!successful)
 			{
 				message = "Error reading graphml file. " + internalMessage;
@@ -29,7 +29,7 @@ namespace residualConnectivity
 				message = "Input `torusGraph' must be a positive integer";
 				return false;
 			}
-			out = Context::torusContext(gridDimension, opProbability);
+			out = context::torusContext(gridDimension, opProbability);
 			return true;
 		}
 		else if (variableMap.count("hexagonalGrid") == 1)
@@ -40,7 +40,7 @@ namespace residualConnectivity
 				message = "Input `hexagonalGrid' must be a pair of positive numbers";
 				return false;
 			}
-			out = Context::hexagonalGridcontext(gridDimensions[1], gridDimensions[0], opProbability);
+			out = context::hexagonalGridcontext(gridDimensions[1], gridDimensions[0], opProbability);
 			return true;
 		}
 		else
@@ -51,7 +51,7 @@ namespace residualConnectivity
 				message = "Input `gridGraph' must be a positive integer";
 				return false;
 			}
-			out = Context::gridContext(gridDimension, opProbability);
+			out = context::gridContext(gridDimension, opProbability);
 			return true;
 		}
 	}

@@ -114,12 +114,12 @@ namespace residualConnectivity
 			perLevelVertexIds[(*treeGraph)[*currentVertexIterator].level][(*treeGraph)[*currentVertexIterator].index] = (int)*currentVertexIterator;
 		}
 	}
-	const Context& observationTree::getContext() const
+	const context& observationTree::getContext() const
 	{
 		if(externalContext) return *externalContext;
 		return *containedContext;
 	}
-	observationTree::observationTree(Context const* externalContext, int initialRadius)
+	observationTree::observationTree(context const* externalContext, int initialRadius)
 		:externalContext(externalContext), initialRadius(initialRadius)
 	{
 		std::size_t nLevels = initialRadius+1;

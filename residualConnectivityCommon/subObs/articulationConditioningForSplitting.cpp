@@ -11,13 +11,13 @@ namespace residualConnectivity
 {
 	namespace subObs
 	{
-		articulationConditioningForSplitting::articulationConditioningForSplitting(Context const& context, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
-			: ::residualConnectivity::subObs::withWeight(context, state, radius, otherData.weight)
+		articulationConditioningForSplitting::articulationConditioningForSplitting(context const& contextObj, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
+			: ::residualConnectivity::subObs::withWeight(contextObj, state, radius, otherData.weight)
 		{
-			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
+			potentiallyConnected = isSingleComponentPossible(contextObj, state.get(), otherData.components, otherData.stack);
 			if(radius != 1 && potentiallyConnected)
 			{
-				conditionArticulation(state, weight, context, otherData.components, otherData.subGraphStack, otherData.subGraph);
+				conditionArticulation(state, weight, contextObj, otherData.components, otherData.subGraphStack, otherData.subGraph);
 			}
 		}
 		bool articulationConditioningForSplitting::isPotentiallyConnected() const
@@ -31,8 +31,8 @@ namespace residualConnectivity
 		}
 		void articulationConditioningForSplitting::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData)const
 		{
-			boost::random::bernoulli_distribution<double> vertexDistribution(context.getOperationalProbabilityD());
-			std::size_t nVertices = context.nVertices();
+			boost::random::bernoulli_distribution<double> vertexDistribution(contextObj.getOperationalProbabilityD());
+			std::size_t nVertices = contextObj.nVertices();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 
 			for(std::size_t i = 0; i < nVertices; i++)
@@ -48,7 +48,7 @@ namespace residualConnectivity
 			}
 			otherData.weight = weight;
 		}
-		void articulationConditioningForSplitting::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
+		void articulationConditioningForSplitting::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
 		{
 			if(radius != 1)
 			{

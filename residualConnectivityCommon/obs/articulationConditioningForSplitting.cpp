@@ -3,11 +3,11 @@ namespace residualConnectivity
 {
 	namespace obs
 	{
-		articulationConditioningForSplitting::articulationConditioningForSplitting(Context const& context, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType& otherData)
-			: ::residualConnectivity::withSub(context, state), weight(otherData.weight)
+		articulationConditioningForSplitting::articulationConditioningForSplitting(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType& otherData)
+			: ::residualConnectivity::withSub(contextObj, state), weight(otherData.weight)
 		{}
-		articulationConditioningForSplitting::articulationConditioningForSplitting(Context const& context, boost::mt19937& randomSource)
-			: ::residualConnectivity::withSub(context, randomSource), weight(1)
+		articulationConditioningForSplitting::articulationConditioningForSplitting(context const& contextObj, boost::mt19937& randomSource)
+			: ::residualConnectivity::withSub(contextObj, randomSource), weight(1)
 		{}
 		void articulationConditioningForSplitting::getSubObservation(vertexState* newState, int radius, subObservationConstructorType& other) const
 		{

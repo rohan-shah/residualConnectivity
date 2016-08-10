@@ -3,10 +3,10 @@
 #include <boost/graph/adjacency_matrix.hpp>
 #include <iostream>
 #include <iomanip>
-#include "Context.h"
+#include "context.h"
 #include <string>
 namespace residualConnectivity
 {
 	typedef long long counterType;
-	bool exhaustiveSearch(const Context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error);
+	bool exhaustiveSearch(const context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error);
 }

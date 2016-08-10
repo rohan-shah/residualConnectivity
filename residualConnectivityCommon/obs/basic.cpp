@@ -3,11 +3,11 @@ namespace residualConnectivity
 {
 	namespace obs
 	{
-		basic::basic(Context const& context, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::basicConstructorType&)
-			: ::residualConnectivity::withSub(context, state)
+		basic::basic(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::basicConstructorType&)
+			: ::residualConnectivity::withSub(contextObj, state)
 		{}
-		basic::basic(Context const& context, boost::mt19937& randomSource)
-			: ::residualConnectivity::withSub(context, randomSource)
+		basic::basic(context const& contextObj, boost::mt19937& randomSource)
+			: ::residualConnectivity::withSub(contextObj, randomSource)
 		{}
 		void basic::getSubObservation(vertexState* newState, int radius, subObservationConstructorType& other) const
 		{

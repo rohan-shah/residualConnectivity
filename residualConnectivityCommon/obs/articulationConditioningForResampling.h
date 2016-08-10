@@ -5,7 +5,7 @@
 #include "subObs/getObservation.hpp"
 #include "obs/withSub.h"
 #include <boost/shared_array.hpp>
-#include "Context.h"
+#include "context.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "subObsTypes.h"
 namespace residualConnectivity
@@ -25,10 +25,10 @@ namespace residualConnectivity
 			typedef ::residualConnectivity::subObs::articulationConditioningForResampling subObservationType;
 			typedef ::residualConnectivity::subObs::articulationConditioningForResamplingConstructorType subObservationConstructorType;
 
-			articulationConditioningForResampling(Context const& context, boost::mt19937& randomSource);
+			articulationConditioningForResampling(context const& contextObj, boost::mt19937& randomSource);
 			articulationConditioningForResampling(articulationConditioningForResampling&& other);
 			articulationConditioningForResampling& operator=(articulationConditioningForResampling&& other);
-			articulationConditioningForResampling(Context const& context, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType&);
+			articulationConditioningForResampling(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType&);
 			const mpfr_class& getWeight() const;
 		private:
 			void getSubObservation(vertexState* newState, int radius, subObservationConstructorType& other) const;

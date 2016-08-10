@@ -10,16 +10,16 @@ namespace residualConnectivity
 {	
 	void conditionalMC(conditionalMCArgs& args)
 	{
-		std::size_t nVertices = boost::num_vertices(args.context.getGraph());
-		boost::random::geometric_distribution<int, double> numberOffVertices(args.context.getOperationalProbability().convert_to<double>());
+		std::size_t nVertices = boost::num_vertices(args.contextObj.getGraph());
+		boost::random::geometric_distribution<int, double> numberOffVertices(args.contextObj.getOperationalProbability().convert_to<double>());
 
 		mpfr_class total = 0;
 		mpfr_class numeratorExpectedUpNumber = 0;
-		mpfr_class q = 1 - args.context.getOperationalProbability();
+		mpfr_class q = 1 - args.contextObj.getOperationalProbability();
 
 		std::vector<int> connectedComponents(nVertices);
 		std::vector<bool> isBoundary(nVertices);
-		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+		boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 		
 		std::vector<int> allVertices;
 		allVertices.reserve(nVertices);
@@ -64,16 +64,16 @@ namespace residualConnectivity
 				}
 				
 				//represents partial knowledge
-				::residualConnectivity::subObs::subObs subObs(args.context, state);
+				::residualConnectivity::subObs::subObs subObs(args.contextObj, state);
 				//generate complete knowledge
 				::residualConnectivity::observation obs = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::subObs>::get(subObs, args.randomSource);
 				const vertexState* obsState = obs.getState();
 				std::fill(connectedComponents.begin(), connectedComponents.end(), -1);
 				
-				std::vector<Context::inputGraph::vertex_descriptor> specified;
+				std::vector<context::inputGraph::vertex_descriptor> specified;
 				specified.push_back(onVertex);
 				
-				isSingleComponentAllOn(args.context, obsState, connectedComponents, stack);
+				isSingleComponentAllOn(args.contextObj, obsState, connectedComponents, stack);
 				for(std::size_t k = 0; k < nVertices; k++)
 				{
 					if(connectedComponents[k] == connectedComponents[onVertex]) componentSize++;
@@ -82,8 +82,8 @@ namespace residualConnectivity
 				isBoundary.clear();
 				isBoundary.resize(nVertices, false);
 
-				Context::inputGraph::edge_iterator start, end;
-				boost::tie(start, end) = boost::edges(args.context.getGraph());
+				context::inputGraph::edge_iterator start, end;
+				boost::tie(start, end) = boost::edges(args.contextObj.getGraph());
 				while(start != end)
 				{
 					if((obsState[start->m_source].state & ON_MASK) && (obsState[start->m_target].state & UNFIXED_OFF))

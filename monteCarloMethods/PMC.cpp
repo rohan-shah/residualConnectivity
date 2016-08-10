@@ -6,20 +6,20 @@
 #include "monteCarloMethods/PMC.h"
 namespace residualConnectivity
 {
-	pmcArguments::pmcArguments(const Context::inputGraph& graph, boost::mt19937& randomSource)
+	pmcArguments::pmcArguments(const context::inputGraph& graph, boost::mt19937& randomSource)
 		:graph(graph), randomSource(randomSource)
 	{}
 	bool PMC(pmcArguments& args)
 	{
-		const Context::inputGraph& graph = args.graph;
+		const context::inputGraph& graph = args.graph;
 		std::size_t nVertices = boost::num_vertices(graph);
 		std::vector<unsigned long long>& counts = args.counts;
 		counts.clear();
 		counts.resize(nVertices+1, 0ULL);
 		counts[0] = (unsigned long long)args.n;
 
-		typedef boost::graph_traits<Context::inputGraph>::vertex_descriptor Vertex;
-		typedef boost::graph_traits<Context::inputGraph>::vertices_size_type VertexIndex;
+		typedef boost::graph_traits<context::inputGraph>::vertex_descriptor Vertex;
+		typedef boost::graph_traits<context::inputGraph>::vertices_size_type VertexIndex;
 		std::vector<VertexIndex> rank(boost::num_vertices(graph), 0);
 		std::vector<Vertex> parent(boost::num_vertices(graph), 0);
 		typedef VertexIndex* Rank;
@@ -41,7 +41,7 @@ namespace residualConnectivity
 			{
 				ds.make_set(permutation[vertexCounter]);
 				alreadyPresent[permutation[vertexCounter]] = true;
-				Context::inputGraph::out_edge_iterator current, last;
+				context::inputGraph::out_edge_iterator current, last;
 				boost::tie(current, last) = boost::out_edges(permutation[vertexCounter], graph);
 				for (; current != last; current++)
 				{

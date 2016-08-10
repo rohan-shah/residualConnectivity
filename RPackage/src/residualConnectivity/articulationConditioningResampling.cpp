@@ -53,10 +53,10 @@ BEGIN_RCPP
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
-	residualConnectivity::Context context = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
-	residualConnectivity::observationTree tree(&context, (int)initialRadius);
+	residualConnectivity::context contextObj = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
+	residualConnectivity::observationTree tree(&contextObj, (int)initialRadius);
 	ROutputObject output;
-	residualConnectivity::articulationConditioningResamplingArgs args(context, randomSource, tree, output);
+	residualConnectivity::articulationConditioningResamplingArgs args(contextObj, randomSource, tree, output);
 	args.n = (int)n;
 	args.initialRadius = (int)initialRadius;
 	randomSource.seed(seed);

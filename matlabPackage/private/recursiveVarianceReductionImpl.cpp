@@ -44,8 +44,8 @@ BEGIN_MEX_WRAPPER
 	int seed = (int)round(seedDouble);
 	if(fabs(seed - seedDouble) > 1e-5 || n <= 0) THIRD_INPUT_ERROR;
 	
-	boost::shared_ptr<residualConnectivity::Context::inputGraph> graph(new residualConnectivity::Context::inputGraph());
-	boost::shared_ptr<std::vector<residualConnectivity::Context::vertexPosition> > vertexPositions(new std::vector<residualConnectivity::Context::vertexPosition>());
+	boost::shared_ptr<residualConnectivity::context::inputGraph> graph(new residualConnectivity::context::inputGraph());
+	boost::shared_ptr<std::vector<residualConnectivity::context::vertexPosition> > vertexPositions(new std::vector<residualConnectivity::context::vertexPosition>());
 	if(nrhs == 4)
 	{
 		std::string error;
@@ -60,11 +60,11 @@ BEGIN_MEX_WRAPPER
 	}
 	boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(boost::num_vertices(*graph)));
 	for(int i = 0; i < (int)boost::num_vertices(*graph); i++) (*ordering)[i] = i;
-	residualConnectivity::Context context = residualConnectivity::Context(graph, ordering, vertexPositions, probabilityMpfr);
+	residualConnectivity::context contextObj = residualConnectivity::context(graph, ordering, vertexPositions, probabilityMpfr);
 
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
-	residualConnectivity::recursiveVarianceReductionArgs args(context, randomSource);
+	residualConnectivity::recursiveVarianceReductionArgs args(contextObj, randomSource);
 	args.n = n;
 
 	residualConnectivity::recursiveVarianceReduction(args);

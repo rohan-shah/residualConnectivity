@@ -1,16 +1,16 @@
 #ifndef RECURSIVE_VARIANCE_REDUCTION_HEADER_GUARD
 #define RECURSIVE_VARIANCE_REDUCTION_HEADER_GUARD
-#include "Context.h"
+#include "context.h"
 #include <boost/random/mersenne_twister.hpp>
 namespace residualConnectivity
 {
 	struct recursiveVarianceReductionArgs
 	{
 	public:
-		recursiveVarianceReductionArgs(const Context& context, boost::mt19937& randomSource)
-		: context(context), randomSource(randomSource)
+		recursiveVarianceReductionArgs(const context& contextObj, boost::mt19937& randomSource)
+		: contextObj(contextObj), randomSource(randomSource)
 		{}
-		const Context& context;
+		const context& contextObj;
 		boost::mt19937& randomSource;
 		int n;
 		mpfr_class estimate;

@@ -7,14 +7,14 @@ namespace residualConnectivity
 	{
 		std::vector<observation> observations;
 		std::vector<int> scratchMemory;
-		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+		boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 
 		//The cumulative states, in case we decide to use the --splitting option
-		std::vector<vertexState> cumulativeStates(args.context.nVertices());
+		std::vector<vertexState> cumulativeStates(args.contextObj.nVertices());
 		for(int i = 0; i < args.n; i++)
 		{
-			observation obs(args.context, args.randomSource);
-			if(isSingleComponentAllOn(args.context, obs.getState(), scratchMemory, stack))
+			observation obs(args.contextObj, args.randomSource);
+			if(isSingleComponentAllOn(args.contextObj, obs.getState(), scratchMemory, stack))
 			{
 				observations.push_back(std::move(obs));
 			}

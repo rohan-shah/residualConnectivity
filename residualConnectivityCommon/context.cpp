@@ -1,4 +1,4 @@
-#include "Context.h"
+#include "context.h"
 #include <boost/graph/johnson_all_pairs_shortest.hpp>
 #include <boost/property_map/function_property_map.hpp>
 #include <boost/graph/graphml.hpp>
@@ -6,7 +6,7 @@
 #include "constructGraphs.h"
 namespace residualConnectivity
 {
-	namespace ContextImpl
+	namespace contextImpl
 	{
 		template<typename Key, int Ret> class constant_property_map : public boost::put_get_helper<int, constant_property_map<Key, Ret> > 
 		{
@@ -50,7 +50,7 @@ namespace residualConnectivity
 			};
 		};
 	}
-	Context::Context(boost::shared_ptr<const inputGraph> unorderedGraph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, mpfr_class opProbability)
+	context::context(boost::shared_ptr<const inputGraph> unorderedGraph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, mpfr_class opProbability)
 		: opProbability(opProbability), opProbabilityD(opProbability.convert_to<double>()), ordering(ordering), vertexPositions(new std::vector<vertexPosition>())
 	{
 		std::size_t nVertices = boost::num_vertices(*unorderedGraph);
@@ -98,19 +98,19 @@ namespace residualConnectivity
 		boost::shared_array<int> shortestDistances = boost::shared_array<int>(new int[nVertices*nVertices]);
 
 		//set up structure that has we can use in the form tmp[i][j]. What a stupid notation, it should be operator()(i, j)
-		ContextImpl::twoDArray tmp;
+		contextImpl::twoDArray tmp;
 		tmp.base = shortestDistances.get();
 		tmp.dim = nVertices;
 		//all edges have weight 1
-		ContextImpl::constant_property_map<Context::inputGraph::edge_descriptor, 1> edgeWeights;
+		contextImpl::constant_property_map<context::inputGraph::edge_descriptor, 1> edgeWeights;
 		boost::johnson_all_pairs_shortest_paths(*orderedGraph, tmp, boost::weight_map(edgeWeights));
 		this->shortestDistances = shortestDistances;
 	}
-	std::size_t Context::nVertices() const
+	std::size_t context::nVertices() const
 	{
 		return boost::num_vertices(*graph);
 	}
-	Context::Context(Context&& other)
+	context::context(context&& other)
 	{
 		graph.swap(other.graph);
 		ordering.swap(other.ordering);
@@ -119,25 +119,25 @@ namespace residualConnectivity
 		opProbability = other.opProbability;
 		opProbabilityD = opProbability.convert_to<double>();
 	}
-	const Context::inputGraph& Context::getGraph() const
+	const context::inputGraph& context::getGraph() const
 	{
 		return *graph;
 	}
-	Context Context::gridContext(int gridDimension, mpfr_class opProbability)
+	context context::gridContext(int gridDimension, mpfr_class opProbability)
 	{
 		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions;
-		boost::shared_ptr<Context::inputGraph> graph;
+		boost::shared_ptr<context::inputGraph> graph;
 		constructGraphs::squareGrid(gridDimension, graph, vertexPositions);
 		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(gridDimension * gridDimension));
 		for(int i = 0; i < gridDimension * gridDimension; i++) (*ordering)[i] = i;
 
-		return Context(graph, ordering, vertexPositions, opProbability);
+		return context(graph, ordering, vertexPositions, opProbability);
 	}
-	const int* Context::getShortestDistances() const
+	const int* context::getShortestDistances() const
 	{
 		return shortestDistances.get();
 	}
-	Context& Context::operator=(Context&& other)
+	context& context::operator=(context&& other)
 	{
 		graph.swap(other.graph);
 		ordering.swap(other.ordering);
@@ -147,16 +147,16 @@ namespace residualConnectivity
 		opProbabilityD = opProbability.convert_to<double>();
 		return *this;
 	}
-	Context::Context()
+	context::context()
 	{}
-	Context Context::fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message)
+	context context::fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message)
 	{
 		std::ifstream input(path);
 		if(!input.is_open())
 		{
 			message = "Unable to open file";
 			successful = false;
-			return Context();
+			return context();
 		}
 		boost::dynamic_properties properties;
 		boost::shared_ptr<inputGraph> graph(new inputGraph());
@@ -191,47 +191,47 @@ namespace residualConnectivity
 		{
 			successful = false;
 			message = "Wrong number of vertices in ordering";
-			return Context();
+			return context();
 		}
 		if(vertexPositions->size() != 0 && vertexPositions->size() != nVertices)
 		{
 			successful = false;
 			message = "Vertex positions must be specified for all vertices or none";
-			return Context();
+			return context();
 		}
-		return Context(graph, ordering, vertexPositions, opProbability);
+		return context(graph, ordering, vertexPositions, opProbability);
 	}
-	const std::vector<Context::vertexPosition>& Context::getVertexPositions() const
+	const std::vector<context::vertexPosition>& context::getVertexPositions() const
 	{
 		return *vertexPositions;
 	}
-	Context Context::torusContext(int dimension, mpfr_class opProbability)
+	context context::torusContext(int dimension, mpfr_class opProbability)
 	{
 		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions;
-		boost::shared_ptr<Context::inputGraph> graph;
+		boost::shared_ptr<context::inputGraph> graph;
 		constructGraphs::squareTorus(dimension, graph, vertexPositions);
 		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(dimension * dimension));
 		for(int i = 0; i < dimension * dimension; i++) (*ordering)[i] = i;
 
-		return Context(graph, ordering, vertexPositions, opProbability);
+		return context(graph, ordering, vertexPositions, opProbability);
 	}
-	Context Context::hexagonalGridcontext(int gridDimensionX, int gridDimensionY, mpfr_class opProbability)
+	context context::hexagonalGridcontext(int gridDimensionX, int gridDimensionY, mpfr_class opProbability)
 	{
 		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions;
-		boost::shared_ptr<Context::inputGraph> graph;
+		boost::shared_ptr<context::inputGraph> graph;
 		constructGraphs::hexagonalTiling(gridDimensionX, gridDimensionY, graph, vertexPositions);
 
 		std::size_t nVertices = boost::num_vertices(*graph);
 		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(nVertices));
 		for (int i = 0; i < (int)nVertices; i++) (*ordering)[i] = i;
 
-		return Context(graph, ordering, vertexPositions, opProbability);
+		return context(graph, ordering, vertexPositions, opProbability);
 	}
-	const mpfr_class& Context::getOperationalProbability() const
+	const mpfr_class& context::getOperationalProbability() const
 	{
 		return opProbability;
 	}
-	double Context::getOperationalProbabilityD() const
+	double context::getOperationalProbabilityD() const
 	{
 		return opProbabilityD;
 	}

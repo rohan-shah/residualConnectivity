@@ -1,6 +1,6 @@
 #ifndef USING_BICONNECTED_SPLITTING_ARGS
 #define USING_BICONNECTED_SPLITTING_ARGS
-#include "Context.h"
+#include "context.h"
 #include <vector>
 #include "observationTree.h"
 #include "includeNumerics.h"
@@ -10,10 +10,10 @@ namespace residualConnectivity
 {
 	struct usingBiconnectedSplittingArgs
 	{
-		usingBiconnectedSplittingArgs(const Context& context, observationTree& tree, outputObject& outputStream)
-			:context(context), tree(tree), outputStream(outputStream)
+		usingBiconnectedSplittingArgs(const context& contextObj, observationTree& tree, outputObject& outputStream)
+			:contextObj(contextObj), tree(tree), outputStream(outputStream)
 		{}
-		const Context& context;
+		const context& contextObj;
 		boost::mt19937 randomSource;
 		int n;
 		std::vector<float> splittingFactors;

@@ -4,14 +4,14 @@ namespace residualConnectivity
 {
 	namespace subObs
 	{
-		subObsWithRadius::subObsWithRadius(Context const& context, boost::shared_array<const vertexState> state, int radius)
-			: ::residualConnectivity::subObs::subObs(context, state), radius(radius)
+		subObsWithRadius::subObsWithRadius(context const& contextObj, boost::shared_array<const vertexState> state, int radius)
+			: ::residualConnectivity::subObs::subObs(contextObj, state), radius(radius)
 		{}
 		subObsWithRadius::subObsWithRadius(subObsWithRadius&& other)
 			: ::residualConnectivity::subObs::subObs(static_cast< ::residualConnectivity::subObs::subObs&&>(other)), radius(other.radius)
 		{}
-		subObs::subObs(Context const& context, boost::shared_array<const vertexState> state)
-			: ::residualConnectivity::observation(context, state)
+		subObs::subObs(context const& contextObj, boost::shared_array<const vertexState> state)
+			: ::residualConnectivity::observation(contextObj, state)
 		{}
 		subObs::subObs(subObs&& other)
 			: ::residualConnectivity::observation(static_cast< ::residualConnectivity::observation&&>(other))
@@ -24,8 +24,8 @@ namespace residualConnectivity
 		{}
 		void subObs::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&) const
 		{
-			boost::random::bernoulli_distribution<double> vertexDistribution(context.getOperationalProbabilityD());
-			std::size_t nVertices = context.nVertices();
+			boost::random::bernoulli_distribution<double> vertexDistribution(contextObj.getOperationalProbabilityD());
+			std::size_t nVertices = contextObj.nVertices();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 
 			for(std::size_t i = 0; i < nVertices; i++)

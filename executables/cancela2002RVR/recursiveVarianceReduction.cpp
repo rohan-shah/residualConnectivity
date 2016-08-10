@@ -1,4 +1,4 @@
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
 #include <boost/random/mersenne_twister.hpp>
@@ -47,13 +47,13 @@ namespace residualConnectivity
 			std::cout << message << std::endl;
 			return 0;
 		}
-		Context context = Context::gridContext(1, opProbability);
-		if(!readContext(variableMap, context, opProbability, message))
+		context contextObj = context::gridContext(1, opProbability);
+		if(!readContext(variableMap, contextObj, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
-		std::size_t nVertices = context.nVertices();
+		std::size_t nVertices = contextObj.nVertices();
 		if(nVertices <= 1)
 		{
 			std::cout << "Estimate is 1" << std::endl;
@@ -71,7 +71,7 @@ namespace residualConnectivity
 			std::cout << "Error reading input `n'" << std::endl;
 			return 0;
 		}
-		recursiveVarianceReductionArgs args(context, randomSource);
+		recursiveVarianceReductionArgs args(contextObj, randomSource);
 		args.n = n;
 		recursiveVarianceReduction(args);
 		std::cout << "Reliability estimate was " << args.estimate.str() << std::endl;

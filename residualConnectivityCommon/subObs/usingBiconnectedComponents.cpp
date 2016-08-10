@@ -8,10 +8,10 @@ namespace residualConnectivity
 {
 	namespace subObs
 	{
-		usingBiconnectedComponents::usingBiconnectedComponents(Context const& context, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
-			: ::residualConnectivity::subObs::withWeight(context, state, radius, otherData.weight)
+		usingBiconnectedComponents::usingBiconnectedComponents(context const& contextObj, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
+			: ::residualConnectivity::subObs::withWeight(contextObj, state, radius, otherData.weight)
 		{
-			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
+			potentiallyConnected = isSingleComponentPossible(contextObj, state.get(), otherData.components, otherData.stack);
 		}
 		bool usingBiconnectedComponents::isPotentiallyConnected() const
 		{
@@ -24,8 +24,8 @@ namespace residualConnectivity
 		}
 		void usingBiconnectedComponents::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData)const
 		{
-			boost::random::bernoulli_distribution<double> vertexDistribution(context.getOperationalProbabilityD());
-			std::size_t nVertices = context.nVertices();
+			boost::random::bernoulli_distribution<double> vertexDistribution(contextObj.getOperationalProbabilityD());
+			std::size_t nVertices = contextObj.nVertices();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 
 			for(std::size_t i = 0; i < nVertices; i++)
@@ -41,7 +41,7 @@ namespace residualConnectivity
 			}
 			otherData.weight = weight;
 		}
-		void usingBiconnectedComponents::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
+		void usingBiconnectedComponents::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
 		{
 			if(radius != 1)
 			{

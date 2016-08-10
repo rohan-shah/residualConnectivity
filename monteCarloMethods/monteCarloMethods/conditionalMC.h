@@ -1,16 +1,16 @@
 #ifndef CONDITIONALMC_LIB_HEADER_GUARD
 #define CONDITIONALMC_LIB_HEADER_GUARD
-#include "Context.h"
+#include "context.h"
 #include <boost/random/mersenne_twister.hpp>
 namespace residualConnectivity
 {
 	struct conditionalMCArgs
 	{
 	public:
-		conditionalMCArgs(const Context& context, boost::mt19937& randomSource)
-			:context(context), randomSource(randomSource)
+		conditionalMCArgs(const context& contextObj, boost::mt19937& randomSource)
+			:contextObj(contextObj), randomSource(randomSource)
 		{}
-		const Context& context;
+		const context& contextObj;
 		boost::mt19937& randomSource;
 		int n;
 		mpfr_class estimate, expectedUpNumber;

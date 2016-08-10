@@ -1,7 +1,7 @@
 #ifndef RESIDUAL_CONNECTIVITY_SUB_OBSERVATION_VISUALISER_SINGLE_HEADER_GUARD
 #define RESIDUAL_CONNECTIVITY_SUB_OBSERVATION_VISUALISER_SINGLE_HEADER_GUARD
 #include <QMainWindow>
-#include "Context.h"
+#include "context.h"
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QLabel>

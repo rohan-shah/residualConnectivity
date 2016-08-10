@@ -1,7 +1,7 @@
 #ifndef SUB_OBSERVATION_VISUALISER_TREE_HEADER_GUARD
 #define SUB_OBSERVATION_VISUALISER_TREE_HEADER_GUARD
 #include <QMainWindow>
-#include "Context.h"
+#include "context.h"
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QLabel>

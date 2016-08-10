@@ -5,7 +5,7 @@
 #include <boost/random/geometric_distribution.hpp>
 #include <boost/random/uniform_int_distribution.hpp>
 #include "observation.h"
-#include "Context.h"
+#include "context.h"
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
@@ -58,8 +58,8 @@ namespace residualConnectivity
 			std::cout << message << std::endl;
 			return 0;
 		}
-		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, probability, message))
+		context contextObj = context::gridContext(1, probability);
+		if(!readContext(variableMap, contextObj, probability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
@@ -69,7 +69,7 @@ namespace residualConnectivity
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
 
-		conditionalMCArgs args(context, randomSource);
+		conditionalMCArgs args(contextObj, randomSource);
 		args.n = n;
 		conditionalMC(args);
 

@@ -34,10 +34,10 @@ BEGIN_RCPP
 		throw std::runtime_error("Input seed must be an integer");
 	}
 
-	residualConnectivity::Context context = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
+	residualConnectivity::context contextObj = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
-	residualConnectivity::recursiveVarianceReductionArgs args(context, randomSource);
+	residualConnectivity::recursiveVarianceReductionArgs args(contextObj, randomSource);
 	args.n = n;
 
 	residualConnectivity::recursiveVarianceReduction(args);

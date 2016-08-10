@@ -1,4 +1,4 @@
-#include "Context.h"
+#include "context.h"
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/random/uniform_01.hpp>
 #include <boost/graph/connected_components.hpp>
@@ -8,8 +8,8 @@ namespace residualConnectivity
 {
 	void recursiveVarianceReduction(recursiveVarianceReductionArgs& args)
 	{
-		std::size_t nVertices = args.context.nVertices();
-		mpfr_class opProbability = args.context.getOperationalProbability();
+		std::size_t nVertices = args.contextObj.nVertices();
+		mpfr_class opProbability = args.contextObj.getOperationalProbability();
 		mpfr_class inopProbability = 1 - opProbability;
 		//Cache powers of opProbability and inopProbability
 		std::vector<mpfr_class> inopProbabilityPowers(nVertices+1), opProbabilityPowers(nVertices+1);
@@ -27,19 +27,19 @@ namespace residualConnectivity
 		}
 		//unifrom distribution
 		boost::random::uniform_01<double> uniformDistribution;
-		const Context::inputGraph& graph = args.context.getGraph();
+		const context::inputGraph& graph = args.contextObj.getGraph();
 
 		//scratch memory, to determine whether the base graph is connected
 		std::vector<int> components(nVertices);
 		//more scratch memory
-		std::vector<typename boost::graph_traits<Context::inputGraph>::vertex_descriptor> allVertices;
+		std::vector<typename boost::graph_traits<context::inputGraph>::vertex_descriptor> allVertices;
 		for(std::size_t i = 0; i < nVertices; i++)allVertices.push_back(i);
 		bool totalGraphConnected = boost::connected_components(graph, &(components[0])) == 1;
 
 		std::vector<boost::default_color_type> colorVector(nVertices);
 		typedef boost::color_traits<boost::default_color_type> Color;
 
-		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+		boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 
 		std::vector<bool> iterativeVertexStates(nVertices);
 		args.estimate = 0;

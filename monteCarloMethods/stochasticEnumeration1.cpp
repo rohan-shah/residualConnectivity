@@ -9,7 +9,7 @@ namespace residualConnectivity
 {
 	bool stochasticEnumeration1(stochasticEnumerationArgs& args)
 	{
-		const Context::inputGraph& graph = args.graph;
+		const context::inputGraph& graph = args.graph;
 		const std::size_t nVertices = boost::num_vertices(graph);
 		boost::random_number_generator<boost::mt19937> generator(args.randomSource);
 
@@ -63,9 +63,9 @@ namespace residualConnectivity
 		for (int permutationCounter = 0; permutationCounter < args.nPermutations; permutationCounter++)
 		{
 			//It seems the easiest thing is to actually reorder the vertices within the graph (because we rely on being able to easily determine which vertices are AFTER the current vertex)
-			Context::inputGraph reorderedGraph(nVertices);
+			context::inputGraph reorderedGraph(nVertices);
 			{
-				Context::inputGraph::edge_iterator current, end;
+				context::inputGraph::edge_iterator current, end;
 				boost::tie(current, end) = boost::edges(graph);
 				for (; current != end; current++)
 				{
@@ -114,7 +114,7 @@ namespace residualConnectivity
 						for (int k = vertexCounter; k < (int)nVertices; k++)
 						{
 							ds.make_set(k);
-							Context::inputGraph::out_edge_iterator current, last;
+							context::inputGraph::out_edge_iterator current, last;
 							boost::tie(current, last) = boost::out_edges(k, graph);
 							for (; current != last; current++)
 							{
@@ -164,7 +164,7 @@ namespace residualConnectivity
 						boost::disjoint_sets<int*, int*> ds(&copiedRank[particleCounter*nVertices], &copiedParent[particleCounter*nVertices]);
 						ds.make_set(vertexCounter);
 
-						Context::inputGraph::out_edge_iterator current, last;
+						context::inputGraph::out_edge_iterator current, last;
 						boost::tie(current, last) = boost::out_edges(vertexCounter, graph);
 						for (; current != last; current++)
 						{

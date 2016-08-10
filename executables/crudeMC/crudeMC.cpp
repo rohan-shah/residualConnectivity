@@ -49,15 +49,15 @@ namespace residualConnectivity
 			std::cout << message << std::endl;
 			return 0;
 		}
-		Context context = Context::gridContext(1, opProbability);
-		if(!readContext(variableMap, context, opProbability, message))
+		context contextObj = context::gridContext(1, opProbability);
+		if(!readContext(variableMap, contextObj, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
-		crudeMCArgs args(context, randomSource);
+		crudeMCArgs args(contextObj, randomSource);
 		args.n = n;
 
 		std::size_t connected = crudeMC(args);

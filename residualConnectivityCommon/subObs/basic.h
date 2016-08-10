@@ -1,7 +1,7 @@
 #ifndef RESIDUAL_CONNECTIVITY_SUB_OBS_BASIC_HEADER_GUARD
 #define RESIDUAL_CONNECTIVITY_SUB_OBS_BASIC_HEADER_GUARD
 #include "subObs/subObs.h"
-#include "Context.h"
+#include "context.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
 #include "obs/getSubObservation.hpp"
@@ -24,7 +24,7 @@ namespace residualConnectivity
 
 			basic(basic&& other);
 			bool isPotentiallyConnected() const;
-			basic(Context const& context, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::basicConstructorType&);
+			basic(context const& contextObj, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::basicConstructorType&);
 		private:
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
 			bool potentiallyConnected;

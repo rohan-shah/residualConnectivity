@@ -22,10 +22,10 @@ namespace residualConnectivity
 {
 	struct stepInputs
 	{
-		stepInputs(Context const& context)
-			:context(context)
+		stepInputs(context const& contextObj)
+			:contextObj(contextObj)
 		{}
-		Context const& context;
+		context const& contextObj;
 		int initialRadius;
 		long n;
 		bool outputTree;
@@ -68,9 +68,9 @@ namespace residualConnectivity
 #endif
 			{
 				//vector that we re-use to avoid allocations
-				std::vector<int> connectedComponents(inputs.context.nVertices());
+				std::vector<int> connectedComponents(inputs.contextObj.nVertices());
 				//stack for depth first search
-				boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+				boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 				boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
 				subGraphType subGraph;
 
@@ -142,9 +142,9 @@ namespace residualConnectivity
 #endif
 		{
 			//vector that we re-use to avoid allocations
-			std::vector<int> connectedComponents(inputs.context.nVertices());
+			std::vector<int> connectedComponents(inputs.contextObj.nVertices());
 			//stack for depth first search
-			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
+			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
 			subGraphType subGraph;
 			::residualConnectivity::subObs::articulationConditioningForResamplingConstructorType helper(connectedComponents, stack, subGraphStack, subGraph);
@@ -157,7 +157,7 @@ namespace residualConnectivity
 #endif
 			for(int i = 0; i < inputs.n; i++)
 			{
-				::residualConnectivity::obs::articulationConditioningForResampling obs(inputs.context, 
+				::residualConnectivity::obs::articulationConditioningForResampling obs(inputs.contextObj, 
 #ifdef USE_OPENMP
 						perThreadSource
 #else
@@ -201,12 +201,12 @@ namespace residualConnectivity
 	}
 	void articulationConditioningResampling(articulationConditioningResamplingArgs& args)
 	{
-		const std::size_t nVertices = args.context.nVertices();
+		const std::size_t nVertices = args.contextObj.nVertices();
 
 		std::vector<::residualConnectivity::subObs::articulationConditioningForResampling> subObservations;
 		std::vector<::residualConnectivity::obs::articulationConditioningForResampling> observations;
 
-		stepInputs inputs(args.context);
+		stepInputs inputs(args.contextObj);
 		inputs.initialRadius = args.initialRadius;
 		inputs.outputTree = args.outputTree;
 		inputs.n = args.n;
@@ -239,7 +239,7 @@ namespace residualConnectivity
 			if(stream.is_open())
 			{
 				boost::archive::binary_oarchive oarchive(stream);
-				empiricalDistribution distribution(true, context.nVertices(), context);
+				empiricalDistribution distribution(true, contextObj.nVertices(), contextObj);
 				if(initialRadius == 0)
 				{
 					for(std::vector<::residualConnectivity::subObs::articulationConditioningForResampling>::const_iterator i = subObservations.begin(); i != subObservations.end(); i++)

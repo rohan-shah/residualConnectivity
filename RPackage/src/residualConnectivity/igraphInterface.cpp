@@ -1,5 +1,5 @@
 #include "igraphInterface.h"
-boost::shared_ptr<residualConnectivity::Context::inputGraph> igraphConvert(SEXP graph_sexp)
+boost::shared_ptr<residualConnectivity::context::inputGraph> igraphConvert(SEXP graph_sexp)
 {
 	//Convert graph object
 	Rcpp::List graph;
@@ -25,8 +25,8 @@ boost::shared_ptr<residualConnectivity::Context::inputGraph> igraphConvert(SEXP 
 	}
 
 	//Construct graph
-	boost::shared_ptr<residualConnectivity::Context::inputGraph> boostGraph(new residualConnectivity::Context::inputGraph(nVertices));
-	residualConnectivity::Context::inputGraph& graphRef = *boostGraph;
+	boost::shared_ptr<residualConnectivity::context::inputGraph> boostGraph(new residualConnectivity::context::inputGraph(nVertices));
+	residualConnectivity::context::inputGraph& graphRef = *boostGraph;
 	for(int i = 0; i < edgesVertex1.size(); i++)
 	{
 		boost::add_edge(edgesVertex1(i), edgesVertex2(i), graphRef);

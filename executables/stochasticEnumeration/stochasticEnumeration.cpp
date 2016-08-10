@@ -69,8 +69,8 @@ namespace residualConnectivity
 			return 0;
 		}
 		mpfr_class inopProbability = 1 - opProbability;
-		Context context = Context::gridContext(1, opProbability);
-		if(!readContext(variableMap, context, opProbability, message))
+		context contextObj = context::gridContext(1, opProbability);
+		if(!readContext(variableMap, contextObj, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
@@ -79,7 +79,7 @@ namespace residualConnectivity
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
 
-		const Context::inputGraph& graph = context.getGraph();
+		const context::inputGraph& graph = contextObj.getGraph();
 		const std::size_t nVertices = boost::num_vertices(graph);
 		boost::random_number_generator<boost::mt19937> generator(randomSource);
 		bool optimized = variableMap["optimized"].as<bool>();
