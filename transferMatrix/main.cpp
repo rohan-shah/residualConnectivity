@@ -1,5 +1,5 @@
 #include <boost/program_options.hpp>
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include <boost/scoped_array.hpp>
 #include "countSubgraphs.h"

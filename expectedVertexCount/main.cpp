@@ -3,11 +3,9 @@
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/program_options.hpp>
 #include <boost/math/special_functions/binomial.hpp>
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/sum_kahan.hpp>
 #include <iostream>
 #include <iomanip>
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
 namespace residualConnectivity
