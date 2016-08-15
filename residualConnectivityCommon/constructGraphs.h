@@ -5,9 +5,9 @@ namespace residualConnectivity
 {
 	namespace constructGraphs
 	{
-		void squareTorus(int dimension, boost::shared_ptr<context::inputGraph>& graph, boost::shared_ptr<std::vector<context::vertexPosition> >& vertexPositions);
-		void squareGrid(int gridDimension, boost::shared_ptr<context::inputGraph>& graph, boost::shared_ptr<std::vector<context::vertexPosition> >& vertexPositions);
-		void hexagonalTiling(int dimensionX, int dimensionY, boost::shared_ptr<context::inputGraph>& graph, boost::shared_ptr<std::vector<context::vertexPosition> >& vertexPositions);
+		void squareTorus(int dimension, context::inputGraph& graph, std::vector<context::vertexPosition>& vertexPositions);
+		void squareGrid(int gridDimension, context::inputGraph& graph, std::vector<context::vertexPosition>& vertexPositions);
+		void hexagonalTiling(int dimensionX, int dimensionY, context::inputGraph& graph, std::vector<context::vertexPosition>& vertexPositions);
 	}
 }
 #endif

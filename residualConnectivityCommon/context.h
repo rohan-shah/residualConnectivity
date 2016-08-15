@@ -23,7 +23,7 @@ namespace residualConnectivity
 		friend class boost::serialization::access;
 		typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> inputGraph;
 		typedef std::pair<float, float> vertexPosition;
-		context(boost::shared_ptr<const inputGraph> graph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, mpfr_class opProbability);
+		context(boost::shared_ptr<const inputGraph> graph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, std::vector<mpfr_class>& opProbabilities);
 		context(context&& other);
 		context(boost::archive::text_iarchive& ar)
 		{
@@ -37,7 +37,7 @@ namespace residualConnectivity
 		{
 			ar & *graph;
 			ar & *ordering;
-			ar & opProbability;
+			ar & opProbabilities;
 			
 			std::size_t nVertices = boost::num_vertices(*graph);
 			ar & boost::serialization::make_array(shortestDistances.get(), nVertices * nVertices);
@@ -56,8 +56,9 @@ namespace residualConnectivity
 				ar & *ordering;
 				this->ordering = ordering;
 			}
-			ar & opProbability;
-			opProbabilityD = opProbability.convert_to<double>();
+			ar & opProbabilities;
+			opProbabilitiesD.clear();
+			std::transform(opProbabilities.begin(), opProbabilities.end(), std::back_inserter(opProbabilitiesD), std::bind(&mpfr_class::convert_to<double>, std::placeholders::_1));
 
 			std::size_t nVertices = boost::num_vertices(*graph);
 			{
@@ -74,18 +75,16 @@ namespace residualConnectivity
 		std::size_t nVertices() const;
 		const int* getShortestDistances() const;
 		const inputGraph& getGraph() const;
-		static context gridContext(int gridDimension, mpfr_class opProbability);
-		static context hexagonalGridcontext(int gridDimensionX, int gridDimensionY, mpfr_class opProbability);
-		static context torusContext(int dimension, mpfr_class opProbability);
-		static context fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message);
+		static context fromFile(std::string path, std::vector<mpfr_class>& opProbabilities);
 		context& operator=(context&& other);
 		const std::vector<vertexPosition>& getVertexPositions() const;
-		const mpfr_class& getOperationalProbability() const;
-		double getOperationalProbabilityD() const;
+		const std::vector<mpfr_class>& getOperationalProbabilities() const;
+		const std::vector<double>& getOperationalProbabilitiesD() const;
+		static bool readGraph(std::string path, context::inputGraph& graph, std::vector<vertexPosition>& vertexPositions, std::vector<int>& ordering, std::string& message);
 	private:
 		context();
-		mpfr_class opProbability;
-		double opProbabilityD;
+		std::vector<mpfr_class> opProbabilities;
+		std::vector<double> opProbabilitiesD;
 		boost::shared_ptr<const inputGraph> graph;
 
 		boost::shared_ptr<const std::vector<int> > ordering;

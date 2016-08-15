@@ -34,6 +34,6 @@ test_that("Test that conditionalMC gives numerically accurate results",
 
 			exactResult <- as.double(exactRCR(grid4Counts, probability))
 
-			expect_equal(igraphResult, exactResult, tolerance = 0.002)
+			expect_equal(igraphResult, exactResult, tolerance = 0.01)
 		}
 	})

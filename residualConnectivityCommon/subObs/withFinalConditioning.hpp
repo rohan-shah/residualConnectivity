@@ -21,8 +21,6 @@ namespace residualConnectivity
 					throw std::runtime_error("Radius must be 1 to call estimateRadius1");
 				}
 				const context& contextObj = object.getContext();
-				double openProbability = contextObj.getOperationalProbabilityD();
-				boost::bernoulli_distribution<double> bern(openProbability);
 				//Construct helper graph, containing everything except FIXED_OFF vertices. This is because in order to compute the biconnected components / articulation vertices, we need an actual graph object, not just a state vector
 				subGraphType graph;
 				std::vector<int> graphVertices;
@@ -78,17 +76,18 @@ namespace residualConnectivity
 
 				//Count the number of biconnected components. I believe these are guaranteed to be contiguous....
 				std::size_t nBiconnectedComponents = *std::max_element(biconnectedIds.begin(), biconnectedIds.end())+1;
-				int nNotAlreadyFixedArticulation = 0;
 				//convert list of articulation vertices across to a bitset
 				std::vector<bool> isArticulationVertex(nVertices, false);
 				//Mark off each articulation point in the above vector, and count the number of extra points that we're fixing.
+				mpfr_class newWeight = object.getWeight();
+				const std::vector<mpfr_class>& operationalProbabilities = contextObj.getOperationalProbabilities();
 				for(std::vector<std::size_t>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
 				{
 					isArticulationVertex[graphVertices[*i]] = true;
 					if(stateRef[graphVertices[*i]].state & UNFIXED_MASK) 
 					{
-						nNotAlreadyFixedArticulation++;
 						fixedOnVertices.push_back(graphVertices[*i]);
+						newWeight *= operationalProbabilities[graphVertices[*i]];
 					}
 				}
 				//allocate a set per biconnected component
@@ -124,7 +123,6 @@ namespace residualConnectivity
 					fixedPointsPerComponent.push_back(std::move(currentComponentFixed));
 					unFixedPointsPerComponent.push_back(std::move(currentComponentUnFixed));
 				}
-				mpfr_class newWeight = object.getWeight() * boost::multiprecision::pow(contextObj.getOperationalProbability(), nNotAlreadyFixedArticulation);
 				::residualConnectivity::obs::withWeightConstructorType observationInput;
 				//We need to take the same number of effective simulations, regardless of the number of biconnected components
 				int nComponentRuns = (int)(pow(nSimulations, 1.0/(float)nBiconnectedComponents));

@@ -6,16 +6,19 @@
 #include "subObs/subObs.h"
 #include "isSingleComponentWithRadius.h"
 #include <boost/iterator/counting_iterator.hpp>
+#include <boost/range/algorithm/random_shuffle.hpp>
+#include <boost/random/random_number_generator.hpp>
 namespace residualConnectivity
 {	
 	void conditionalMC(conditionalMCArgs& args)
 	{
 		std::size_t nVertices = boost::num_vertices(args.contextObj.getGraph());
-		boost::random::geometric_distribution<int, double> numberOffVertices(args.contextObj.getOperationalProbability().convert_to<double>());
+		const std::vector<double>& operationalProbabilitiesD = args.contextObj.getOperationalProbabilitiesD();
+		const std::vector<mpfr_class>& operationalProbabilities = args.contextObj.getOperationalProbabilities();
+		boost::random_number_generator<boost::mt19937> generator(args.randomSource);
 
 		mpfr_class total = 0;
 		mpfr_class numeratorExpectedUpNumber = 0;
-		mpfr_class q = 1 - args.contextObj.getOperationalProbability();
 
 		std::vector<int> connectedComponents(nVertices);
 		std::vector<bool> isBoundary(nVertices);
@@ -24,44 +27,38 @@ namespace residualConnectivity
 		std::vector<int> allVertices;
 		allVertices.reserve(nVertices);
 
-		//Cache of powers of Q
-		std::vector<mpfr_class> powersOfQ;
-		powersOfQ.reserve(nVertices + 1);
-		powersOfQ.push_back(1);
-		powersOfQ.push_back(q);
-		for (int i = 2; i < (int)nVertices + 1; i++)
-		{
-			powersOfQ.push_back(mpfr_class(powersOfQ[i - 1] * q));
-		}
-
 		for(int i = 0; i < args.n; i++)
 		{
 			boost::shared_array<vertexState> state(new vertexState[nVertices]);
 			std::fill(state.get(), state.get()+nVertices, vertexState::unfixed_off());
 			//Pick random vertices and determine their state, until we get one that's fixed as on. 
-
-			int nOff = numberOffVertices(args.randomSource);
-			int componentSize = 0;
-			int nBoundaryPoints = 0;
-			if(nOff < (int)nVertices)
+			allVertices.clear();
+			allVertices.insert(allVertices.begin(), boost::counting_iterator<int>(0), boost::counting_iterator<int>((int)nVertices));
+			boost::random_shuffle(allVertices, generator);
+			int firstOn = 0;
+			for (; firstOn < (int)nVertices; firstOn++)
 			{
-				allVertices.clear();
-				allVertices.insert(allVertices.begin(), boost::counting_iterator<int>(0), boost::counting_iterator<int>((int)nVertices));
-				for(int i = 0; i < nOff; i++)
+				boost::random::bernoulli_distribution<double> vertexDistribution(operationalProbabilitiesD[allVertices[firstOn]]);
+				if (vertexDistribution(args.randomSource))
 				{
-					boost::random::uniform_int_distribution<> randomVertex(0, (int)allVertices.size()-1);
-					int offVertexIndex = randomVertex(args.randomSource);
-					state[allVertices[offVertexIndex]].state = FIXED_OFF;
-					std::swap(*allVertices.rbegin(), allVertices[offVertexIndex]);
-					allVertices.erase(allVertices.begin() + (allVertices.size()-1));
+					state[allVertices[firstOn]].state = FIXED_ON;
+					break;
 				}
-				int onVertex;
+				else
 				{
-					boost::random::uniform_int_distribution<> randomVertex(0, (int)allVertices.size()-1);
-					int onVertexIndex = randomVertex(args.randomSource);
-					onVertex = allVertices[onVertexIndex];
-					state[onVertex].state = FIXED_ON;
+					state[allVertices[firstOn]].state = FIXED_OFF;
 				}
+			}
+
+			if (firstOn == (int)nVertices - 1)
+			{
+				total += 1;
+				numeratorExpectedUpNumber += 1;
+			}
+			else if(firstOn < (int)nVertices)
+			{
+				int nOff = firstOn - 1;
+				int onVertex = allVertices[firstOn];
 				
 				//represents partial knowledge
 				::residualConnectivity::subObs::subObs subObs(args.contextObj, state);
@@ -70,10 +67,8 @@ namespace residualConnectivity
 				const vertexState* obsState = obs.getState();
 				std::fill(connectedComponents.begin(), connectedComponents.end(), -1);
 				
-				std::vector<context::inputGraph::vertex_descriptor> specified;
-				specified.push_back(onVertex);
-				
 				isSingleComponentAllOn(args.contextObj, obsState, connectedComponents, stack);
+				int componentSize = 0;
 				for(std::size_t k = 0; k < nVertices; k++)
 				{
 					if(connectedComponents[k] == connectedComponents[onVertex]) componentSize++;
@@ -102,22 +97,22 @@ namespace residualConnectivity
 					}
 					start++;
 				}
+				mpfr_class connectedProbability = 1;
 				for(std::size_t k = 0; k < nVertices; k++)
 				{
-					if(isBoundary[k]) nBoundaryPoints++;
+					if (!isBoundary[k] && (obsState[k].state != UNFIXED_ON || connectedComponents[k] != connectedComponents[onVertex]) && obsState[k].state != FIXED_OFF && obsState[k].state != FIXED_ON)
+					{
+						connectedProbability *= (1 - operationalProbabilities[k]);
+					}
 				}
-
+				total += connectedProbability;
+				numeratorExpectedUpNumber += connectedProbability*componentSize;
 			}
 			else
 			{
-				nOff = (int)nVertices;
-				componentSize = 0;
-				nBoundaryPoints = 0;
+				total += 1;
+				numeratorExpectedUpNumber += 0;
 			}
-			int power = ((int)nVertices - nOff) - componentSize - nBoundaryPoints;
-			mpfr_class connectedProbability = powersOfQ[power];
-			total += connectedProbability;
-			numeratorExpectedUpNumber += componentSize * connectedProbability;
 		}
 		args.expectedUpNumber = numeratorExpectedUpNumber / total;
 		args.estimate = total/args.n;

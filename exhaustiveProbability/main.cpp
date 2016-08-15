@@ -41,13 +41,13 @@ namespace residualConnectivity
 		}
 	
 		std::string message;
-		mpfr_class inopProbability, opProbability;
-		if(!readProbabilityString(variableMap, opProbability, message))
+		mpfr_class opProbability;
+		if(!readSingleProbabilityString(variableMap, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
-		inopProbability = 1 - opProbability;
+		mpfr_class inopProbability = 1 - opProbability;
 
 		std::vector<std::string> lines;
 		std::string line;

@@ -14,7 +14,7 @@ namespace residualConnectivity
 		articulationConditioningForResampling::articulationConditioningForResampling(context const& contextObj, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::articulationConditioningForResamplingConstructorType& otherData)
 			: ::residualConnectivity::subObs::withWeight(contextObj, state, radius, otherData.weight)
 		{
-			potentiallyConnected = isSingleComponentPossible(contextObj, state.get(), otherData.components, otherData.stack);
+			potentiallyConnected = isSingleComponentPossible(contextObj.getGraph(), state.get(), otherData.components, otherData.stack);
 			if(potentiallyConnected && otherData.useConditioning)
 			{
 				conditionArticulation(state, weight, contextObj, otherData.components, otherData.subGraphStack, otherData.subGraph);
@@ -31,14 +31,15 @@ namespace residualConnectivity
 		}
 		void articulationConditioningForResampling::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData)const
 		{
-			boost::random::bernoulli_distribution<double> vertexDistribution(contextObj.getOperationalProbabilityD());
 			std::size_t nVertices = contextObj.nVertices();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
+			const std::vector<double>& operationalProbabilitiesD = contextObj.getOperationalProbabilitiesD();
 			//generate a full random grid, which includes the subPoints 
 			for(std::size_t i = 0; i < nVertices; i++)
 			{
 				if(outputState[i].state & UNFIXED_MASK)
 				{
+					boost::random::bernoulli_distribution<double> vertexDistribution(operationalProbabilitiesD[i]);
 					if(vertexDistribution(randomSource))
 					{
 						outputState[i].state = UNFIXED_ON;

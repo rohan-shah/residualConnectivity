@@ -42,7 +42,7 @@ namespace residualConnectivity
 	
 		std::string message;
 		mpfr_class inopProbability, opProbability;
-		if(!readProbabilityString(variableMap, opProbability, message))
+		if(!readSingleProbabilityString(variableMap, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;

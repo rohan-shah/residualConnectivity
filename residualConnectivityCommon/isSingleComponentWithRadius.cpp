@@ -4,9 +4,9 @@
 #include "connected_components_restricted.hpp"
 namespace residualConnectivity
 {
-	bool isSingleComponentPossible(context const& contextObj, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack)
+	bool isSingleComponentPossible(const context::inputGraph& graph, const vertexState* state, std::vector<int>& connectedComponents, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack)
 	{
-		std::size_t nVertices = contextObj.nVertices();
+		std::size_t nVertices = boost::num_vertices(graph);
 
 		std::vector<context::inputGraph::vertex_descriptor> initialPoints;
 		typedef boost::color_traits<boost::default_color_type> Color;
@@ -22,7 +22,7 @@ namespace residualConnectivity
 		}
 
 		if(connectedComponents.size() < nVertices) connectedComponents.resize(nVertices);
-		int nComponents = boost::connected_components_restricted(contextObj.getGraph(), &(connectedComponents[0]), &(colorMap[0]), stack, initialPoints);
+		int nComponents = boost::connected_components_restricted(graph, &(connectedComponents[0]), &(colorMap[0]), stack, initialPoints);
 		
 		return nComponents <= 1;
 	}

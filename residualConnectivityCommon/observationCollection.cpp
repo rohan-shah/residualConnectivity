@@ -56,7 +56,7 @@ namespace residualConnectivity
 		if(externalContext) currentContext = externalContext;
 		else currentContext = &*containedContext;
 
-		if(*obsContext.getShortestDistances() != *currentContext->getShortestDistances() || &(obsContext.getOperationalProbability()) != &(currentContext->getOperationalProbability()) || obsContext.nVertices() != currentContext->nVertices())
+		if(*obsContext.getShortestDistances() != *currentContext->getShortestDistances() || &(obsContext.getOperationalProbabilities()) != &(currentContext->getOperationalProbabilities()) || obsContext.nVertices() != currentContext->nVertices())
 		{
 			throw std::runtime_error("observation object added to observationCollection had wrong Context object");
 		}

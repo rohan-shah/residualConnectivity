@@ -8,7 +8,7 @@ namespace residualConnectivity
 {
 	namespace contextImpl
 	{
-		template<typename Key, int Ret> class constant_property_map : public boost::put_get_helper<int, constant_property_map<Key, Ret> > 
+		template<typename Key, int Ret> class constant_property_map : public boost::put_get_helper<int, constant_property_map<Key, Ret> >
 		{
 		public:
 			typedef Key key_type;
@@ -19,7 +19,7 @@ namespace residualConnectivity
 
 			constant_property_map(){}
 
-			reference operator[](const Key&) const 
+			reference operator[](const Key&) const
 			{
 				return Ret;
 			}
@@ -50,19 +50,30 @@ namespace residualConnectivity
 			};
 		};
 	}
-	context::context(boost::shared_ptr<const inputGraph> unorderedGraph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, mpfr_class opProbability)
-		: opProbability(opProbability), opProbabilityD(opProbability.convert_to<double>()), ordering(ordering), vertexPositions(new std::vector<vertexPosition>())
+	context::context(boost::shared_ptr<const inputGraph> unorderedGraph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, std::vector<mpfr_class>& opProbabilities)
+		: ordering(ordering), vertexPositions(new std::vector<vertexPosition>())
 	{
+
 		std::size_t nVertices = boost::num_vertices(*unorderedGraph);
-		if(nVertices != ordering->size())
+		if (nVertices != ordering->size())
 		{
 			throw std::runtime_error("Graph ordering data had the wrong size");
 		}
-		if(*std::min_element(ordering->begin(), ordering->end()) != 0)
+		if (opProbabilities.size() == 1)
+		{
+			opProbabilities.insert(opProbabilities.begin(), nVertices - 1, opProbabilities.front());
+		}
+		this->opProbabilities = opProbabilities;
+		std::transform(opProbabilities.begin(), opProbabilities.end(), std::back_inserter(opProbabilitiesD), std::bind(&mpfr_class::convert_to<double>, std::placeholders::_1));
+		if (nVertices != opProbabilities.size())
+		{
+			throw std::runtime_error("Vertex probabilities had the wrong size");
+		}
+		if (*std::min_element(ordering->begin(), ordering->end()) != 0)
 		{
 			throw std::runtime_error("Wrong minimum vertex in ordering");
 		}
-		if(*std::max_element(ordering->begin(), ordering->end()) != (int)nVertices-1)
+		if (*std::max_element(ordering->begin(), ordering->end()) != (int)nVertices - 1)
 		{
 			throw std::runtime_error("Wrong maximum vertex in ordering");
 		}
@@ -70,28 +81,28 @@ namespace residualConnectivity
 		std::vector<int> orderPosition(nVertices);
 		for(int i = 0; i < nVertices; i++)
 		{
-			orderPosition[(*ordering)[i]] = i;
+		orderPosition[(*ordering)[i]] = i;
 		}*/
 
 		//organise the vertices of the graph so that the ith vertex in the graph is the ith vertex under the ordering.
 		boost::shared_ptr<inputGraph> orderedGraph(new inputGraph(nVertices));
 		inputGraph::edge_iterator start, end;
 		boost::tie(start, end) = boost::edges(*unorderedGraph);
-		for(;start != end; start++)
+		for (; start != end; start++)
 		{
 			boost::add_edge((*ordering)[start->m_source], (*ordering)[start->m_target], *orderedGraph);
 		}
 
 		this->graph = orderedGraph;
 		//Rearrange vertex positions, too
-		if(vertexPositions && vertexPositions->size() > 0)
+		if (vertexPositions && vertexPositions->size() > 0)
 		{
-			if(nVertices != vertexPositions->size())
+			if (nVertices != vertexPositions->size())
 			{
 				throw std::runtime_error("Vertex position data had the wrong size");
 			}
 			this->vertexPositions = boost::shared_ptr<std::vector<vertexPosition> >(new std::vector<vertexPosition>(nVertices));
-			for(std::size_t i = 0; i < nVertices; i++) (*this->vertexPositions)[(*ordering)[i]] = (*vertexPositions)[i];
+			for (std::size_t i = 0; i < nVertices; i++) (*this->vertexPositions)[(*ordering)[i]] = (*vertexPositions)[i];
 		}
 
 		//get out shortest distances
@@ -116,22 +127,12 @@ namespace residualConnectivity
 		ordering.swap(other.ordering);
 		shortestDistances.swap(other.shortestDistances);
 		vertexPositions.swap(other.vertexPositions);
-		opProbability = other.opProbability;
-		opProbabilityD = opProbability.convert_to<double>();
+		opProbabilities.swap(other.opProbabilities);
+		opProbabilitiesD.swap(other.opProbabilitiesD);
 	}
 	const context::inputGraph& context::getGraph() const
 	{
 		return *graph;
-	}
-	context context::gridContext(int gridDimension, mpfr_class opProbability)
-	{
-		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions;
-		boost::shared_ptr<context::inputGraph> graph;
-		constructGraphs::squareGrid(gridDimension, graph, vertexPositions);
-		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(gridDimension * gridDimension));
-		for(int i = 0; i < gridDimension * gridDimension; i++) (*ordering)[i] = i;
-
-		return context(graph, ordering, vertexPositions, opProbability);
 	}
 	const int* context::getShortestDistances() const
 	{
@@ -143,23 +144,21 @@ namespace residualConnectivity
 		ordering.swap(other.ordering);
 		shortestDistances.swap(other.shortestDistances);
 		vertexPositions.swap(other.vertexPositions);
-		opProbability = other.opProbability;
-		opProbabilityD = opProbability.convert_to<double>();
+		opProbabilities.swap(other.opProbabilities);
+		opProbabilitiesD.swap(other.opProbabilitiesD);
 		return *this;
 	}
 	context::context()
 	{}
-	context context::fromFile(std::string path, mpfr_class opProbability, bool& successful, std::string& message)
+	bool context::readGraph(std::string path, context::inputGraph& graph, std::vector<vertexPosition>& vertexPositions, std::vector<int>& ordering, std::string& message)
 	{
 		std::ifstream input(path);
-		if(!input.is_open())
+		if (!input.is_open())
 		{
 			message = "Unable to open file";
-			successful = false;
-			return context();
+			return false;
 		}
 		boost::dynamic_properties properties;
-		boost::shared_ptr<inputGraph> graph(new inputGraph());
 
 		boost::vector_property_map<int> orderingProperty;
 		properties.property("order", orderingProperty);
@@ -168,71 +167,54 @@ namespace residualConnectivity
 		properties.property("x", xProperty);
 		properties.property("y", yProperty);
 
-		boost::read_graphml(input, *graph, properties);
-		std::size_t nVertices = boost::num_vertices(*graph);
+		boost::read_graphml(input, graph, properties);
+		std::size_t nVertices = boost::num_vertices(graph);
 
-		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>());
-		ordering->insert(ordering->end(), orderingProperty.storage_begin(), orderingProperty.storage_end());
-		
-		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions(new std::vector<vertexPosition>());
-		for(auto xIterator = xProperty.storage_begin(), yIterator = yProperty.storage_begin(); xIterator != xProperty.storage_end(); xIterator++, yIterator++)
+		ordering.insert(ordering.end(), orderingProperty.storage_begin(), orderingProperty.storage_end());
+
+		for (auto xIterator = xProperty.storage_begin(), yIterator = yProperty.storage_begin(); xIterator != xProperty.storage_end(); xIterator++, yIterator++)
 		{
-			vertexPositions->push_back(vertexPosition(*xIterator, *yIterator));
+			vertexPositions.push_back(vertexPosition(*xIterator, *yIterator));
 		}
 
-		successful = true;
 		//Assume the ordering is just the identity, if none was given
-		if(ordering->size() == 0)
+		if (ordering.size() == 0)
 		{
-			ordering->resize(nVertices);
-			for(std::size_t i = 0; i < nVertices; i++) (*ordering)[i] = (int)i;
+			ordering.resize(nVertices);
+			for (std::size_t i = 0; i < nVertices; i++) ordering[i] = (int)i;
 		}
-		if(ordering->size() != nVertices)
+		if (ordering.size() != nVertices)
 		{
-			successful = false;
 			message = "Wrong number of vertices in ordering";
-			return context();
+			return false;
 		}
-		if(vertexPositions->size() != 0 && vertexPositions->size() != nVertices)
+		if (vertexPositions.size() != 0 && vertexPositions.size() != nVertices)
 		{
-			successful = false;
 			message = "Vertex positions must be specified for all vertices or none";
-			return context();
+			return false;
 		}
-		return context(graph, ordering, vertexPositions, opProbability);
+		return true;
+	}
+	context context::fromFile(std::string path, std::vector<mpfr_class>& opProbabilities)
+	{
+		std::string message;
+		boost::shared_ptr<context::inputGraph> graph(new context::inputGraph());
+		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions(new std::vector<vertexPosition>());
+		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>());
+		bool successful = context::readGraph(path, *graph.get(), *vertexPositions.get(), *ordering.get(), message);
+		if (!successful) throw std::runtime_error(message);
+		return context(graph, ordering, vertexPositions, opProbabilities);
 	}
 	const std::vector<context::vertexPosition>& context::getVertexPositions() const
 	{
 		return *vertexPositions;
 	}
-	context context::torusContext(int dimension, mpfr_class opProbability)
+	const std::vector<mpfr_class>& context::getOperationalProbabilities() const
 	{
-		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions;
-		boost::shared_ptr<context::inputGraph> graph;
-		constructGraphs::squareTorus(dimension, graph, vertexPositions);
-		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(dimension * dimension));
-		for(int i = 0; i < dimension * dimension; i++) (*ordering)[i] = i;
-
-		return context(graph, ordering, vertexPositions, opProbability);
+		return opProbabilities;
 	}
-	context context::hexagonalGridcontext(int gridDimensionX, int gridDimensionY, mpfr_class opProbability)
+	const std::vector<double>& context::getOperationalProbabilitiesD() const
 	{
-		boost::shared_ptr<std::vector<vertexPosition> > vertexPositions;
-		boost::shared_ptr<context::inputGraph> graph;
-		constructGraphs::hexagonalTiling(gridDimensionX, gridDimensionY, graph, vertexPositions);
-
-		std::size_t nVertices = boost::num_vertices(*graph);
-		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(nVertices));
-		for (int i = 0; i < (int)nVertices; i++) (*ordering)[i] = i;
-
-		return context(graph, ordering, vertexPositions, opProbability);
-	}
-	const mpfr_class& context::getOperationalProbability() const
-	{
-		return opProbability;
-	}
-	double context::getOperationalProbabilityD() const
-	{
-		return opProbabilityD;
+		return opProbabilitiesD;
 	}
 }

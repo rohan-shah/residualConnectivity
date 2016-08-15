@@ -26,7 +26,7 @@ namespace residualConnectivity
 				std::size_t copiedSourceVertex = sourceVertex;
 				//we want to begin on the NEXT vertex
 				sourceVertex++;
-				while(sourceVertex <= nVertices)
+				while(sourceVertex < nVertices)
 				{
 					int previousState = oldStatesPtr[sourceVertex].state;
 					if(shortestDistances[copiedSourceVertex + nVertices * sourceVertex] <= radius)

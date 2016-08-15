@@ -10,12 +10,13 @@
 #include <boost/graph/connected_components.hpp>
 #include "depth_first_search_restricted.hpp"
 #include "connected_components_restricted.hpp"
+#include "constructGraphs.h"
 #ifdef _MSC_VER
 	#include <intrin.h>
 #endif
 namespace residualConnectivity
 {
-	mpz_class countSubgraphsBySize(int gridDimension, int size, const context& contextObj)
+	mpz_class countSubgraphsBySize(int gridDimension, int size, const context::inputGraph& graph)
 	{
 		std::size_t connected = 0;
 		std::vector<int> connectedComponents;
@@ -43,7 +44,7 @@ namespace residualConnectivity
 				}
 				else colors[i] = Color::black();
 			}
-			int nComponents = boost::connected_components_restricted(contextObj.getGraph(), &(connectedComponents[0]), &(colors[0]), stack, initialPoints);
+			int nComponents = boost::connected_components_restricted(graph, &(connectedComponents[0]), &(colors[0]), stack, initialPoints);
 			if(nComponents <= 1)
 			{
 				connected++;
@@ -114,8 +115,10 @@ namespace residualConnectivity
 			std::cout << "Input `size' had an invalid value" << std::endl;
 			return 0;
 		}
-		context contextObj = context::gridContext(gridDimension, 0.5);
-		mpz_class count = countSubgraphsBySize(gridDimension, size, contextObj);
+		boost::shared_ptr<context::inputGraph> graph(new context::inputGraph());
+		boost::shared_ptr<std::vector<context::vertexPosition> > vertexPositions(new std::vector<context::vertexPosition>());
+		constructGraphs::squareGrid(gridDimension, *graph.get(), *vertexPositions.get());
+		mpz_class count = countSubgraphsBySize(gridDimension, size, *graph.get());
 		std::cout << "Number of connected subgraphs of the " << gridDimension << " x " << gridDimension << " grid graph with " << size << " vertices was " << count << std::endl;
 		return 0;
 	}

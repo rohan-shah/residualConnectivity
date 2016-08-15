@@ -185,12 +185,18 @@ namespace residualConnectivity
 			return 0;
 		}
 
-		mpfr_class probability;
-		if(!readProbabilityString(variableMap, probability, message))
+		std::vector<mpfr_class> opProbabilities;
+		if(!readProbabilityString(variableMap, opProbabilities, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
+		if (opProbabilities.size() != 1)
+		{
+			std::cout << "Can only use transfer matrix estimation when the probability of being present is the same for every vertex" << std::endl;
+			return 0;
+		}
+		mpfr_class probability = opProbabilities[0];
 		int n;
 		if(!readN(variableMap, n))
 		{

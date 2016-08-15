@@ -2,13 +2,15 @@
 #include "igraphInterface.h"
 #include "graphAMInterface.h"
 #include "graphNELInterface.h"
-residualConnectivity::context graphInterface(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, graphType type)
+residualConnectivity::context graphInterface(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probabilities_sexp, graphType type)
 {
 	//Convert probability
-	double probability;
+	std::vector<mpfr_class> probabilities;
+	Rcpp::NumericVector probabilities_R;
 	try
 	{
-		probability = Rcpp::as<double>(probability_sexp);
+		probabilities_R = Rcpp::as<Rcpp::NumericVector>(probabilities_sexp);
+		std::transform(probabilities_R.begin(), probabilities_R.end(), std::back_inserter(probabilities), [](double x){return mpfr_class(x); });
 	}
 	catch(Rcpp::not_compatible&)
 	{
@@ -55,6 +57,6 @@ residualConnectivity::context graphInterface(SEXP graph_sexp, SEXP vertexCoordin
 		defaultOrderingRef.push_back((int)i);
 	}
 
-	residualConnectivity::context contextObj(boostGraph, defaultOrdering, vertexCoordinates, probability);
+	residualConnectivity::context contextObj(boostGraph, defaultOrdering, vertexCoordinates, probabilities);
 	return contextObj;
 }

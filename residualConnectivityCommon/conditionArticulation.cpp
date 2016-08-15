@@ -35,11 +35,11 @@ namespace residualConnectivity
 		//get out biconnected components of helper graph (which has different vertex ids, remember)
 		std::vector<std::size_t> articulationVertices;
 		boost::articulation_points(graph, std::back_inserter(articulationVertices));
-		int nImportanceVertices = 0;
 	
 		typedef boost::color_traits<boost::default_color_type> Color;
 		std::vector<boost::default_color_type> colorMap(boost::num_vertices(graph), Color::white());
 		findFixedOnVisitor fixedVisitor(state.get(), graphVertices);
+		const std::vector<mpfr_class> operationalProbabilities = contextObj.getOperationalProbabilities();
 
 		for(std::vector<std::size_t>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
 		{
@@ -64,11 +64,10 @@ namespace residualConnectivity
 				}
 				if(nComponentsWithFixedOnVertices > 1)
 				{
-					nImportanceVertices++;
 					state[graphVertices[*i]].state = FIXED_ON;
+					weight *= operationalProbabilities[graphVertices[*i]];
 				}
 			}
 		}
-		weight *= boost::multiprecision::pow(contextObj.getOperationalProbability(), nImportanceVertices);
 	}
 }

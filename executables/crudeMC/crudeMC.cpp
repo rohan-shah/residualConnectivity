@@ -43,18 +43,22 @@ namespace residualConnectivity
 		}
 
 		std::string message;
-		mpfr_class opProbability;
-		if(!readProbabilityString(variableMap, opProbability, message))
+		std::vector<mpfr_class> probabilities;
+		if(!readProbabilityString(variableMap, probabilities, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
-		context contextObj = context::gridContext(1, opProbability);
-		if(!readContext(variableMap, contextObj, opProbability, message))
+		boost::shared_ptr<context::inputGraph> graph(new context::inputGraph());
+		boost::shared_ptr<std::vector<context::vertexPosition> > vertexPositions(new std::vector<context::vertexPosition>());
+		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>());
+		bool successful = readGraph(variableMap, *graph.get(), *vertexPositions.get(), *ordering.get(), message);
+		if (!successful)
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
+		context contextObj(graph, ordering, vertexPositions, probabilities);
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
 		crudeMCArgs args(contextObj, randomSource);

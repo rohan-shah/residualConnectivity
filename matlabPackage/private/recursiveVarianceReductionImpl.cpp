@@ -16,17 +16,21 @@ BEGIN_MEX_WRAPPER
 		throw std::runtime_error("Function conditionalMCImpl returns only one value");
 	}
 	//First input must be a probability
-	bool probabilityValid = !mxIsComplex(prhs[0]) && !mxIsSparse(prhs[0]) && mxIsNumeric(prhs[0]) && mxGetNumberOfDimensions(prhs[0]) == 2 && mxGetNumberOfElements(prhs[0]) == 1;
+	bool probabilityValid = !mxIsComplex(prhs[0]) && !mxIsSparse(prhs[0]) && mxIsNumeric(prhs[0]) && mxGetNumberOfDimensions(prhs[0]) == 2;
 	if(!probabilityValid)
 	{
 		throw std::runtime_error("First input must be a real number");
 	}
-	double probability = mxGetScalar(prhs[0]);
-	if(probability < 0 || probability > 1)
+	std::vector<mpfr_class> opProbabilities;
+	for (std::size_t i = 0; i < mxGetNumberOfElements(prhs[0]); i++)
 	{
-		throw std::runtime_error("Input probability must be between 0 and 1");
+		double probability = *(mxGetPr(prhs[0]) + i);
+		if (probability < 0 || probability > 1)
+		{
+			throw std::runtime_error("Input probabilities must be between 0 and 1");
+		}
+		opProbabilities.push_back(probability);
 	}
-	mpfr_class probabilityMpfr = probability;
 
 	//Second input must be the sample size n
 	bool nValid = !mxIsComplex(prhs[1]) && !mxIsSparse(prhs[1]) && mxIsNumeric(prhs[1]) && mxGetNumberOfDimensions(prhs[1]) == 2 && mxGetNumberOfElements(prhs[1]) == 1;
@@ -60,7 +64,7 @@ BEGIN_MEX_WRAPPER
 	}
 	boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(boost::num_vertices(*graph)));
 	for(int i = 0; i < (int)boost::num_vertices(*graph); i++) (*ordering)[i] = i;
-	residualConnectivity::context contextObj = residualConnectivity::context(graph, ordering, vertexPositions, probabilityMpfr);
+	residualConnectivity::context contextObj = residualConnectivity::context(graph, ordering, vertexPositions, opProbabilities);
 
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);

@@ -33,22 +33,25 @@ namespace residualConnectivity
 			return 0;
 		}
 		std::string message;
-		context contextObj = context::gridContext(1, 0.5);
-		if(!readContext(variableMap, contextObj, 0.5, message))
+		context::inputGraph graph;
+		std::vector<context::vertexPosition> vertexPositions;
+		std::vector<int> ordering;
+		bool successful = readGraph(variableMap, graph, vertexPositions, ordering, message);
+		if (!successful)
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
 		std::vector<counterType> sizeCounters;
 		std::string error;
-		bool result = exhaustiveSearch(contextObj.getGraph(), sizeCounters, error);
+		bool result = exhaustiveSearch(graph, sizeCounters, error);
 		if(!result)
 		{
 			std::cout << error << std::endl;
 			return 0;
 		}
 
-		std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
+		std::size_t nVertices = boost::num_vertices(graph);
 		std::cout << "Number of connected subgraphs with that number of points" << std::endl;
 		for(std::size_t i = 0; i < nVertices+1; i++)
 		{

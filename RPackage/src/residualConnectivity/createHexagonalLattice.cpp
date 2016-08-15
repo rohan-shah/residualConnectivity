@@ -7,7 +7,7 @@ BEGIN_RCPP
 
 	boost::shared_ptr<std::vector<residualConnectivity::context::vertexPosition> > vertexPositions;
 	boost::shared_ptr<residualConnectivity::context::inputGraph> graph;
-	residualConnectivity::constructGraphs::hexagonalTiling(x, y, graph, vertexPositions);
+	residualConnectivity::constructGraphs::hexagonalTiling(x, y, *graph.get(), *vertexPositions.get());
 
 	std::size_t nEdges = boost::num_edges(*graph), nVertices = boost::num_vertices(*graph);
 	Rcpp::NumericMatrix edges(2, (int)nEdges), positions((int)nVertices, 2);

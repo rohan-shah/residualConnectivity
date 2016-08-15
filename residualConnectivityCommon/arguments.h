@@ -8,7 +8,7 @@
 #define GRAPH_FILE_OPTION ("graphFile", boost::program_options::value<std::string>(), "(string) The path to a graphml file. Incompatible with other graph specifiers. ")
 #define TORUS_GRAPH_OPTION ("torusGraph", boost::program_options::value<int>(), "(int) The dimension of the torus graph to use. Incompatible with other graph specifiers. ")
 #define HEXAGONAL_GRID_OPTION ("hexagonalGrid", boost::program_options::value<std::vector<int> >()->multitoken(), "(int, int) The dimensions of the hexagonal grid graph to use. Incompatible with other graph specifiers. ")
-#define PROBABILITY_OPTION ("opProbability", boost::program_options::value<std::string>(), "(float) The probability that a vertex is open")
+#define PROBABILITY_OPTION ("opProbability", boost::program_options::value<std::vector<std::string> >()->multitoken(), "(float) The probability that a vertex is open")
 #define SEED_OPTION ("seed", boost::program_options::value<int>(), "(int) The random seed used to generate the random graphs")
 #define INITIAL_RADIUS_OPTION ("initialRadius", boost::program_options::value<int>(), "(int) The initial radius")
 #define N_OPTION ("n", boost::program_options::value<int>(), "(int) The number of graphs initially generated")

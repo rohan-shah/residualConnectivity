@@ -27,12 +27,12 @@ namespace residualConnectivity
 		boost::shared_array<vertexState> state(new vertexState[nVertices]);
 		this->state = state;
 
-		double openProbability = contextObj.getOperationalProbabilityD();
-		boost::random::bernoulli_distribution<double> vertexDistribution(openProbability);
+		const std::vector<double>& openProbabilities = contextObj.getOperationalProbabilitiesD();
 		
 		//Get out which vertices are present, and the count of the total number of present vertices
 		for(std::size_t i = 0; i < nVertices; i++)
 		{
+			boost::random::bernoulli_distribution<double> vertexDistribution(openProbabilities[i]);
 			if(vertexDistribution(randomSource))
 			{
 				state[i].state = UNFIXED_ON;

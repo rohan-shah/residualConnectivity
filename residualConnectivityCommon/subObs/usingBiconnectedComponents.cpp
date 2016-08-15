@@ -11,7 +11,7 @@ namespace residualConnectivity
 		usingBiconnectedComponents::usingBiconnectedComponents(context const& contextObj, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
 			: ::residualConnectivity::subObs::withWeight(contextObj, state, radius, otherData.weight)
 		{
-			potentiallyConnected = isSingleComponentPossible(contextObj, state.get(), otherData.components, otherData.stack);
+			potentiallyConnected = isSingleComponentPossible(contextObj.getGraph(), state.get(), otherData.components, otherData.stack);
 		}
 		bool usingBiconnectedComponents::isPotentiallyConnected() const
 		{
@@ -24,7 +24,7 @@ namespace residualConnectivity
 		}
 		void usingBiconnectedComponents::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData)const
 		{
-			boost::random::bernoulli_distribution<double> vertexDistribution(contextObj.getOperationalProbabilityD());
+			const std::vector<double>& operationalProbabilitesD = contextObj.getOperationalProbabilitiesD();
 			std::size_t nVertices = contextObj.nVertices();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 
@@ -32,6 +32,7 @@ namespace residualConnectivity
 			{
 				if(outputState[i].state & UNFIXED_MASK)
 				{
+					boost::random::bernoulli_distribution<double> vertexDistribution(operationalProbabilitesD[i]);
 					if(vertexDistribution(randomSource))
 					{
 						outputState[i].state = UNFIXED_ON;

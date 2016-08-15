@@ -24,14 +24,15 @@ namespace residualConnectivity
 		{}
 		void subObs::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&) const
 		{
-			boost::random::bernoulli_distribution<double> vertexDistribution(contextObj.getOperationalProbabilityD());
 			std::size_t nVertices = contextObj.nVertices();
+			const std::vector<double>& operationalProbabilitiesD = contextObj.getOperationalProbabilitiesD();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 
 			for(std::size_t i = 0; i < nVertices; i++)
 			{
 				if(outputState[i].state & UNFIXED_MASK)
 				{
+					boost::random::bernoulli_distribution<double> vertexDistribution(operationalProbabilitiesD[i]);
 					if(vertexDistribution(randomSource))
 					{
 						outputState[i].state = UNFIXED_ON;

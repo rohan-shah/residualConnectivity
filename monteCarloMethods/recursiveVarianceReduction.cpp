@@ -9,21 +9,16 @@ namespace residualConnectivity
 	void recursiveVarianceReduction(recursiveVarianceReductionArgs& args)
 	{
 		std::size_t nVertices = args.contextObj.nVertices();
-		mpfr_class opProbability = args.contextObj.getOperationalProbability();
-		mpfr_class inopProbability = 1 - opProbability;
+		const std::vector<mpfr_class>& opProbabilities = args.contextObj.getOperationalProbabilities();
+		const std::vector<double>& opProbabilitiesD = args.contextObj.getOperationalProbabilitiesD();
 		//Cache powers of opProbability and inopProbability
-		std::vector<mpfr_class> inopProbabilityPowers(nVertices+1), opProbabilityPowers(nVertices+1);
+		std::vector<mpfr_class> opProbabilityPowers(nVertices+1, 1);
 		for(std::size_t i = 0; i < nVertices+1; i++)
 		{
-			inopProbabilityPowers[i] = boost::multiprecision::pow(inopProbability, i);
-			opProbabilityPowers[i] = boost::multiprecision::pow(opProbability, i);
-		}
-		//Truncated geometric distribution for use later on
-		std::vector<mpfr_class> truncatedGeometric(nVertices+1);
-		truncatedGeometric[0] = inopProbability;
-		for(std::size_t i = 1; i < nVertices+1; i++)
-		{
-			truncatedGeometric[i] = truncatedGeometric[i-1] + inopProbability * opProbabilityPowers[i];
+			for (std::size_t j = i; j < nVertices; j++)
+			{
+				opProbabilityPowers[i] *= opProbabilities[j];
+			}
 		}
 		//unifrom distribution
 		boost::random::uniform_01<double> uniformDistribution;
@@ -63,16 +58,20 @@ namespace residualConnectivity
 				//recursive part
 				if(currentConnected)
 				{
-					currentPart += currentMultiple * opProbabilityPowers[nVertices - currentPosition];
+					currentPart += currentMultiple * opProbabilityPowers[currentPosition];
 				}
-				mpfr_class extraPart = (1 - opProbabilityPowers[nVertices - currentPosition]);
+				mpfr_class extraPart = (1 - opProbabilityPowers[currentPosition]);
 				currentMultiple *= extraPart;
 
-				mpfr_class randomValue = extraPart * uniformDistribution(args.randomSource);
 				std::size_t increment = 0;
+				mpfr_class randomValue = extraPart * uniformDistribution(args.randomSource);
+				mpfr_class prod = 1;
 				for(; increment < nVertices - currentPosition; increment++)
 				{
-					if(randomValue <= truncatedGeometric[increment]) break;
+					mpfr_class tmp = prod*(1 - opProbabilities[currentPosition + increment]);
+					if (randomValue < tmp) break;
+					randomValue -= tmp;
+					prod *= opProbabilities[currentPosition + increment];
 				}
 				//mark currentPosition + increment as off. 
 				iterativeVertexStates[currentPosition + increment] = false;
@@ -92,4 +91,3 @@ namespace residualConnectivity
 		args.estimate /= args.n;
 	}
 }
-
