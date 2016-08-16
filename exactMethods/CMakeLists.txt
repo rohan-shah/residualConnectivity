@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-set(CppFiles exhaustiveSearch.cpp)
-set(HeaderFiles exactMethods/exhaustiveSearch.h)
+set(CppFiles exhaustiveSearch.cpp gridCountSpecificSize.cpp)
+set(HeaderFiles exactMethods/exhaustiveSearch.h exactMethods/gridCountSpecificSize.h)
 
 add_library(exactMethods STATIC ${CppFiles} ${HeaderFiles})
 target_include_directories(exactMethods PUBLIC ${PROJECT_SOURCE_DIR}/exactMethods)

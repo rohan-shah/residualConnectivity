@@ -7,7 +7,7 @@
 #include <boost/accumulators/statistics/sum_kahan.hpp>
 #include <iostream>
 #include <iomanip>
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
 #include <mathlink.h>

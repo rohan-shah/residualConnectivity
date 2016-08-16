@@ -1,4 +1,5 @@
 #include <Rcpp.h>
+#include <internal.h>
 #include "loadQt.h"
 #include "crudeMC.h"
 #include "conditionalMC.h"
@@ -7,6 +8,7 @@
 #include "createHexagonalLattice.h"
 #include "articulationConditioningResampling.h"
 #include "recursiveVarianceReduction.h"
+#include "gridCountSpecificSize.h"
 #include "PMC.h"
 #ifdef _MSC_VER
 	#undef RcppExport
@@ -38,11 +40,23 @@ R_CallMethodDef callMethods[] =
 	{"PMC_graphNEL", (DL_FUNC)&PMC_graphNEL, 3},
 	{"PMC_graphAM", (DL_FUNC)&PMC_graphAM, 3},
 	{"createHexagonalLattice", (DL_FUNC)&createHexagonalLattice, 2},
+	{"gridCountSpecificSize", (DL_FUNC)&gridCountSpecificSize, 3},
 	{NULL, NULL, 0}
 };
-extern "C" void R_init_Rcpp(DllInfo* info);
 RcppExport void R_init_residualConnectivity(DllInfo *info)
 {
-	R_init_Rcpp(info);
-	R_registerRoutines(info, NULL, callMethods, NULL, NULL);
+	std::vector<R_CallMethodDef> callMethodsVector;
+	R_CallMethodDef* packageCallMethods = callMethods;
+	while(packageCallMethods->name != NULL) packageCallMethods++;
+	callMethodsVector.insert(callMethodsVector.begin(), callMethods, packageCallMethods);
+
+	R_CallMethodDef* RcppStartCallMethods = Rcpp_get_call();
+	R_CallMethodDef* RcppEndCallMethods = RcppStartCallMethods;
+	while(RcppEndCallMethods->name != NULL) RcppEndCallMethods++;
+	callMethodsVector.insert(callMethodsVector.end(), RcppStartCallMethods, RcppEndCallMethods);
+	R_CallMethodDef blank = {NULL, NULL, 0};
+	callMethodsVector.push_back(blank);
+
+	R_registerRoutines(info, NULL, &(callMethodsVector[0]), NULL, NULL);
+	init_Rcpp_cache();
 }
