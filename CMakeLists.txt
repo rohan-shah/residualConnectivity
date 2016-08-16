@@ -54,7 +54,6 @@ else()
 endif()
 
 add_subdirectory(residualConnectivityCommon)
-add_subdirectory(executables)
 add_subdirectory(exhaustiveProbability)
 add_subdirectory(usingBiconnectedSplitting)
 add_subdirectory(optimalStateIndependentImportance)
