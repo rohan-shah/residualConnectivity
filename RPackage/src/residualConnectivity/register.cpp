@@ -41,6 +41,7 @@ R_CallMethodDef callMethods[] =
 	{"PMC_graphAM", (DL_FUNC)&PMC_graphAM, 3},
 	{"createHexagonalLattice", (DL_FUNC)&createHexagonalLattice, 2},
 	{"gridCountSpecificSize", (DL_FUNC)&gridCountSpecificSize, 3},
+	{"gridCountSpecificSize2", (DL_FUNC)&gridCountSpecificSize2, 2},
 	{NULL, NULL, 0}
 };
 RcppExport void R_init_residualConnectivity(DllInfo *info)

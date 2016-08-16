@@ -29,3 +29,4 @@ Collate:
    'monteCarloResult-class.R'
    'recursiveVarianceReduction.R'
    'gridCountSpecificSize.R'
+   'gridCountSpecificSize2.R'
