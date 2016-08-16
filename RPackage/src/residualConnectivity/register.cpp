@@ -9,6 +9,7 @@
 #include "articulationConditioningResampling.h"
 #include "recursiveVarianceReduction.h"
 #include "gridCountSpecificSize.h"
+#include "optimalStateIndependentImportance.h"
 #include "PMC.h"
 #ifdef _MSC_VER
 	#undef RcppExport
@@ -42,6 +43,7 @@ R_CallMethodDef callMethods[] =
 	{"createHexagonalLattice", (DL_FUNC)&createHexagonalLattice, 2},
 	{"gridCountSpecificSize", (DL_FUNC)&gridCountSpecificSize, 3},
 	{"gridCountSpecificSize2", (DL_FUNC)&gridCountSpecificSize2, 2},
+	{"optimalStateIndependentImportance", (DL_FUNC)&optimalStateIndependentImportance, 2},
 	{NULL, NULL, 0}
 };
 RcppExport void R_init_residualConnectivity(DllInfo *info)
