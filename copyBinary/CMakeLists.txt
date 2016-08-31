@@ -113,27 +113,25 @@ if(WIN32)
 		endforeach()
 	endif()
 
-	if(BUILD_R_PACKAGE)
+	foreach(val RANGE 3)
+		list(GET BUILD_TYPES ${val} BUILD_TYPE)
+		list(GET BOOST_BUILD_TYPES ${val} BOOST_BUILD_TYPE)
+	
+		copyBinary("${BOOST_BUILD_TYPE}" "${CMAKE_BINARY_DIR}/RPackage/${BUILD_TYPE}/inst/libs/x64/" additionalBinaryFiles)
+		list(APPEND COPIED_BINARY_FILES ${additionalBinaryFiles})
+	endforeach()
+
+	if(BUILD_VISUALISATION)
+		#Build types and corresponding QT build types
+		set(BUILD_TYPES Release Debug RelWithDebInfo MinSizeRel)
+		set(QT_BUILD_TYPES Release Debug Release Release)
 		foreach(val RANGE 3)
 			list(GET BUILD_TYPES ${val} BUILD_TYPE)
-			list(GET BOOST_BUILD_TYPES ${val} BOOST_BUILD_TYPE)
-		
-			copyBinary("${BOOST_BUILD_TYPE}" "${CMAKE_BINARY_DIR}/RPackage/${BUILD_TYPE}/inst/libs/x64/" additionalBinaryFiles)
+			list(GET QT_BUILD_TYPES ${val} QT_BUILD_TYPE)
+
+			copyQt(${QT_BUILD_TYPE} "${CMAKE_BINARY_DIR}/RPackage/${BUILD_TYPE}/inst/libs/x64/" additionalBinaryFiles)
 			list(APPEND COPIED_BINARY_FILES ${additionalBinaryFiles})
 		endforeach()
-
-		if(BUILD_VISUALISATION)
-			#Build types and corresponding QT build types
-			set(BUILD_TYPES Release Debug RelWithDebInfo MinSizeRel)
-			set(QT_BUILD_TYPES Release Debug Release Release)
-			foreach(val RANGE 3)
-				list(GET BUILD_TYPES ${val} BUILD_TYPE)
-				list(GET QT_BUILD_TYPES ${val} QT_BUILD_TYPE)
-
-				copyQt(${QT_BUILD_TYPE} "${CMAKE_BINARY_DIR}/RPackage/${BUILD_TYPE}/inst/libs/x64/" additionalBinaryFiles)
-				list(APPEND COPIED_BINARY_FILES ${additionalBinaryFiles})
-			endforeach()
-		endif()
 	endif()
 	add_custom_target(copyBinary ALL DEPENDS ${COPIED_BINARY_FILES})
 endif()

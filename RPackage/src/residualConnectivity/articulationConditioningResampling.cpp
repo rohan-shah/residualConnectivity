@@ -57,6 +57,7 @@ BEGIN_RCPP
 	residualConnectivity::observationTree tree(&contextObj, (int)initialRadius);
 	ROutputObject output;
 	residualConnectivity::articulationConditioningResamplingArgs args(contextObj, randomSource, tree, output);
+	args.outputTree = false;
 	args.n = (int)n;
 	args.initialRadius = (int)initialRadius;
 	randomSource.seed(seed);

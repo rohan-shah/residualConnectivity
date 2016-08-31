@@ -31,3 +31,4 @@ Collate:
    'gridCountSpecificSize.R'
    'gridCountSpecificSize2.R'
    'optimalStateIndependentImportance.R'
+   'articulationConditioningSplitting.R'

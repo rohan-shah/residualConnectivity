@@ -1,4 +1,4 @@
-articulationConditioningResampling <- function(probability, n, seed, graph, initialRadius)
+articulationConditioningSplitting <- function(probability, n, seed, graph, initialRadius, splittingFactors)
 {
 	if(missing(probability))
 	{
@@ -44,6 +44,14 @@ articulationConditioningResampling <- function(probability, n, seed, graph, init
 	{
 		stop("Input seed must be a single integer")
 	}
+	if(length(splittingFactors) != initialRadius)
+	{
+		stop("Input splittingFactors must be a vector of length initialRadius");
+	}
+	if(any(splittingFactors <= 0) || any(is.na(splittingFactors)))
+	{
+		stop("Input splittingFactors must be positive")
+	}
 	if(class(graph) == "igraph")
 	{
 		if(igraph::is.directed(graph))
@@ -52,7 +60,7 @@ articulationConditioningResampling <- function(probability, n, seed, graph, init
 		}
 		vertexCoordinates <- igraph::layout.auto(graph)
 		start <- Sys.time()
-		estimate <- .Call("articulationConditioningResampling_igraph", graph, vertexCoordinates, probability, n, initialRadius, seed, PACKAGE="residualConnectivity")
+		result <- .Call("articulationConditioningSplitting_igraph", graph, vertexCoordinates, probability, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else if(class(graph) == "graphNEL")
@@ -63,7 +71,7 @@ articulationConditioningResampling <- function(probability, n, seed, graph, init
 			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
 		}
 		start <- Sys.time()
-		estimate <- .Call("articulationConditioningResampling_graphNEL", graph, vertexCoordinates, probability, n, initialRadius, seed, PACKAGE="residualConnectivity")
+		result <- .Call("articulationConditioningSplitting_graphNEL", graph, vertexCoordinates, probability, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else if(class(graph) == "graphAM")
@@ -74,12 +82,12 @@ articulationConditioningResampling <- function(probability, n, seed, graph, init
 			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
 		}
 		start <- Sys.time()
-		estimate <- .Call("articulationConditioningResampling_graphAM", graph, vertexCoordinates, probability, n, initialRadius, seed, PACKAGE="residualConnectivity")
+		result <- .Call("articulationConditioningSplitting_graphAM", graph, vertexCoordinates, probability, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else
 	{
 		stop("Input graph must have class \"igraph\", \"graphAM\" or \"graphNEL\"")
 	}
-	return(new("monteCarloResult", start = start, end = end, call = match.call(), estimate = estimate))
+	return(new("monteCarloResult", start = start, end = end, call = match.call(), estimate = result$estimate))
 }

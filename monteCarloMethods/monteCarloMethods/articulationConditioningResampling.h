@@ -9,7 +9,7 @@ namespace residualConnectivity
 	{
 	public:
 		articulationConditioningResamplingArgs(const context& contextObj, boost::mt19937& randomSource, observationTree& tree, outputObject& output)
-		: contextObj(contextObj), randomSource(randomSource), tree(tree), output(output)
+		: contextObj(contextObj), randomSource(randomSource), tree(tree), output(output), outputTree(false)
 		{}
 		const context& contextObj;
 		boost::mt19937& randomSource;
