@@ -8,5 +8,5 @@
 namespace residualConnectivity
 {
 	typedef long long counterType;
-	bool exhaustiveSearch(const context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error);
+	bool countConnectedSubgraphsBySize(const context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error);
 }

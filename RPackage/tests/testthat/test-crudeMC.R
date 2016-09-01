@@ -5,7 +5,7 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 	{
 		data(grid6Counts, package="residualConnectivity")
 
-		igraph <- igraph::graph.lattice(dim = 2, length = 6)
+		igraph <- igraph::graph.lattice(dim = 2, length = 5)
 		graphNEL <- igraph::igraph.to.graphNEL(igraph)
 		graphAM <- as(graphNEL, "graphAM")
 

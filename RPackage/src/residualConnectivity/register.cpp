@@ -3,7 +3,7 @@
 #include "loadQt.h"
 #include "crudeMC.h"
 #include "conditionalMC.h"
-#include "countConnectedSubgraphs.h"
+#include "countConnectedSubgraphsBySize.h"
 #include "stochasticEnumeration.h"
 #include "createHexagonalLattice.h"
 #include "articulationConditioningResampling.h"
@@ -26,7 +26,7 @@ extern "C"
 		{"crudeMC", (DL_FUNC)&crudeMC, 4},
 		{"recursiveVarianceReduction", (DL_FUNC)&recursiveVarianceReduction, 4},
 		{"conditionalMC", (DL_FUNC)&conditionalMC, 4},
-		{"countConnectedSubgraphs", (DL_FUNC)&countConnectedSubgraphs, 1},
+		{"countConnectedSubgraphsBySize", (DL_FUNC)&countConnectedSubgraphsBySize, 1},
 		{"stochasticEnumeration", (DL_FUNC)&stochasticEnumeration, 7},
 		{"articulationConditioningResampling", (DL_FUNC)&articulationConditioningResampling, 5},
 		{"articulationConditioningSplitting", (DL_FUNC)&articulationConditioningSplitting, 6},

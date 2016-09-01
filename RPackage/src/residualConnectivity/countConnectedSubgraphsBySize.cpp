@@ -1,8 +1,8 @@
-#include "countConnectedSubgraphs.h"
-#include "exactMethods/exhaustiveSearch.h"
+#include "countConnectedSubgraphsBySize.h"
+#include "exactMethods/countConnectedSubgraphsBySize.h"
 #include "graphConvert.h"
 #include <sstream>
-SEXP countConnectedSubgraphs(SEXP graph)
+SEXP countConnectedSubgraphsBySize(SEXP graph)
 {
 BEGIN_RCPP
 	boost::shared_ptr<residualConnectivity::context::inputGraph> boostGraph(new residualConnectivity::context::inputGraph());
@@ -10,7 +10,7 @@ BEGIN_RCPP
 	graphConvert(graph, *boostGraph.get(), vertexCoordinates);
 	std::string message;
 	std::vector<residualConnectivity::counterType> sizeCounters;
-	bool result = residualConnectivity::exhaustiveSearch(*boostGraph, sizeCounters, message);
+	bool result = residualConnectivity::countConnectedSubgraphsBySize(*boostGraph, sizeCounters, message);
 	if(!result)
 	{
 		throw std::runtime_error(message.c_str());

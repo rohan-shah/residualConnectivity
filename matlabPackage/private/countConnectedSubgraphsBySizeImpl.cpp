@@ -1,5 +1,5 @@
 #include "mex.h"
-#include "exactMethods/exhaustiveSearch.h"
+#include "exactMethods/countConnectedSubgraphsBySize.h"
 #include "convertGraph.h"
 #include "exceptionHandling.h"
 void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[])
@@ -23,7 +23,7 @@ BEGIN_MEX_WRAPPER
 	if(!conversionResult) throw std::runtime_error(error);
 
 	std::vector<residualConnectivity::counterType> sizeCounters;
-	bool result = residualConnectivity::exhaustiveSearch(*graph, sizeCounters, error);
+	bool result = residualConnectivity::countConnectedSubgraphsBySize(*graph, sizeCounters, error);
 	if (!result) throw std::runtime_error(error);
 
 	//Horrible interface. First convert to std::string, then C strings. 

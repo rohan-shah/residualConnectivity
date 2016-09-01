@@ -1,4 +1,6 @@
-#include "exactMethods/exhaustiveSearch.h"
+#include "exactMethods/exhaustiveSearchUnequalProbabilities.h"
+#include <boost/graph/adjacency_matrix.hpp>
+#include <boost/graph/connected_components.hpp>
 namespace residualConnectivity
 {
 	bool exhaustiveSearchUnequalProbabilities(const context::inputGraph& inputGraph, std::vector<mpfr_class>& probabilities, mpfr_class& result, std::string& error)

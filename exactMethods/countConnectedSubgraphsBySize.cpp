@@ -1,7 +1,7 @@
-#include "exactMethods/exhaustiveSearch.h"
+#include "exactMethods/countConnectedSubgraphsBySize.h"
 namespace residualConnectivity
 {
-	bool exhaustiveSearch(const context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error)
+	bool countConnectedSubgraphsBySize(const context::inputGraph& inputGraph, std::vector<counterType>& sizeCounters, std::string& error)
 	{
 		error = "";
 		const std::size_t nVertices = boost::num_vertices(inputGraph);

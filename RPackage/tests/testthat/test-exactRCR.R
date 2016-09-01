@@ -3,7 +3,7 @@ context("check exactRCR function")
 test_that("Inputs of exactSpectra and exactCounts give the same answer",
 {
 	probabilities <- seq(0.1, 0.9, length.out=5)
-	for(gridSize in 10:12)
+	for(gridSize in 7:9)
 	{
 		objectName <- paste0("grid", gridSize, "Counts")
 		data(list=objectName)

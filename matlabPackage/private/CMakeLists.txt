@@ -1,4 +1,4 @@
-set(MEXFILES crudeMCImpl.cpp conditionalMCImpl.cpp exhaustiveSearchImpl.cpp recursiveVarianceReductionImpl.cpp)
+set(MEXFILES crudeMCImpl.cpp conditionalMCImpl.cpp countConnectedSubgraphsBySizeImpl.cpp recursiveVarianceReductionImpl.cpp)
 set(MEXFILE_DEPENDENCIES monteCarloMethods monteCarloMethods exactMethods monteCarloMethods)
 list(LENGTH MEXFILES N_MEXFILES)
 MATH(EXPR N_MEXFILES ${N_MEXFILES}-1)

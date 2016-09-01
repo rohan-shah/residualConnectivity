@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-set(CppFiles exhaustiveSearch.cpp gridCountSpecificSize.cpp gridCountSpecificSize2.cpp optimalStateIndependentImportance.cpp exhaustiveSearchUnequalProbabilities.cpp)
-set(HeaderFiles exactMethods/exhaustiveSearch.h exactMethods/gridCountSpecificSize.h exactMethods/gridCountSpecificSize2.h exactMethods/optimalStateIndependentImportance.h exactMethods/exhaustiveSearchUnequalProbabilities.h)
+set(CppFiles countConnectedSubgraphsBySize.cpp gridCountSpecificSize.cpp gridCountSpecificSize2.cpp optimalStateIndependentImportance.cpp exhaustiveSearchUnequalProbabilities.cpp)
+set(HeaderFiles exactMethods/countConnectedSubgraphsBySize.h exactMethods/gridCountSpecificSize.h exactMethods/gridCountSpecificSize2.h exactMethods/optimalStateIndependentImportance.h exactMethods/exhaustiveSearchUnequalProbabilities.h)
 
 add_library(exactMethods STATIC ${CppFiles} ${HeaderFiles})
 target_include_directories(exactMethods PUBLIC ${PROJECT_SOURCE_DIR}/exactMethods)

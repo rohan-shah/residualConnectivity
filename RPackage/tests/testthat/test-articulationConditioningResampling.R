@@ -3,7 +3,7 @@ library(graph)
 
 test_that("Function can be called using graphNEL, graphAM and igraph, and gives same results", 
 	{
-		gridSizes <- 5:6
+		gridSizes <- 4:5
 		probabilities <- c(0.3, 0.6)
 		for(gridSize in gridSizes)
 		{
@@ -24,7 +24,7 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 test_that("Values agree with exact values for small grids and uniform probabilities",
 {
 	probabilities <- seq(0.1, 0.9, length.out = 9)
-	for(gridSize in 3:6)
+	for(gridSize in 3:5)
 	{
 		graph <- igraph::graph.lattice(dim = 2, length=gridSize)
 		data(list = paste0("grid", gridSize, "Counts"), package="residualConnectivity")

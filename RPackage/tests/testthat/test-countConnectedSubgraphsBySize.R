@@ -1,4 +1,4 @@
-context("check countConnectedSubgraphs function")
+context("check countConnectedSubgraphsBySize function")
 library(graph)
 
 test_that("Function can be called using graphNEL, graphAM and igraph, and gives same results", 
@@ -10,9 +10,9 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 			graphNEL <- igraph::igraph.to.graphNEL(igraph)
 			graphAM <- as(graphNEL, "graphAM")
 
-			counts_igraph <- countConnectedSubgraphs(igraph)
-			counts_graphNEL <- countConnectedSubgraphs(graphNEL)
-			counts_graphAM <- countConnectedSubgraphs(graphAM)
+			counts_igraph <- countConnectedSubgraphsBySize(igraph)
+			counts_graphNEL <- countConnectedSubgraphsBySize(graphNEL)
+			counts_graphAM <- countConnectedSubgraphsBySize(graphAM)
 
 			expect_identical(counts_igraph@counts, counts_graphNEL@counts)
 			expect_identical(counts_graphNEL@counts, counts_graphAM@counts)
@@ -27,7 +27,7 @@ test_that("Values agree with transfer matrix data for small grids",
 		exact <- get(objectName)
 
 		graph <- igraph::graph.lattice(dim = 2, length=i)
-		subgraphCounts <- countConnectedSubgraphs(graph)
+		subgraphCounts <- countConnectedSubgraphsBySize(graph)
 		
 		#These objects are now identical
 		expect_identical(exact@counts, subgraphCounts@counts)

@@ -1,10 +1,10 @@
 #' @export
-countConnectedSubgraphs <- function(graph)
+countConnectedSubgraphsBySize <- function(graph)
 {
 	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
 	{
 		start <- Sys.time()
-		result <- .Call("countConnectedSubgraphs", graph, PACKAGE="residualConnectivity")
+		result <- .Call("countConnectedSubgraphsBySize", graph, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else

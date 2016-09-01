@@ -22,17 +22,17 @@ test_that("Check that stochastic enumeration estimate agrees with exact values f
 test_that("Check that the optimized version has lower bias",
 	{
 		probability <- 0.3
-		data(grid8Counts)
+		data(grid6Counts)
 		optimizedResults <- unoptimizedResults <- c()
 		for(index in 1:5)
 		{
-			optimizedSE <- stochasticEnumeration(grid8Counts@graph, budget = 1000, seed = index, optimized = TRUE, form = "spectra")
-			unoptimizedSE <- stochasticEnumeration(grid8Counts@graph, budget = 1000, seed = index, optimized = FALSE, form = "spectra")
+			optimizedSE <- stochasticEnumeration(grid6Counts@graph, budget = 1000, seed = index, optimized = TRUE, form = "spectra")
+			unoptimizedSE <- stochasticEnumeration(grid6Counts@graph, budget = 1000, seed = index, optimized = FALSE, form = "spectra")
 			optimizedResults <- c(optimizedResults, spectraToRCR(optimizedSE, probability))
 			unoptimizedResults <- c(unoptimizedResults, spectraToRCR(unoptimizedSE, probability))
 		}
 		optimizedArray <- mpfr2array(optimizedResults, dim=5)
 		unoptimizedArray <- mpfr2array(unoptimizedResults, dim=5)
-		exact <- exactRCR(grid8Counts, probability)
+		exact <- exactRCR(grid6Counts, probability)
 		expect_less_than(as.double(abs(sum(optimizedArray)/5 - exact)), as.double(abs(sum(unoptimizedArray)/5 - exact)))
 	})

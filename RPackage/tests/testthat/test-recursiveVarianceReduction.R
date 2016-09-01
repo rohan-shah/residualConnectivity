@@ -3,8 +3,6 @@ library(graph)
 
 test_that("Function can be called using graphNEL, graphAM and igraph, and gives same results", 
 	{
-		data(grid6Counts, package="residualConnectivity")
-
 		igraph <- igraph::graph.lattice(dim = 2, length = 6)
 		graphNEL <- igraph::igraph.to.graphNEL(igraph)
 		graphAM <- as(graphNEL, "graphAM")
