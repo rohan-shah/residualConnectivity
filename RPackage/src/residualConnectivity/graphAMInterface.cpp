@@ -1,5 +1,5 @@
 #include "graphAMInterface.h"
-boost::shared_ptr<residualConnectivity::context::inputGraph> graphAMConvert(SEXP graph_sexp)
+void graphAMConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph& outputGraph)
 {
 	Rcpp::S4 graph_s4;
 	try
@@ -41,17 +41,15 @@ boost::shared_ptr<residualConnectivity::context::inputGraph> graphAMConvert(SEXP
 		throw std::runtime_error("Slot adjMat of input graph must be a square matrix");
 	}
 
-	boost::shared_ptr<residualConnectivity::context::inputGraph> boostGraph(new residualConnectivity::context::inputGraph(nVertices));
-	residualConnectivity::context::inputGraph& boostGraphRef = *boostGraph;
+	outputGraph = residualConnectivity::context::inputGraph(nVertices);
 	for(int i = 0; i < nVertices; i++)
 	{
 		for(int j = 0; j < nVertices; j++)
 		{
 			if(adjMat(i, j) > 0)
 			{
-				boost::add_edge((std::size_t)i, (std::size_t)j, boostGraphRef);
+				boost::add_edge((std::size_t)i, (std::size_t)j, outputGraph);
 			}
 		}
 	}
-	return boostGraph;
 }

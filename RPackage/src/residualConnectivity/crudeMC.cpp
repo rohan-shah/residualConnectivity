@@ -3,6 +3,7 @@
 #include "crudeMC.h"
 #include "graphInterface.h"
 #include "graphType.h"
+#include "graphConvert.h"
 SEXP crudeMC(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP seed_sexp, graphType type)
 {
 BEGIN_RCPP
@@ -33,6 +34,9 @@ BEGIN_RCPP
 	{
 		throw std::runtime_error("Input seed must be an integer");
 	}
+	residualConnectivity::context::inputGraph graph;
+	std::vector<residualConnectivity::context::vertexPosition> vertexCoordinates;
+	graphConvert(graph_sexp, graph, vertexCoordinates);
 
 	residualConnectivity::context contextObj = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
 	boost::mt19937 randomSource;

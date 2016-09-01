@@ -85,7 +85,8 @@ BEGIN_RCPP
 		throw std::runtime_error("Input outputStatus must be a boolean");
 	}
 
-	boost::shared_ptr<residualConnectivity::context::inputGraph> graph = graphConvert(graph_sexp, type);
+	boost::shared_ptr<residualConnectivity::context::inputGraph> graph(new residualConnectivity::context::inputGraph());
+	graphConvert(graph_sexp, type, *graph.get());
 	const std::size_t nVertices = boost::num_vertices(*graph);
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);

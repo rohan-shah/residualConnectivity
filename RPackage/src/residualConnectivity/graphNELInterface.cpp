@@ -1,5 +1,5 @@
 #include "graphNELInterface.h"
-boost::shared_ptr<residualConnectivity::context::inputGraph> graphNELConvert(SEXP graph_sexp)
+void graphNELConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph& outputGraph)
 {
 	Rcpp::S4 graph_s4;
 	try
@@ -66,8 +66,7 @@ boost::shared_ptr<residualConnectivity::context::inputGraph> graphNELConvert(SEX
 	}
 	Rcpp::CharacterVector edges_list_names = Rcpp::as<Rcpp::CharacterVector>(edges_list.attr("names"));
 
-	boost::shared_ptr<residualConnectivity::context::inputGraph> boostGraph(new residualConnectivity::context::inputGraph(nVertices));
-	residualConnectivity::context::inputGraph& boostGraphRef = *boostGraph;
+	outputGraph = residualConnectivity::context::inputGraph(nVertices);
 	for(int i = 0; i < edges_list.size(); i++)
 	{
 		int nodeIndex = std::distance(nodeNames.begin(), std::find(nodeNames.begin(), nodeNames.end(), edges_list_names(i)));
@@ -97,8 +96,7 @@ boost::shared_ptr<residualConnectivity::context::inputGraph> graphNELConvert(SEX
 		}
 		for(int j = 0; j < targetIndicesThisNode.size(); j++)
 		{
-			boost::add_edge((std::size_t)nodeIndex, (std::size_t)((int)targetIndicesThisNode(j)-1), boostGraphRef);
+			boost::add_edge((std::size_t)nodeIndex, (std::size_t)((int)targetIndicesThisNode(j)-1), outputGraph);
 		}
 	}
-	return boostGraph;
 }

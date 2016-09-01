@@ -6,7 +6,8 @@
 SEXP countConnectedSubgraphs(SEXP graph, graphType type)
 {
 BEGIN_RCPP
-	boost::shared_ptr<residualConnectivity::context::inputGraph> boostGraph = graphConvert(graph, type);
+	boost::shared_ptr<residualConnectivity::context::inputGraph> boostGraph(new residualConnectivity::context::inputGraph());
+	graphConvert(graph, type, *boostGraph.get());
 	std::string message;
 	std::vector<residualConnectivity::counterType> sizeCounters;
 	bool result = residualConnectivity::exhaustiveSearch(*boostGraph, sizeCounters, message);

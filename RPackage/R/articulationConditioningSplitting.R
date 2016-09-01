@@ -53,37 +53,10 @@ articulationConditioningSplitting <- function(probability, n, seed, graph, initi
 	{
 		stop("Input splittingFactors must be positive")
 	}
-	if(class(graph) == "igraph")
+	if(class(graph) %in% c("igraph", "graphAM", "graphNEL"))
 	{
-		if(igraph::is.directed(graph))
-		{
-			stop("Input `graph' must be undirected")
-		}
-		vertexCoordinates <- igraph::layout.auto(graph)
 		start <- Sys.time()
-		result <- .Call("articulationConditioningSplitting_igraph", graph, vertexCoordinates, probability, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphNEL")
-	{
-		vertexCoordinates <- NULL
-		if(length(graph@renderInfo@nodes) > 0)
-		{
-			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-		}
-		start <- Sys.time()
-		result <- .Call("articulationConditioningSplitting_graphNEL", graph, vertexCoordinates, probability, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphAM")
-	{
-		vertexCoordinates <- NULL
-		if(length(graph@renderInfo@nodes) > 0)
-		{
-			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-		}
-		start <- Sys.time()
-		result <- .Call("articulationConditioningSplitting_graphAM", graph, vertexCoordinates, probability, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
+		result <- .Call("articulationConditioningSplitting", graph, probability, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else

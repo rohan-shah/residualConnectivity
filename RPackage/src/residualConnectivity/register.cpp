@@ -41,9 +41,7 @@ extern "C"
 		{"articulationConditioningResampling_igraph", (DL_FUNC)&articulationConditioningResampling_igraph, 6},
 		{"articulationConditioningResampling_graphNEL", (DL_FUNC)&articulationConditioningResampling_graphNEL, 6},
 		{"articulationConditioningResampling_graphAM", (DL_FUNC)&articulationConditioningResampling_graphAM, 6},
-		{"articulationConditioningSplitting_igraph", (DL_FUNC)&articulationConditioningSplitting_igraph, 7},
-		{"articulationConditioningSplitting_graphNEL", (DL_FUNC)&articulationConditioningSplitting_graphNEL, 7},
-		{"articulationConditioningSplitting_graphAM", (DL_FUNC)&articulationConditioningSplitting_graphAM, 7},
+		{"articulationConditioningSplitting", (DL_FUNC)&articulationConditioningSplitting, 6},
 		{"PMC_igraph", (DL_FUNC)&PMC_igraph, 3},
 		{"PMC_graphNEL", (DL_FUNC)&PMC_graphNEL, 3},
 		{"PMC_graphAM", (DL_FUNC)&PMC_graphAM, 3},
@@ -51,9 +49,7 @@ extern "C"
 		{"gridCountSpecificSize", (DL_FUNC)&gridCountSpecificSize, 3},
 		{"gridCountSpecificSize2", (DL_FUNC)&gridCountSpecificSize2, 2},
 		{"optimalStateIndependentImportance", (DL_FUNC)&optimalStateIndependentImportance, 2},
-		{"exactRCRUnequalProbabilities_igraph", (DL_FUNC)&exhaustiveSearchUnequalProbabilities_igraph, 2},
-		{"exactRCRUnequalProbabilities_graphNEL", (DL_FUNC)&exhaustiveSearchUnequalProbabilities_graphNEL, 2},
-		{"exactRCRUnequalProbabilities_graphAM", (DL_FUNC)&exhaustiveSearchUnequalProbabilities_graphAM, 2},
+		{"exactRCRUnequalProbabilities", (DL_FUNC)&exhaustiveSearchUnequalProbabilities, 2},
 		{NULL, NULL, 0}
 	};
 	RcppExport void R_init_residualConnectivity(DllInfo *info)

@@ -3,5 +3,6 @@
 #include "context.h"
 #include "graphType.h"
 #include <Rcpp.h>
+residualConnectivity::context graphInterface(SEXP graph_sexp, SEXP probabilities_sexp);
 residualConnectivity::context graphInterface(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, graphType type);
 #endif

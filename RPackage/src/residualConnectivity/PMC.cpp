@@ -5,7 +5,8 @@
 SEXP PMC(SEXP graph_sexp, SEXP n_sexp, SEXP seed_sexp, graphType type)
 {
 BEGIN_RCPP
-	boost::shared_ptr<residualConnectivity::context::inputGraph> graph = graphConvert(graph_sexp, type);
+	boost::shared_ptr<residualConnectivity::context::inputGraph> graph(new residualConnectivity::context::inputGraph());
+	graphConvert(graph_sexp, type, *graph.get());
 	boost::mt19937 randomSource;
 
 	/*convert seed*/

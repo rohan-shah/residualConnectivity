@@ -4,7 +4,7 @@
 #include "graphInterface.h"
 #include "graphType.h"
 #include "ROutputObject.h"
-SEXP articulationConditioningSplitting(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP splittingFactors_sexp, graphType type)
+SEXP articulationConditioningSplitting(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP splittingFactors_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -64,7 +64,7 @@ BEGIN_RCPP
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
-	residualConnectivity::context contextObj = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
+	residualConnectivity::context contextObj = graphInterface(graph_sexp, probability_sexp);
 	ROutputObject output;
 	residualConnectivity::articulationConditioningSplittingArgs args(contextObj, randomSource, output);
 	args.n = (int)n;
@@ -77,16 +77,4 @@ BEGIN_RCPP
 	
 	return result;
 END_RCPP
-}
-SEXP articulationConditioningSplitting_graphAM(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP splittingFactors_sexp)
-{
-	return articulationConditioningSplitting(graph_sexp, vertexCoordinates_sexp, probability_sexp, n_sexp, initialRadius_sexp, seed_sexp, splittingFactors_sexp, GRAPHAM);
-}
-SEXP articulationConditioningSplitting_igraph(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP splittingFactors_sexp)
-{
-	return articulationConditioningSplitting(graph_sexp, vertexCoordinates_sexp, probability_sexp, n_sexp, initialRadius_sexp, seed_sexp, splittingFactors_sexp, IGRAPH);
-}
-SEXP articulationConditioningSplitting_graphNEL(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP splittingFactors_sexp)
-{
-	return articulationConditioningSplitting(graph_sexp, vertexCoordinates_sexp, probability_sexp, n_sexp, initialRadius_sexp, seed_sexp, splittingFactors_sexp, GRAPHNEL);
 }

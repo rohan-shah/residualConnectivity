@@ -1,7 +1,5 @@
 #ifndef EXHAUSTIVE_SEARCH_UNEQUAL_PROBABILITIES_INTERFACES_HEADER_GUARD
 #define EXHAUSTIVE_SEARCH_UNEQUAL_PROBABILITIES_INTERFACES_HEADER_GUARD
 #include "Rcpp.h"
-SEXP exhaustiveSearchUnequalProbabilities_igraph(SEXP graph, SEXP probabilities_sexp);
-SEXP exhaustiveSearchUnequalProbabilities_graphNEL(SEXP graph, SEXP probabilities_sexp);
-SEXP exhaustiveSearchUnequalProbabilities_graphAM(SEXP graph, SEXP probabilities_sexp);
+SEXP exhaustiveSearchUnequalProbabilities(SEXP graph, SEXP probabilities_sexp);
 #endif
