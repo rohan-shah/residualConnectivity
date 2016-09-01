@@ -1,3 +1,4 @@
+#' @export
 createHexagonalLattice <- function(x, y)
 {
 	if(missing(x) || missing(y)) 			stop("Inputs x and y are required")

@@ -1,3 +1,4 @@
+#' @export
 optimalStateIndependentImportance <- function(exact, probabilities)
 {
 	if(!is(exact, "exactCounts"))

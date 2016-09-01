@@ -1,3 +1,4 @@
+#' @export
 articulationConditioningSplitting <- function(probability, n, seed, graph, initialRadius, splittingFactors)
 {
 	if(missing(probability))

@@ -1,3 +1,4 @@
+#' @export
 spectraToRCR <- function(data, probability)
 {
 	if(missing(data)) stop("Input data is required")
@@ -42,6 +43,7 @@ spectraToRCR <- function(data, probability)
 	else stop("Internal error")
 	return(result)
 }
+#' @export
 spectraToRCRList <- function(data, probability)
 {
 	if(missing(data)) stop("Input data is required")

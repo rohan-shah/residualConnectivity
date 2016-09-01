@@ -14,6 +14,12 @@ add_library(residualConnectivityCommon STATIC ${CppFiles} ${HeaderFiles})
 target_include_directories(residualConnectivityCommon PUBLIC ${Boost_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/residualConnectivityCommon ${IGRAPH_INCLUDES})
 target_link_libraries(residualConnectivityCommon PUBLIC ${IGRAPH_LIBRARIES} ${Boost_LIBRARIES})
 
+if(USE_OPENMP)
+	find_package(OpenMP REQUIRED)
+	target_compile_definitions(residualConnectivityCommon PRIVATE USE_OPENMP)
+	target_compile_options(residualConnectivityCommon PRIVATE ${OpenMP_CXX_FLAGS})
+endif()
+
 if(BUILD_VISUALISATION)
 	target_link_libraries(residualConnectivityCommon PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets)
 endif()

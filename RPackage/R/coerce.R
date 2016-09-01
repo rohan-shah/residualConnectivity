@@ -1,3 +1,5 @@
+#' @include exactCounts-class.R
+#' @include exactSpectra-class.R
 setAs("exactCounts", "exactSpectra", def = function(from, to)
 {
 	binomialCoefficients <- chooseZ(length(from@counts)-1, 0:(length(from@counts)-1))

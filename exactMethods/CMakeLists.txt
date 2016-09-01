@@ -1,13 +1,18 @@
 cmake_minimum_required(VERSION 3.1)
-set(CppFiles exhaustiveSearch.cpp gridCountSpecificSize.cpp gridCountSpecificSize2.cpp optimalStateIndependentImportance.cpp)
-set(HeaderFiles exactMethods/exhaustiveSearch.h exactMethods/gridCountSpecificSize.h exactMethods/gridCountSpecificSize2.h exactMethods/optimalStateIndependentImportance.h)
+set(CppFiles exhaustiveSearch.cpp gridCountSpecificSize.cpp gridCountSpecificSize2.cpp optimalStateIndependentImportance.cpp exhaustiveSearchUnequalProbabilities.cpp)
+set(HeaderFiles exactMethods/exhaustiveSearch.h exactMethods/gridCountSpecificSize.h exactMethods/gridCountSpecificSize2.h exactMethods/optimalStateIndependentImportance.h exactMethods/exhaustiveSearchUnequalProbabilities.h)
 
 add_library(exactMethods STATIC ${CppFiles} ${HeaderFiles})
 target_include_directories(exactMethods PUBLIC ${PROJECT_SOURCE_DIR}/exactMethods)
 target_link_libraries(exactMethods PUBLIC residualConnectivityCommon)
-target_compile_definitions(exactMethods PRIVATE USE_OPENMP)
-target_compile_options(exactMethods PRIVATE ${OpenMP_CXX_FLAGS})
-if(WIN32)
+
+if(USE_OPENMP)
+	find_package(OpenMP REQUIRED)
+	target_compile_definitions(exactMethods PRIVATE USE_OPENMP)
+	target_compile_options(exactMethods PRIVATE ${OpenMP_CXX_FLAGS})
+endif()
+
+	if(WIN32)
 	set_target_properties(exactMethods PROPERTIES ARCHIVE_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 else()
 	target_compile_features(exactMethods PUBLIC cxx_rvalue_references)

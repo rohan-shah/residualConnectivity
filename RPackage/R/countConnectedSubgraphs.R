@@ -1,3 +1,4 @@
+#' @export
 countConnectedSubgraphs <- function(graph)
 {
 	if(class(graph) == "igraph")

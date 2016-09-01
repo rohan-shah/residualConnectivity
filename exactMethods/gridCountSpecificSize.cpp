@@ -22,7 +22,9 @@ namespace residualConnectivity
 		std::size_t maxValue = (1ULL << (gridDimension*gridDimension));
 		std::size_t increment = (1ULL << 32);
 		std::size_t start = 0;
+#ifdef USE_OPENMP
 		#pragma omp parallel firstprivate(start)
+#endif
 		{
 			std::vector<int> connectedComponents;
 			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
@@ -31,7 +33,9 @@ namespace residualConnectivity
 			for(; start < maxValue; start += increment)
 			{
 				std::size_t end = std::min(start + increment, maxValue);
+#ifdef USE_OPENMP
 				#pragma omp for schedule(static, 1) 
+#endif
 				for(std::ptrdiff_t counter = (std::ptrdiff_t)start; counter < (std::ptrdiff_t)end; counter++)
 				{
 					if(countSetBits((std::size_t)counter) == size)
@@ -43,7 +47,9 @@ namespace residualConnectivity
 						}
 						if(isSingleComponentPossible(graph, &(state[0]), connectedComponents, stack))
 						{
+#ifdef USE_OPENMP
 							#pragma omp critical
+#endif
 							connected++;
 						}
 					}

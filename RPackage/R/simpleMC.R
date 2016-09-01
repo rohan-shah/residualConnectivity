@@ -1,3 +1,4 @@
+#' @export
 simpleMC <- function(functionName, graph, probability, n, seed)
 {
 	if(missing(functionName))

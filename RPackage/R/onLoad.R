@@ -1,3 +1,4 @@
+#' @export
 .onLoad <- function(libname, pkgname)
 {
 	#Are we currently running a test in a seperate process to test if we have graphics?

@@ -26,9 +26,9 @@ if(BUILD_MATLAB_PACKAGE)
 endif()
 
 find_package(Rcpp REQUIRED)
-set(RFiles R/conditionalMC.R R/countConnectedSubgraphs.R R/crudeMC.R R/stochasticEnumeration.R R/exactCounts-class.R R/exactSpectra-class.R R/exactRCR.R R/onLoad.R R/simpleMC.R R/spectraToRCR.R R/PMC.R R/coerce.R R/createHexagonalLattice.R R/articulationConditioningResampling.R R/monteCarloResult-class.R R/recursiveVarianceReduction.R R/gridCountSpecificSize.R R/gridCountSpecificSize2.R R/optimalStateIndependentImportance.R R/articulationConditioningSplitting.R)
+set(RFiles R/conditionalMC.R R/countConnectedSubgraphs.R R/crudeMC.R R/stochasticEnumeration.R R/exactCounts-class.R R/exactSpectra-class.R R/exactRCR.R R/onLoad.R R/simpleMC.R R/spectraToRCR.R R/PMC.R R/coerce.R R/createHexagonalLattice.R R/articulationConditioningResampling.R R/monteCarloResult-class.R R/recursiveVarianceReduction.R R/gridCountSpecificSize.R R/gridCountSpecificSize2.R R/optimalStateIndependentImportance.R R/articulationConditioningSplitting.R R/exactRCRUnequalProbabilities.R)
 set(RTestFiles tests/testthat.R tests/testthat/test-gridCounts.R tests/testthat/test-conditionalMC.R tests/testthat/test-crudeMC.R tests/testthat/test-countConnectedSubgraphs.R tests/testthat/test-stochasticEnumeration.R tests/testthat/test-exactRCR.R tests/testthat/test-spectraToRCR.R tests/testthat/test-PMC.R tests/testthat/test-articulationConditioningResampling.R tests/testthat/test-recursiveVarianceReduction.R)
-set(RPackageFiles NAMESPACE DESCRIPTION ${RFiles} ${RTestFiles})
+set(RPackageFiles DESCRIPTION ${RFiles} ${RTestFiles})
 #Find location of Rcpp_exceptions.R 
 get_property(RCPP_INCLUDE_DIRECTORIES TARGET Rcpp PROPERTY INTERFACE_INCLUDE_DIRECTORIES)
 foreach(RCPP_INCLUDE_DIRECTORY IN LISTS RCPP_INCLUDE_DIRECTORIES)
@@ -51,3 +51,19 @@ else()
 	endforeach()
 	add_custom_command(TARGET copyText POST_BUILD COMMAND ${CMAKE_COMMAND} ARGS -E copy "${RCPP_EXCEPTIONS}" "${CMAKE_BINARY_DIR}/RPackage//R/Rcpp_exceptions.R")
 endif()
+#Run roxygen
+if(WIN32)
+	if("${CMAKE_GENERATOR}" STREQUAL "NMake Makefiles")
+		#Run roxygen2
+		add_custom_command(TARGET copyText COMMAND "${R_COMMAND}" ARGS "-e \"library(roxygen2); roxygen2::roxygenise()\"" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/RPackage")
+	else()
+		foreach(BUILD_TYPE IN LISTS CMAKE_CONFIGURATION_TYPES)
+			#Run roxygen2
+			add_custom_command(TARGET copyText COMMAND "${R_COMMAND}" ARGS "-e \"library(roxygen2); roxygen2::roxygenise()\"" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/RPackage")
+		endforeach()
+	endif()
+else()
+	#Run roxygen2
+	add_custom_command(TARGET copyText COMMAND "${R_COMMAND}" ARGS "-e" "\"library(roxygen2);roxygen2::roxygenise()\"" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/RPackage")
+endif()
+

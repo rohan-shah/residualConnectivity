@@ -21,7 +21,7 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 			}
 		}
 	})
-test_that("Values agree with exact values for small grids",
+test_that("Values agree with exact values for small grids and uniform probabilities",
 {
 	probabilities <- seq(0.1, 0.9, length.out = 9)
 	for(gridSize in 3:6)

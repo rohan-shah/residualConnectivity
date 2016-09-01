@@ -1,3 +1,4 @@
+#' @export
 checkExactSpectra <- function(object)
 {
 	errors <- c()

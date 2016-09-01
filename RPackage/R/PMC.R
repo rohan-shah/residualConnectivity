@@ -1,3 +1,4 @@
+#' @export 
 PMC <- function(graph, n, seed = 1)
 {
 	if(missing(graph)) stop("Input graph cannot be missing")

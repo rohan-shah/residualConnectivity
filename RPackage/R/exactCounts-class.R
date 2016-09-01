@@ -1,3 +1,4 @@
+#' @export
 checkExactCounts <- function(object)
 {
 	errors <- c()

@@ -10,25 +10,3 @@ License: GPL v3
 LazyData: No
 Suggests: graph, igraph
 Depends: Rmpfr
-Collate:
-   'exactCounts-class.R'
-   'exactRCR.R'
-   'onLoad.R'
-   'crudeMC.R'
-   'conditionalMC.R'
-   'simpleMC.R'
-   'Rcpp_exceptions.R'
-   'countConnectedSubgraphs.R'
-   'stochasticEnumeration.R'
-   'exactSpectra-class.R'
-   'spectraToRCR.R'
-   'PMC.R'
-   'coerce.R'
-   'createHexagonalLattice.R'
-   'articulationConditioningResampling.R'
-   'monteCarloResult-class.R'
-   'recursiveVarianceReduction.R'
-   'gridCountSpecificSize.R'
-   'gridCountSpecificSize2.R'
-   'optimalStateIndependentImportance.R'
-   'articulationConditioningSplitting.R'

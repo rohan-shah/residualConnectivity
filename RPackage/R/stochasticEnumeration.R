@@ -1,3 +1,4 @@
+#' @export
 stochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1, optimized = TRUE, nPermutations = 1, outputStatus = FALSE)
 {
 	if(form == "spectra") counts <- FALSE

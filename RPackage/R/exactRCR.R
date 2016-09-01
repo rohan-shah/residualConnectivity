@@ -1,8 +1,13 @@
+#' @export 
 exactRCR <- function(input, probability)
 {
 	if(!(class(input) %in% c("exactCounts", "exactSpectra")))
 	{
 		stop("First argument must have class exactCounts or exactSpectra")
+	}
+	if(length(probability) != 1)
+	{
+		stop("Input probability must have length 1")
 	}
 	if(any(probability < 0) || any(probability > 1) || (!is.numeric(probability) && class(probability) != "mpfr"))
 	{

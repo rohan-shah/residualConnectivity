@@ -7,6 +7,7 @@ set(Boost_USE_STATIC_RUNTIME	OFF)
 
 option(BUILD_MATLAB_PACKAGE "Build Matlab package" ON)
 option(BUILD_VISUALISATION "Build visualisation code" ON)
+option(USE_OPENMP "Use OpenMP" ON)
 
 add_definitions("-DBOOST_NO_AUTO_PTR")
 if(CMAKE_COMPILER_IS_GNUCC)
@@ -15,7 +16,6 @@ endif()
 
 #Find boost packages
 find_package(Boost 1.53.0 COMPONENTS graph program_options system serialization filesystem regex REQUIRED)
-find_package(OpenMP REQUIRED)
 
 if(NOT DEFINED EIGEN_INCLUDE_DIR)
 	message(FATAL_ERROR "Please point the environment variable EIGEN_INCLUDE_DIR to the include directory of your Eigen3 installation.")
@@ -32,10 +32,6 @@ if(NOT HAVE_IGRAPH)
 endif()
 if(BUILD_VISUALISATION)
 	find_package(Qt5 COMPONENTS Widgets Core Gui REQUIRED)
-endif()
-
-if(("${CMAKE_BUILD_TYPE}" STREQUAL "Release") OR ("${CMAKE_BUILD_TYPE}" STREQUAL "RelWithDebInfo"))
-	find_package(OpenMP)
 endif()
 
 find_package(Mathematica COMPONENTS MathLink)
@@ -81,3 +77,5 @@ else()
 endif()
 add_subdirectory(copyText)
 add_subdirectory(copyBinary)
+
+

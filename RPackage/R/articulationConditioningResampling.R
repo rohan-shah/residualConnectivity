@@ -1,3 +1,4 @@
+#' @export
 articulationConditioningResampling <- function(probability, n, seed, graph, initialRadius)
 {
 	if(missing(probability))
