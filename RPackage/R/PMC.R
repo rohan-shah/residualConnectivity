@@ -12,26 +12,10 @@ PMC <- function(graph, n, seed = 1)
 	if(abs(seed - round(seed)) > 1e-3) stop("Input seed must be an integer")
 	seed <- as.integer(seed)
 
-	if(class(graph) == "igraph")
-	{
-		if(igraph::is.directed(graph))
-		{
-			stop("Input `graph' must be undirected")
-		}
-		start <- Sys.time()
-		result <- .Call("PMC_igraph", graph, n, seed, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphNEL")
+	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
 	{
 		start <- Sys.time()
-		result <- .Call("PMC_graphNEL", graph, n, seed, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphAM")
-	{
-		start <- Sys.time()
-		result <- .Call("PMC_graphAM", graph, n, seed, PACKAGE="residualConnectivity")
+		result <- .Call("PMC", graph, n, seed, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else 

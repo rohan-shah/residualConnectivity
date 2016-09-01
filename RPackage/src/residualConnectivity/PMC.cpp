@@ -1,12 +1,12 @@
 #include "PMC.h"
 #include "monteCarloMethods/PMC.h"
-#include "graphType.h"
 #include "graphConvert.h"
-SEXP PMC(SEXP graph_sexp, SEXP n_sexp, SEXP seed_sexp, graphType type)
+SEXP PMC(SEXP graph_sexp, SEXP n_sexp, SEXP seed_sexp)
 {
 BEGIN_RCPP
 	boost::shared_ptr<residualConnectivity::context::inputGraph> graph(new residualConnectivity::context::inputGraph());
-	graphConvert(graph_sexp, type, *graph.get());
+	std::vector<residualConnectivity::context::vertexPosition> vertexCoordinates;
+	graphConvert(graph_sexp, *graph.get(), vertexCoordinates);
 	boost::mt19937 randomSource;
 
 	/*convert seed*/
@@ -50,16 +50,4 @@ BEGIN_RCPP
 	Rcpp::RObject result = mpfrFunction(spectraStrings_sexp, Rcpp::Named("prec", 50));
 	return result;
 END_RCPP
-}
-SEXP PMC_igraph(SEXP graph_sexp, SEXP n_exp, SEXP seed_sexp)
-{
-	return PMC(graph_sexp, n_exp, seed_sexp, IGRAPH);
-}
-SEXP PMC_graphNEL(SEXP graph_sexp, SEXP n_exp, SEXP seed_sexp)
-{
-	return PMC(graph_sexp, n_exp, seed_sexp, GRAPHNEL);
-}
-SEXP PMC_graphAM(SEXP graph_sexp, SEXP n_exp, SEXP seed_sexp)
-{
-	return PMC(graph_sexp, n_exp, seed_sexp, GRAPHAM);
 }

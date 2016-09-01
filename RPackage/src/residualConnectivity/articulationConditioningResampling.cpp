@@ -2,9 +2,8 @@
 #include "Rcpp.h"
 #include "articulationConditioningResampling.h"
 #include "graphInterface.h"
-#include "graphType.h"
 #include "ROutputObject.h"
-SEXP articulationConditioningResampling(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, graphType type)
+SEXP articulationConditioningResampling(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -53,7 +52,7 @@ BEGIN_RCPP
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
-	residualConnectivity::context contextObj = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
+	residualConnectivity::context contextObj = graphInterface(graph_sexp, probability_sexp);
 	residualConnectivity::observationTree tree(&contextObj, (int)initialRadius);
 	ROutputObject output;
 	residualConnectivity::articulationConditioningResamplingArgs args(contextObj, randomSource, tree, output);
@@ -66,16 +65,4 @@ BEGIN_RCPP
 	double result = args.estimate.convert_to<double>();
 	return Rcpp::wrap(result);
 END_RCPP
-}
-SEXP articulationConditioningResampling_graphAM(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp)
-{
-	return articulationConditioningResampling(graph_sexp, vertexCoordinates_sexp, probability_sexp, n_sexp, initialRadius_sexp, seed_sexp, GRAPHAM);
-}
-SEXP articulationConditioningResampling_igraph(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp)
-{
-	return articulationConditioningResampling(graph_sexp, vertexCoordinates_sexp, probability_sexp, n_sexp, initialRadius_sexp, seed_sexp, IGRAPH);
-}
-SEXP articulationConditioningResampling_graphNEL(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp)
-{
-	return articulationConditioningResampling(graph_sexp, vertexCoordinates_sexp, probability_sexp, n_sexp, initialRadius_sexp, seed_sexp, GRAPHNEL);
 }

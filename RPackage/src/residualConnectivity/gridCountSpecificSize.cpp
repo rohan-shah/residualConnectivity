@@ -1,6 +1,5 @@
 #include "exactMethods/gridCountSpecificSize.h"
 #include "graphInterface.h"
-#include "graphType.h"
 #include "Rcpp.h"
 SEXP gridCountSpecificSize(SEXP gridDimension_sexp, SEXP size_sexp, SEXP multithreaded_sexp)
 {

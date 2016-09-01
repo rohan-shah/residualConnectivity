@@ -1,13 +1,13 @@
 #include "countConnectedSubgraphs.h"
 #include "exactMethods/exhaustiveSearch.h"
 #include "graphConvert.h"
-#include "graphType.h"
 #include <sstream>
-SEXP countConnectedSubgraphs(SEXP graph, graphType type)
+SEXP countConnectedSubgraphs(SEXP graph)
 {
 BEGIN_RCPP
 	boost::shared_ptr<residualConnectivity::context::inputGraph> boostGraph(new residualConnectivity::context::inputGraph());
-	graphConvert(graph, type, *boostGraph.get());
+	std::vector<residualConnectivity::context::vertexPosition> vertexCoordinates;
+	graphConvert(graph, *boostGraph.get(), vertexCoordinates);
 	std::string message;
 	std::vector<residualConnectivity::counterType> sizeCounters;
 	bool result = residualConnectivity::exhaustiveSearch(*boostGraph, sizeCounters, message);
@@ -27,16 +27,4 @@ BEGIN_RCPP
 	retVal.slot("counts") = convertToBigZ(stringRepresentations);
 	return retVal;
 END_RCPP
-}
-SEXP countConnectedSubgraphs_igraph(SEXP graph)
-{
-	return countConnectedSubgraphs(graph, IGRAPH);
-}
-SEXP countConnectedSubgraphs_graphNEL(SEXP graph)
-{
-	return countConnectedSubgraphs(graph, GRAPHNEL);
-}
-SEXP countConnectedSubgraphs_graphAM(SEXP graph)
-{
-	return countConnectedSubgraphs(graph, GRAPHAM);
 }

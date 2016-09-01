@@ -1,7 +1,6 @@
 #include "exhaustiveSearchUnequalProbabilities.h"
 #include "exactMethods/exhaustiveSearchUnequalProbabilities.h"
 #include "graphConvert.h"
-#include "graphType.h"
 #include <sstream>
 SEXP exhaustiveSearchUnequalProbabilities(SEXP graph, SEXP probabilities_sexp)
 {

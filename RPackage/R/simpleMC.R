@@ -45,37 +45,10 @@ simpleMC <- function(functionName, graph, probability, n, seed)
 	{
 		stop("Input `probability' must be between 0 and 1")
 	}
-	if(class(graph) == "igraph")
+	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
 	{
-		if(igraph::is.directed(graph))
-		{
-			stop("Input `graph' must be undirected")
-		}
-		vertexCoordinates <- igraph::layout.auto(graph)
 		start <- Sys.time()
-		estimate <- .Call(paste0(functionName, "_igraph"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphNEL")
-	{
-		vertexCoordinates <- NULL
-		if(length(graph@renderInfo@nodes) > 0)
-		{
-			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-		}
-		start <- Sys.time()
-		estimate <- .Call(paste0(functionName, "_graphNEL"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphAM")
-	{
-		vertexCoordinates <- NULL
-		if(length(graph@renderInfo@nodes) > 0)
-		{
-			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-		}
-		start <- Sys.time()
-		estimate <- .Call(paste0(functionName, "_graphAM"), graph, vertexCoordinates, probability, n, seed, PACKAGE="residualConnectivity")
+		estimate <- .Call(functionName, graph, probability, n, seed, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else 

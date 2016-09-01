@@ -1,22 +1,10 @@
 #' @export
 countConnectedSubgraphs <- function(graph)
 {
-	if(class(graph) == "igraph")
+	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
 	{
 		start <- Sys.time()
-		result <- .Call("countConnectedSubgraphs_igraph", graph, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphNEL")
-	{
-		start <- Sys.time()
-		result <- .Call("countConnectedSubgraphs_graphNEL", graph, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphAM")
-	{
-		start <- Sys.time()
-		result <- .Call("countConnectedSubgraphs_graphAM", graph, PACKAGE="residualConnectivity")
+		result <- .Call("countConnectedSubgraphs", graph, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else

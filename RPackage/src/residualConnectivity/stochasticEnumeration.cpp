@@ -4,9 +4,8 @@
 #include "graphInterface.h"
 #include "graphConvert.h"
 #include "calculateFactorials.h"
-#include "graphType.h"
 #include "ROutputObject.h"
-SEXP stochasticEnumeration(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, SEXP outputStatus_sexp, graphType type)
+SEXP stochasticEnumeration(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, SEXP outputStatus_sexp)
 {
 BEGIN_RCPP
 	/*convert budget*/
@@ -86,7 +85,8 @@ BEGIN_RCPP
 	}
 
 	boost::shared_ptr<residualConnectivity::context::inputGraph> graph(new residualConnectivity::context::inputGraph());
-	graphConvert(graph_sexp, type, *graph.get());
+	std::vector<residualConnectivity::context::vertexPosition> vertexCoordinates;
+	graphConvert(graph_sexp, *graph.get(), vertexCoordinates);
 	const std::size_t nVertices = boost::num_vertices(*graph);
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
@@ -151,16 +151,4 @@ BEGIN_RCPP
 		return result;
 	}
 END_RCPP
-}
-SEXP stochasticEnumeration_igraph(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, SEXP outputStatus_sexp)
-{
-	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, nPermutations_sexp, outputStatus_sexp, IGRAPH);
-}
-SEXP stochasticEnumeration_graphAM(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, SEXP outputStatus_sexp)
-{
-	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, nPermutations_sexp, outputStatus_sexp, GRAPHAM);
-}
-SEXP stochasticEnumeration_graphNEL(SEXP graph_sexp, SEXP optimized_sexp, SEXP budget_sexp, SEXP seed_sexp, SEXP counts_sexp, SEXP nPermutations_sexp, SEXP outputStatus_sexp)
-{
-	return stochasticEnumeration(graph_sexp, optimized_sexp, budget_sexp, seed_sexp, counts_sexp, nPermutations_sexp, outputStatus_sexp, GRAPHNEL);
 }

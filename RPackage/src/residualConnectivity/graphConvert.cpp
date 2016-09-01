@@ -23,13 +23,14 @@ void graphConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph& bo
 	{
 		Rcpp::S4 graphS4 = Rcpp::as<Rcpp::S4>(graph);
 		Rcpp::S4 renderInfo = Rcpp::as<Rcpp::S4>(graphS4.slot("renderInfo"));
-		Rcpp::S4 nodes = Rcpp::as<Rcpp::S4>(renderInfo.slot("nodes"));
+		Rcpp::List nodes = Rcpp::as<Rcpp::List>(renderInfo.slot("nodes"));
 		Rcpp::Function length("length"), cbind("cbind");
 		if(Rcpp::as<int>(length(nodes)) > 0)
 		{
-			Rcpp::List nodesList = Rcpp::as<Rcpp::List>(nodes);
-			vertexCoordinates_matrix = Rcpp::as<Rcpp::NumericMatrix>(cbind(nodesList["nodeX"], nodesList["nodeY"]));
+			vertexCoordinates_matrix = Rcpp::as<Rcpp::NumericMatrix>(cbind(nodes["nodeX"], nodes["nodeY"]));
 		}
+		if(className == "graphNEL") graphNELConvert(graph_sexp, boostGraph);
+		else graphAMConvert(graph_sexp, boostGraph);
 	}
 	else
 	{
@@ -41,15 +42,5 @@ void graphConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph& bo
 	for(std::size_t i = 0; i < nVertexCoordinates; i++)
 	{
 		vertexCoordinates.push_back(residualConnectivity::context::vertexPosition((residualConnectivity::context::vertexPosition::first_type)vertexCoordinates_matrix((int)i, 0), (residualConnectivity::context::vertexPosition::second_type)vertexCoordinates_matrix((int)i, 1)));
-	}
-}
-void graphConvert(SEXP graph_sexp, graphType type, residualConnectivity::context::inputGraph& outputGraph)
-{
-	if(type == IGRAPH) return igraphConvert(graph_sexp, outputGraph);
-	else if(type == GRAPHNEL) return graphNELConvert(graph_sexp, outputGraph);
-	else if(type == GRAPHAM) return graphAMConvert(graph_sexp, outputGraph);
-	else
-	{
-		throw std::runtime_error("Internal error");
 	}
 }

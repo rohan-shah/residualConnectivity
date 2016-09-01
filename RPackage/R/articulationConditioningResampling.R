@@ -45,37 +45,10 @@ articulationConditioningResampling <- function(probability, n, seed, graph, init
 	{
 		stop("Input seed must be a single integer")
 	}
-	if(class(graph) == "igraph")
+	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
 	{
-		if(igraph::is.directed(graph))
-		{
-			stop("Input `graph' must be undirected")
-		}
-		vertexCoordinates <- igraph::layout.auto(graph)
 		start <- Sys.time()
-		estimate <- .Call("articulationConditioningResampling_igraph", graph, vertexCoordinates, probability, n, initialRadius, seed, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphNEL")
-	{
-		vertexCoordinates <- NULL
-		if(length(graph@renderInfo@nodes) > 0)
-		{
-			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-		}
-		start <- Sys.time()
-		estimate <- .Call("articulationConditioningResampling_graphNEL", graph, vertexCoordinates, probability, n, initialRadius, seed, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphAM")
-	{
-		vertexCoordinates <- NULL
-		if(length(graph@renderInfo@nodes) > 0)
-		{
-			vertexCoordinates <- cbind(graph@renderInfo@nodes$nodeX, graph@renderInfo@nodes$nodeY)
-		}
-		start <- Sys.time()
-		estimate <- .Call("articulationConditioningResampling_graphAM", graph, vertexCoordinates, probability, n, initialRadius, seed, PACKAGE="residualConnectivity")
+		estimate <- .Call("articulationConditioningResampling", graph, probability, n, initialRadius, seed, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else

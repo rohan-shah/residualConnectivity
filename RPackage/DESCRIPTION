@@ -8,5 +8,4 @@ Maintainer: Rohan Shah <cran@bookshah.com>
 Description: This package provides Monte Carlo methods for estimating the residual network connectivity
 License: GPL v3
 LazyData: No
-Suggests: graph, igraph
-Depends: Rmpfr
+Depends: Rmpfr, igraph, graph

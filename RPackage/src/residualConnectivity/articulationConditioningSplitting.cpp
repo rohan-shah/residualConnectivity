@@ -2,7 +2,6 @@
 #include "Rcpp.h"
 #include "articulationConditioningResampling.h"
 #include "graphInterface.h"
-#include "graphType.h"
 #include "ROutputObject.h"
 SEXP articulationConditioningSplitting(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP splittingFactors_sexp)
 {

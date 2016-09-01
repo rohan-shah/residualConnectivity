@@ -4,26 +4,10 @@ stochasticEnumeration <- function(graph, budget, form = "spectra", seed = 1, opt
 	if(form == "spectra") counts <- FALSE
 	else if(form == "counts") counts <- TRUE
 	else stop("Input form must have value \"counts\" or \"spectra\"")
-	if(class(graph) == "igraph")
-	{
-		if(igraph::is.directed(graph))
-		{
-			stop("Input `graph' must be undirected")
-		}
-		start <- Sys.time()
-		result <- .Call("stochasticEnumeration_igraph", graph, optimized, budget, seed, counts, nPermutations, outputStatus, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphNEL")
+	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
 	{
 		start <- Sys.time()
-		result <- .Call("stochasticEnumeration_graphNEL", graph, optimized, budget, seed, counts, nPermutations, outputStatus, PACKAGE="residualConnectivity")
-		end <- Sys.time()
-	}
-	else if(class(graph) == "graphAM")
-	{
-		start <- Sys.time()
-		result <- .Call("stochasticEnumeration_graphAM", graph, optimized, budget, seed, counts, nPermutations, outputStatus, PACKAGE="residualConnectivity")
+		result <- .Call("stochasticEnumeration", graph, optimized, budget, seed, counts, nPermutations, outputStatus, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else 

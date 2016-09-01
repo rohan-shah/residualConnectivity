@@ -1,7 +1,0 @@
-#ifndef GRAPHTYPE_HEADER_GUARD
-#define GRAPHTYPE_HEADER_GUARD
-enum graphType
-{
-	IGRAPH, GRAPHNEL, GRAPHAM
-};
-#endif

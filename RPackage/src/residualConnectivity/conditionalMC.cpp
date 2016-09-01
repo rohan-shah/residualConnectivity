@@ -2,8 +2,7 @@
 #include "Rcpp.h"
 #include "conditionalMC.h"
 #include "graphInterface.h"
-#include "graphType.h"
-SEXP conditionalMC(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP seed_sexp, graphType type)
+SEXP conditionalMC(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP seed_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -36,7 +35,7 @@ BEGIN_RCPP
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
-	residualConnectivity::context contextObj = graphInterface(graph_sexp, vertexCoordinates_sexp, probability_sexp, type);
+	residualConnectivity::context contextObj = graphInterface(graph_sexp, probability_sexp);
 	residualConnectivity::conditionalMCArgs args(contextObj, randomSource);
 	args.n = n;
 	randomSource.seed(seed);
@@ -45,16 +44,4 @@ BEGIN_RCPP
 	double result = args.estimate.convert_to<double>();
 	return Rcpp::wrap(result);
 END_RCPP
-}
-SEXP conditionalMC_graphAM(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP seed_sexp)
-{
-	return conditionalMC(graph_sexp, vertexCoordinates_sexp, probability_sexp, n_sexp, seed_sexp, GRAPHAM);
-}
-SEXP conditionalMC_igraph(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP seed_sexp)
-{
-	return conditionalMC(graph_sexp, vertexCoordinates_sexp, probability_sexp, n_sexp, seed_sexp, IGRAPH);
-}
-SEXP conditionalMC_graphNEL(SEXP graph_sexp, SEXP vertexCoordinates_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP seed_sexp)
-{
-	return conditionalMC(graph_sexp, vertexCoordinates_sexp, probability_sexp, n_sexp, seed_sexp, GRAPHNEL);
 }
