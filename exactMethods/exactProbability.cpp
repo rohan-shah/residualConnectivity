@@ -1,9 +1,9 @@
-#include "exactMethods/exhaustiveSearchUnequalProbabilities.h"
+#include "exactMethods/exactProbability.h"
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/graph/connected_components.hpp>
 namespace residualConnectivity
 {
-	bool exhaustiveSearchUnequalProbabilities(const context::inputGraph& inputGraph, std::vector<mpfr_class>& probabilities, mpfr_class& result, std::string& error)
+	bool exactProbability(const context::inputGraph& inputGraph, std::vector<mpfr_class>& probabilities, mpfr_class& result, std::string& error)
 	{
 		error = "";
 		const std::size_t nVertices = boost::num_vertices(inputGraph);

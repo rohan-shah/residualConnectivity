@@ -12,7 +12,7 @@
 #include "optimalStateIndependentImportance.h"
 #include "articulationConditioningSplitting.h"
 #include "PMC.h"
-#include "exhaustiveSearchUnequalProbabilities.h"
+#include "exactProbability.h"
 #ifdef _MSC_VER
 	#undef RcppExport
 	#define RcppExport extern "C" __declspec(dllexport)
@@ -35,7 +35,7 @@ extern "C"
 		{"gridCountSpecificSize", (DL_FUNC)&gridCountSpecificSize, 3},
 		{"gridCountSpecificSize2", (DL_FUNC)&gridCountSpecificSize2, 2},
 		{"optimalStateIndependentImportance", (DL_FUNC)&optimalStateIndependentImportance, 2},
-		{"exactRCRUnequalProbabilities", (DL_FUNC)&exhaustiveSearchUnequalProbabilities, 2},
+		{"exactProbability", (DL_FUNC)&exactProbability, 2},
 		{NULL, NULL, 0}
 	};
 	RcppExport void R_init_residualConnectivity(DllInfo *info)

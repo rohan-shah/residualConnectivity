@@ -1,8 +1,8 @@
-#include "exhaustiveSearchUnequalProbabilities.h"
-#include "exactMethods/exhaustiveSearchUnequalProbabilities.h"
+#include "exactProbability.h"
+#include "exactMethods/exactProbability.h"
 #include "graphConvert.h"
 #include <sstream>
-SEXP exhaustiveSearchUnequalProbabilities(SEXP graph, SEXP probabilities_sexp)
+SEXP exactProbability(SEXP graph, SEXP probabilities_sexp)
 {
 BEGIN_RCPP
 	boost::shared_ptr<residualConnectivity::context::inputGraph> boostGraph(new residualConnectivity::context::inputGraph());
@@ -14,7 +14,7 @@ BEGIN_RCPP
 
 	std::string message;
 	mpfr_class result = 0;
-	residualConnectivity::exhaustiveSearchUnequalProbabilities(*boostGraph.get(), probabilities, result, message);
+	residualConnectivity::exactProbability(*boostGraph.get(), probabilities, result, message);
 	return Rcpp::wrap(result.str());
 END_RCPP
 }
