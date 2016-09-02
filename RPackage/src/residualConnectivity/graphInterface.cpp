@@ -22,6 +22,10 @@ residualConnectivity::context graphInterface(SEXP graph_sexp, SEXP probabilities
 	boost::shared_ptr<std::vector<residualConnectivity::context::vertexPosition> > vertexCoordinates(new std::vector<residualConnectivity::context::vertexPosition>());
 	graphConvert(graph_sexp, *boostGraph.get(), *vertexCoordinates.get()); 
 	std::size_t nVertices = boost::num_vertices(*boostGraph);
+	if(probabilities.size() != nVertices && probabilities.size() != 1)
+	{
+		throw std::runtime_error("Input probabilities must contain a single value, or a value for each vertex");
+	}
 
 	//Construct default vertex ordering
 	boost::shared_ptr<std::vector<int> > defaultOrdering(new std::vector<int>());

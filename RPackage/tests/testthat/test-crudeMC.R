@@ -13,9 +13,9 @@ test_that("Function can be called using graphNEL, graphAM and igraph, and gives 
 		for(index in 1:length(probabilities))
 		{
 			probability <- probabilities[index]
-			igraphResult <- crudeMC(igraph, probability = probability, n = 1000, seed = index)@estimate
-			graphAMResult <- crudeMC(graphAM, probability = probability, n = 1000, seed = index)@estimate
-			graphNELResult <- crudeMC(graphNEL, probability = probability, n = 1000, seed = index)@estimate
+			igraphResult <- crudeMC(igraph, probabilities = probability, n = 1000, seed = index)@estimate
+			graphAMResult <- crudeMC(graphAM, probabilities = probability, n = 1000, seed = index)@estimate
+			graphNELResult <- crudeMC(graphNEL, probabilities = probability, n = 1000, seed = index)@estimate
 
 			expect_identical(igraphResult, graphAMResult)
 			expect_identical(graphAMResult, graphNELResult)
@@ -30,7 +30,7 @@ test_that("Test that crudeMC gives numerically accurate results",
 		for(index in 1:length(probabilities))
 		{
 			probability <- probabilities[index]
-			igraphResult <- crudeMC(igraph, probability = probability, n = 500000, seed = index)@estimate
+			igraphResult <- crudeMC(igraph, probabilities = probability, n = 500000, seed = index)@estimate
 
 			exactResult <- as.double(exactRCR(grid4Counts, probability))
 

@@ -38,6 +38,7 @@ namespace residualConnectivity
 			ar & *graph;
 			ar & *ordering;
 			ar & opProbabilities;
+			ar & identicalProbabilities;
 			
 			std::size_t nVertices = boost::num_vertices(*graph);
 			ar & boost::serialization::make_array(shortestDistances.get(), nVertices * nVertices);
@@ -57,6 +58,7 @@ namespace residualConnectivity
 				this->ordering = ordering;
 			}
 			ar & opProbabilities;
+			ar & identicalProbabilities;
 			opProbabilitiesD.clear();
 			std::transform(opProbabilities.begin(), opProbabilities.end(), std::back_inserter(opProbabilitiesD), std::bind(&mpfr_class::convert_to<double>, std::placeholders::_1));
 
@@ -80,8 +82,10 @@ namespace residualConnectivity
 		const std::vector<vertexPosition>& getVertexPositions() const;
 		const std::vector<mpfr_class>& getOperationalProbabilities() const;
 		const std::vector<double>& getOperationalProbabilitiesD() const;
+		bool hasIdenticalProbabilities() const;
 		static bool readGraph(std::string path, context::inputGraph& graph, std::vector<vertexPosition>& vertexPositions, std::vector<int>& ordering, std::string& message);
 	private:
+		bool identicalProbabilities;
 		context();
 		std::vector<mpfr_class> opProbabilities;
 		std::vector<double> opProbabilitiesD;

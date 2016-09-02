@@ -3,7 +3,7 @@
 #include "crudeMC.h"
 #include "graphInterface.h"
 #include "graphConvert.h"
-SEXP crudeMC(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP seed_sexp)
+SEXP crudeMC(SEXP graph_sexp, SEXP probabilities_sexp, SEXP n_sexp, SEXP seed_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -37,7 +37,7 @@ BEGIN_RCPP
 	std::vector<residualConnectivity::context::vertexPosition> vertexCoordinates;
 	graphConvert(graph_sexp, graph, vertexCoordinates);
 
-	residualConnectivity::context contextObj = graphInterface(graph_sexp, probability_sexp);
+	residualConnectivity::context contextObj = graphInterface(graph_sexp, probabilities_sexp);
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 	residualConnectivity::crudeMCArgs args(contextObj, randomSource);

@@ -57,7 +57,6 @@ namespace residualConnectivity
 			}
 			else if(firstOn < (int)nVertices)
 			{
-				int nOff = firstOn - 1;
 				int onVertex = allVertices[firstOn];
 				
 				//represents partial knowledge

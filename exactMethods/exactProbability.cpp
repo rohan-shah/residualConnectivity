@@ -7,6 +7,10 @@ namespace residualConnectivity
 	{
 		error = "";
 		const std::size_t nVertices = boost::num_vertices(inputGraph);
+		if(probabilities.size() == 1)
+		{
+			probabilities.insert(probabilities.begin(), nVertices - 1, probabilities.front());
+		}
 		if(nVertices > 36)
 		{
 			error = "Maximum allowable number of vertices is 36.";

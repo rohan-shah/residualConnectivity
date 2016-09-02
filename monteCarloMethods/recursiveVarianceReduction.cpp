@@ -10,7 +10,6 @@ namespace residualConnectivity
 	{
 		std::size_t nVertices = args.contextObj.nVertices();
 		const std::vector<mpfr_class>& opProbabilities = args.contextObj.getOperationalProbabilities();
-		const std::vector<double>& opProbabilitiesD = args.contextObj.getOperationalProbabilitiesD();
 		//Cache powers of opProbability and inopProbability
 		std::vector<mpfr_class> opProbabilityPowers(nVertices+1, 1);
 		for(std::size_t i = 0; i < nVertices+1; i++)

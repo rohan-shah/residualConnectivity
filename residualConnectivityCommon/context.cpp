@@ -65,6 +65,12 @@ namespace residualConnectivity
 		}
 		this->opProbabilities = opProbabilities;
 		std::transform(opProbabilities.begin(), opProbabilities.end(), std::back_inserter(opProbabilitiesD), std::bind(&mpfr_class::convert_to<double>, std::placeholders::_1));
+		
+		std::vector<mpfr_class> copiedProbabilities(opProbabilities);
+		std::sort(copiedProbabilities.begin(), copiedProbabilities.end());
+		copiedProbabilities.erase(std::unique(copiedProbabilities.begin(), copiedProbabilities.end()), copiedProbabilities.end());
+		identicalProbabilities = copiedProbabilities.size() == 1;
+
 		if (nVertices != opProbabilities.size())
 		{
 			throw std::runtime_error("Vertex probabilities had the wrong size");
@@ -129,6 +135,7 @@ namespace residualConnectivity
 		vertexPositions.swap(other.vertexPositions);
 		opProbabilities.swap(other.opProbabilities);
 		opProbabilitiesD.swap(other.opProbabilitiesD);
+		identicalProbabilities = other.identicalProbabilities;
 	}
 	const context::inputGraph& context::getGraph() const
 	{
@@ -146,6 +153,7 @@ namespace residualConnectivity
 		vertexPositions.swap(other.vertexPositions);
 		opProbabilities.swap(other.opProbabilities);
 		opProbabilitiesD.swap(other.opProbabilitiesD);
+		identicalProbabilities = other.identicalProbabilities;
 		return *this;
 	}
 	context::context()
@@ -216,5 +224,9 @@ namespace residualConnectivity
 	const std::vector<double>& context::getOperationalProbabilitiesD() const
 	{
 		return opProbabilitiesD;
+	}
+	bool context::hasIdenticalProbabilities() const
+	{
+		return identicalProbabilities;
 	}
 }

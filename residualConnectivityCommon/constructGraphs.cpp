@@ -162,7 +162,6 @@ namespace residualConnectivity
 				}
 			}
 			//Assign vertex positions
-			double internalAngle = (2.0 / 3.0) * M_PI;
 			context::vertexPosition upLeft(-0.5f, (float)sqrt(3.0/4.0));
 			context::vertexPosition upRight(0.5f, (float)sqrt(3.0 / 4.0));
 			context::vertexPosition current(0.0f, 0.0f);

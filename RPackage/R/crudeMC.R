@@ -1,5 +1,49 @@
 #' @export
-crudeMC <- function(probability, n, seed, graph)
+crudeMC <- function(probabilities, n, seed, graph)
 {
-	return(simpleMC("crudeMC", graph=graph, probability=probability, n=n, seed=seed))
+	if(missing(graph))
+	{
+		stop("Input graph cannot be missing")
+	}
+	if(missing(probabilities))
+	{
+		stop("Input probabilities cannot be missing")
+	}
+	if(missing(n))
+	{
+		stop("Input n cannot be missing")
+	}
+	if(missing(seed))
+	{
+		stop("Input seed cannot be missing")
+	}
+	if(length(n) != 1 || mode(n) != "numeric")
+	{
+		stop("Input `n' must be a single number")
+	}
+	if(abs(n - round(n)) > 1e-3)
+	{
+		stop("Input `n' must be an integer")
+	}
+	if(mode(probabilities) != "numeric")
+	{
+		stop("Input `probabilities' must be a numeric vector")
+	}
+	if(any(probabilities < 0 | probabilities > 1))
+	{
+		stop("Input `probabilities' must be between 0 and 1")
+	}
+	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
+	{
+		start <- Sys.time()
+		estimate <- .Call("crudeMC", graph, probabilities, n, seed, PACKAGE="residualConnectivity")
+		end <- Sys.time()
+	}
+	else 
+	{
+		stop("Input graph must have class \"igraph\", \"graphAM\" or \"graphNEL\"")
+	}
+	#The call bit is complicated because we want the parent call.
+	parentCall <- match.call(definition = sys.function(sys.parent()), call = sys.call(sys.parent(n=1)))
+	return(new("monteCarloResult", start = start, end = end, call = parentCall, estimate = estimate))
 }
