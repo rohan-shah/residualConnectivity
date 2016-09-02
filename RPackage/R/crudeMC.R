@@ -43,7 +43,6 @@ crudeMC <- function(probabilities, n, seed, graph)
 	{
 		stop("Input graph must have class \"igraph\", \"graphAM\" or \"graphNEL\"")
 	}
-	#The call bit is complicated because we want the parent call.
-	parentCall <- match.call(definition = sys.function(sys.parent()), call = sys.call(sys.parent(n=1)))
-	return(new("monteCarloResult", start = start, end = end, call = parentCall, estimate = estimate))
+	call <- match.call()
+	return(new("monteCarloResult", start = start, end = end, call = call, estimate = estimate))
 }
