@@ -40,10 +40,10 @@ BEGIN_RCPP
 	}
 	initialRadius = (long)std::round(initialRadius_double);
 
-	std::vector<float> splittingFactors;
+	std::vector<double> splittingFactors;
 	try
 	{
-		splittingFactors = Rcpp::as<std::vector<float> >(splittingFactors_sexp);
+		splittingFactors = Rcpp::as<std::vector<double> >(splittingFactors_sexp);
 	}
 	catch(...)
 	{

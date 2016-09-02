@@ -18,25 +18,26 @@ namespace residualConnectivity
 	{
 		struct stepInputs
 		{
-			stepInputs(context const& contextObj, const std::vector<float>& splittingFactors)
+			stepInputs(context const& contextObj, const std::vector<double>& splittingFactors)
 				:contextObj(contextObj), splittingFactors(splittingFactors), outputTree(false)
 			{}
 			context const& contextObj;
-			const std::vector<float>& splittingFactors;
+			const std::vector<double>& splittingFactors;
 			int initialRadius;
 			long n;
 			bool outputTree;
 		};
 		struct stepOutputs
 		{
-			stepOutputs(std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>& subObservations, std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>& observations, boost::mt19937& randomSource, observationTree& tree, outputObject& output)
-				:subObservations(subObservations), observations(observations), randomSource(randomSource), tree(tree), output(output)
+			stepOutputs(std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>& subObservations, std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>& observations, boost::mt19937& randomSource, observationTree& tree, std::vector<double>& levelProbabilities, outputObject& output)
+				:subObservations(subObservations), observations(observations), randomSource(randomSource), tree(tree), levelProbabilities(levelProbabilities), output(output)
 			{}
 			std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>& subObservations;
 			std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>& observations;
 			std::vector<int> potentiallyConnectedIndices;
 			boost::mt19937& randomSource;
 			observationTree& tree;
+			std::vector<double>& levelProbabilities;
 			outputObject& output;
 			long totalGenerated;
 		};
@@ -209,6 +210,7 @@ namespace residualConnectivity
 					}
 				}
 				outputs.output << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated+1 << " observations continuing" << outputObject::endl;
+				outputs.levelProbabilities.push_back((double)nextSetObservations.size() / (double)(generated+1));
 				outputs.subObservations.swap(nextSetObservations);
 				outputs.potentiallyConnectedIndices.swap(nextStepPotentiallyConnectedIndices);
 			}
@@ -265,8 +267,8 @@ namespace residualConnectivity
 	void articulationConditioningSplitting(articulationConditioningSplittingArgs& args)
 	{
 		const context& contextObj = args.contextObj;
-		std::vector<float>& splittingFactors = args.splittingFactors;
-		std::vector<float>& levelProbabilities = args.levelProbabilities;
+		std::vector<double>& splittingFactors = args.splittingFactors;
+		std::vector<double>& levelProbabilities = args.levelProbabilities;
 		levelProbabilities.clear();
 		int initialRadius = args.initialRadius;
 		int n = args.n;
@@ -282,7 +284,7 @@ namespace residualConnectivity
 		articulationConditioningSplittingPrivate::stepInputs inputs(contextObj, splittingFactors);
 		inputs.initialRadius = initialRadius;
 		inputs.n = n;
-		articulationConditioningSplittingPrivate::stepOutputs outputs(subObservations, observations, randomSource, tree, args.output);
+		articulationConditioningSplittingPrivate::stepOutputs outputs(subObservations, observations, randomSource, tree, levelProbabilities, args.output);
 		outputs.totalGenerated = 0;
 
 		articulationConditioningSplittingPrivate::doCrudeMCStep(inputs, outputs);
@@ -306,7 +308,7 @@ namespace residualConnectivity
 			}
 			mpfr_class averageLastStep = probabilitySum / outputs.totalGenerated;
 			mpfr_class totalSampleSize = n;
-			for(std::vector<float>::iterator i = splittingFactors.begin(); i != splittingFactors.end(); i++) totalSampleSize *= *i;
+			for(std::vector<double>::iterator i = splittingFactors.begin(); i != splittingFactors.end(); i++) totalSampleSize *= *i;
 			args.estimate = probabilitySum / totalSampleSize;
 			//Swap the vectors over, so that the results are always stored in finalObservations. Just in case we want to 
 			//revert back to using the allExceptOne algorithm for all the steps. 

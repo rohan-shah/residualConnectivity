@@ -11,8 +11,8 @@ namespace residualConnectivity
 			:contextObj(contextObj), randomSource(randomSource), output(output)
 		{}
 		const context& contextObj;
-		std::vector<float> splittingFactors;
-		std::vector<float> levelProbabilities;
+		std::vector<double> splittingFactors;
+		std::vector<double> levelProbabilities;
 		int initialRadius;
 		int n;
 		boost::mt19937& randomSource;

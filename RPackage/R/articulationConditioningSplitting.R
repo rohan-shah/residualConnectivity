@@ -1,9 +1,9 @@
 #' @export
-articulationConditioningSplitting <- function(probability, n, seed, graph, initialRadius, splittingFactors)
+articulationConditioningSplitting <- function(probabilities, n, seed, graph, initialRadius, splittingFactors)
 {
-	if(missing(probability))
+	if(missing(probabilities))
 	{
-		stop("Input probability cannot be missing")
+		stop("Input probabilities cannot be missing")
 	}
 	if(missing(n))
 	{
@@ -21,9 +21,9 @@ articulationConditioningSplitting <- function(probability, n, seed, graph, initi
 	{
 		stop("Input initialRadius cannot be missing")
 	}
-	if(length(probability) != 1 || probability < 0 || probability > 1 || is.na(probability))
+	if(any(probabilities < 0 | probabilities > 1 | is.na(probabilities)))
 	{
-		stop("Input probability must be a single number")
+		stop("Input probabilities must be a single number")
 	}
 	if(length(n) != 1 || n < 1 || is.na(n))
 	{
@@ -56,12 +56,12 @@ articulationConditioningSplitting <- function(probability, n, seed, graph, initi
 	if(class(graph) %in% c("igraph", "graphAM", "graphNEL"))
 	{
 		start <- Sys.time()
-		result <- .Call("articulationConditioningSplitting", graph, probability, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
+		result <- .Call("articulationConditioningSplitting", graph, probabilities, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else
 	{
 		stop("Input graph must have class \"igraph\", \"graphAM\" or \"graphNEL\"")
 	}
-	return(new("monteCarloResult", start = start, end = end, call = match.call(), estimate = result$estimate))
+	return(new("articulationConditioningSplittingResult", start = start, end = end, call = match.call(), estimate = result$estimate, levelProbabilities = result$levelProbabilities))
 }
