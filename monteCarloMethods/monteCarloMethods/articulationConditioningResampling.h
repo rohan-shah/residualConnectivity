@@ -19,6 +19,7 @@ namespace residualConnectivity
 		int n;
 		bool outputTree;
 		mpfr_class expectedUpNumber, estimate;
+		bool verbose;
 	};
 	void articulationConditioningResampling(articulationConditioningResamplingArgs& args);
 }

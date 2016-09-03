@@ -26,6 +26,7 @@ namespace residualConnectivity
 			int initialRadius;
 			long n;
 			bool outputTree;
+			bool verbose;
 		};
 		struct stepOutputs
 		{
@@ -209,7 +210,7 @@ namespace residualConnectivity
 						}
 					}
 				}
-				outputs.output << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated+1 << " observations continuing" << outputObject::endl;
+				if(inputs.verbose) outputs.output << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated+1 << " observations continuing" << outputObject::endl;
 				outputs.levelProbabilities.push_back((double)nextSetObservations.size() / (double)(generated+1));
 				outputs.subObservations.swap(nextSetObservations);
 				outputs.potentiallyConnectedIndices.swap(nextStepPotentiallyConnectedIndices);
@@ -282,13 +283,15 @@ namespace residualConnectivity
 		observationTree tree(&contextObj, initialRadius);
 
 		articulationConditioningSplittingPrivate::stepInputs inputs(contextObj, splittingFactors);
+		inputs.verbose = args.verbose;
 		inputs.initialRadius = initialRadius;
 		inputs.n = n;
+
 		articulationConditioningSplittingPrivate::stepOutputs outputs(subObservations, observations, randomSource, tree, levelProbabilities, args.output);
 		outputs.totalGenerated = 0;
 
 		articulationConditioningSplittingPrivate::doCrudeMCStep(inputs, outputs);
-		args.output << "Retaining " << subObservations.size() << " / " << n << " observations from crude MC step" << outputObject::endl;
+		if(args.verbose) args.output << "Retaining " << subObservations.size() << " / " << n << " observations from crude MC step" << outputObject::endl;
 		levelProbabilities.push_back((double)subObservations.size()/(double)n);
 
 		if(initialRadius != 0)
@@ -298,7 +301,7 @@ namespace residualConnectivity
 			
 			//When the radius is 1 we use a different algorithm
 			articulationConditioningSplittingPrivate::stepOne(inputs, outputs);
-			args.output << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << observations.size() << " / " << outputs.totalGenerated  << " observations had non-zero probability" << outputObject::endl;
+			if(args.verbose) args.output << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << observations.size() << " / " << outputs.totalGenerated  << " observations had non-zero probability" << outputObject::endl;
 			levelProbabilities.push_back((double)observations.size() / (double)outputs.totalGenerated);
 
 			mpfr_class probabilitySum = 0;

@@ -29,6 +29,7 @@ namespace residualConnectivity
 		int initialRadius;
 		long n;
 		bool outputTree;
+		bool verbose;
 	};
 	struct stepOutputs
 	{
@@ -110,7 +111,7 @@ namespace residualConnectivity
 					}
 				}
 			}
-			outputs.output << "Finished splitting step " << i << " / " << inputs.initialRadius << outputObject::endl;
+			if(inputs.verbose) outputs.output << "Finished splitting step " << i << " / " << inputs.initialRadius << outputObject::endl;
 			outputs.subObservations.clear();
 			outputs.potentiallyConnectedIndices.clear();
 			mpfr_class sum = 0;
@@ -210,6 +211,8 @@ namespace residualConnectivity
 		inputs.initialRadius = args.initialRadius;
 		inputs.outputTree = args.outputTree;
 		inputs.n = args.n;
+		inputs.verbose = args.verbose;
+
 		stepOutputs outputs(subObservations, observations, args.randomSource, args.tree, args.output);
 
 		doCrudeMCStep(inputs, outputs);

@@ -18,6 +18,7 @@ namespace residualConnectivity
 		boost::mt19937& randomSource;
 		mpfr_class estimate;
 		outputObject& output;
+		bool verbose;
 	};
 	void articulationConditioningSplitting(articulationConditioningSplittingArgs& args);
 }

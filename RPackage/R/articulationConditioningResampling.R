@@ -1,5 +1,5 @@
 #' @export
-articulationConditioningResampling <- function(probabilities, n, seed, graph, initialRadius)
+articulationConditioningResampling <- function(probabilities, n, seed, graph, initialRadius, verbose=FALSE)
 {
 	if(missing(probabilities))
 	{
@@ -48,7 +48,7 @@ articulationConditioningResampling <- function(probabilities, n, seed, graph, in
 	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
 	{
 		start <- Sys.time()
-		estimate <- .Call("articulationConditioningResampling", graph, probabilities, n, initialRadius, seed, PACKAGE="residualConnectivity")
+		estimate <- .Call("articulationConditioningResampling", graph, probabilities, n, initialRadius, seed, verbose, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else

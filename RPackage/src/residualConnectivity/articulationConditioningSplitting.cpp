@@ -3,7 +3,7 @@
 #include "articulationConditioningResampling.h"
 #include "graphInterface.h"
 #include "ROutputObject.h"
-SEXP articulationConditioningSplitting(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP splittingFactors_sexp)
+SEXP articulationConditioningSplitting(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP splittingFactors_sexp, SEXP verbose_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -40,6 +40,8 @@ BEGIN_RCPP
 	}
 	initialRadius = (long)std::round(initialRadius_double);
 
+	bool verbose = Rcpp::as<bool>(verbose_sexp);
+
 	std::vector<double> splittingFactors;
 	try
 	{
@@ -69,6 +71,7 @@ BEGIN_RCPP
 	args.n = (int)n;
 	args.initialRadius = (int)initialRadius;
 	args.splittingFactors = splittingFactors;
+	args.verbose = verbose;
 	randomSource.seed(seed);
 
 	residualConnectivity::articulationConditioningSplitting(args);

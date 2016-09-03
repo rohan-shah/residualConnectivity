@@ -1,5 +1,5 @@
 #' @export
-articulationConditioningSplitting <- function(probabilities, n, seed, graph, initialRadius, splittingFactors)
+articulationConditioningSplitting <- function(probabilities, n, seed, graph, initialRadius, splittingFactors, verbose = FALSE)
 {
 	if(missing(probabilities))
 	{
@@ -56,7 +56,7 @@ articulationConditioningSplitting <- function(probabilities, n, seed, graph, ini
 	if(class(graph) %in% c("igraph", "graphAM", "graphNEL"))
 	{
 		start <- Sys.time()
-		result <- .Call("articulationConditioningSplitting", graph, probabilities, n, initialRadius, seed, splittingFactors, PACKAGE="residualConnectivity")
+		result <- .Call("articulationConditioningSplitting", graph, probabilities, n, initialRadius, seed, splittingFactors, verbose, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else
