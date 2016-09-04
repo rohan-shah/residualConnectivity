@@ -1,6 +1,6 @@
 #ifndef CALCULATE_FACTORIALS_HEADER_GUARD
 #define CALCULATE_FACTORIALS_HEADER_GUARD
-#include "includeNumerics.h"
+#include "includeMPFRResidualConnectivity.h"
 #include <vector>
 namespace residualConnectivity
 {

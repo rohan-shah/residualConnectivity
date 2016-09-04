@@ -1,22 +1,9 @@
 #include "conditionArticulation.h"
 #include <boost/graph/adjacency_list.hpp>
 #include <boost/graph/biconnected_components.hpp>
+#include "findFixedOnVisitor.h"
 namespace residualConnectivity
 {
-	struct findFixedOnVisitor : public boost::default_dfs_visitor
-	{
-	public:
-		findFixedOnVisitor(const vertexState* state, std::vector<int>& graphVertices)
-			:found(false), state(state), graphVertices(graphVertices)
-		{}
-		template<typename Vertex, typename Graph> void discover_vertex(Vertex u, const Graph& g)
-		{
-			found |= (state[graphVertices[u]].state == FIXED_ON);
-		}
-		bool found;
-		const vertexState* state;
-		std::vector<int>& graphVertices;
-	};
 	void conditionArticulation(boost::shared_array<vertexState> state, mpfr_class& weight, const context& contextObj, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& graph)
 	{
 		//construct subgraph

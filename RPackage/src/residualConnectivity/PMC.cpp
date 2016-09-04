@@ -41,7 +41,7 @@ BEGIN_RCPP
 	for (std::vector<unsigned long long>::iterator i = arguments.counts.begin(); i != arguments.counts.end(); i++)
 	{
 		std::stringstream ss;
-		mpfr_class spectraValue = mpfr_class(*i) / n;
+		residualConnectivity::mpfr_class spectraValue = residualConnectivity::mpfr_class(*i) / n;
 		ss << spectraValue.str();
 		spectraStrings.push_back(ss.str());
 	}

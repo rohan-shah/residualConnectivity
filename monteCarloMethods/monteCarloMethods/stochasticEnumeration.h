@@ -2,7 +2,7 @@
 #define STOCHASTIC_ENUMERATION_LIB_HEADER_GUARD
 #include <boost/random/mersenne_twister.hpp>
 #include "context.h"
-#include "includeNumerics.h"
+#include "includeMPFRResidualConnectivity.h"
 namespace residualConnectivity
 {
 	struct stochasticEnumerationArgs

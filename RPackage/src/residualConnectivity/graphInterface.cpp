@@ -6,12 +6,12 @@
 residualConnectivity::context graphInterface(SEXP graph_sexp, SEXP probabilities_sexp)
 {
 	//Convert probability
-	std::vector<mpfr_class> probabilities;
+	std::vector<residualConnectivity::mpfr_class> probabilities;
 	Rcpp::NumericVector probabilities_R;
 	try
 	{
 		probabilities_R = Rcpp::as<Rcpp::NumericVector>(probabilities_sexp);
-		std::transform(probabilities_R.begin(), probabilities_R.end(), std::back_inserter(probabilities), [](double x){return mpfr_class(x); });
+		std::transform(probabilities_R.begin(), probabilities_R.end(), std::back_inserter(probabilities), [](double x){return residualConnectivity::mpfr_class(x); });
 	}
 	catch(Rcpp::not_compatible&)
 	{

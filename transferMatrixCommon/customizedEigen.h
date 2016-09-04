@@ -25,66 +25,66 @@ namespace Eigen
 {
 	namespace internal
 	{
-		template<> struct scalar_product_traits<::mpz_class, ::residualConnectivity::binaryValue>
+		template<> struct scalar_product_traits<::residualConnectivity::mpz_class, ::residualConnectivity::binaryValue>
 		{
 			enum
 			{
 				Defined = 1
 			};
-			typedef ::mpz_class ReturnType;
+			typedef ::residualConnectivity::mpz_class ReturnType;
 		};
-		template<> struct scalar_product_traits<::residualConnectivity::binaryValue, ::mpz_class>
+		template<> struct scalar_product_traits<::residualConnectivity::binaryValue, ::residualConnectivity::mpz_class>
 		{
 			enum
 			{
 				Defined = 1
 			};
-			typedef ::mpz_class ReturnType;
+			typedef ::residualConnectivity::mpz_class ReturnType;
 		};
 	}
-	::mpz_class operator*(const ::residualConnectivity::binaryValue& lhs, const ::mpz_class& rhs);
+	::residualConnectivity::mpz_class operator*(const ::residualConnectivity::binaryValue& lhs, const ::residualConnectivity::mpz_class& rhs);
 /*	{
 		if(lhs.value) return rhs;
 		return 0;
 	}*/
-	::mpz_class operator*(const ::mpz_class& lhs, const ::residualConnectivity::binaryValue& rhs);
+	::residualConnectivity::mpz_class operator*(const ::residualConnectivity::mpz_class& lhs, const ::residualConnectivity::binaryValue& rhs);
 /*	{
 		if(rhs.value) return lhs;
 		return 0;
 	}*/
 	namespace internal
 	{
-		template<> struct conj_helper<::residualConnectivity::binaryValue, ::mpz_class, false, false>
+		template<> struct conj_helper<::residualConnectivity::binaryValue, ::residualConnectivity::mpz_class, false, false>
 		{
-			EIGEN_STRONG_INLINE ::mpz_class pmadd(const ::residualConnectivity::binaryValue& a, const ::mpz_class& b, const ::mpz_class& c)
+			EIGEN_STRONG_INLINE ::residualConnectivity::mpz_class pmadd(const ::residualConnectivity::binaryValue& a, const ::residualConnectivity::mpz_class& b, const ::residualConnectivity::mpz_class& c)
 			{
 				if(a.value) return b + c;
 				return c;
 			}
-			EIGEN_STRONG_INLINE ::mpz_class padd(const ::residualConnectivity::binaryValue& a, const ::mpz_class& b)
+			EIGEN_STRONG_INLINE ::residualConnectivity::mpz_class padd(const ::residualConnectivity::binaryValue& a, const ::residualConnectivity::mpz_class& b)
 			{
 				if(a.value) return b+1;
 				return b;
 			}
-			EIGEN_STRONG_INLINE ::mpz_class pmul(const ::residualConnectivity::binaryValue& a, const ::mpz_class& b)
+			EIGEN_STRONG_INLINE ::residualConnectivity::mpz_class pmul(const ::residualConnectivity::binaryValue& a, const ::residualConnectivity::mpz_class& b)
 			{
 				if(a.value) return b;
 				return 0;
 			}
 		};
-		template<> struct conj_helper<::mpz_class, ::residualConnectivity::binaryValue, false, false>
+		template<> struct conj_helper<::residualConnectivity::mpz_class, ::residualConnectivity::binaryValue, false, false>
 		{
-			EIGEN_STRONG_INLINE ::mpz_class pmadd(const ::mpz_class& a, const ::residualConnectivity::binaryValue& b, const ::mpz_class& c)
+			EIGEN_STRONG_INLINE ::residualConnectivity::mpz_class pmadd(const ::residualConnectivity::mpz_class& a, const ::residualConnectivity::binaryValue& b, const ::residualConnectivity::mpz_class& c)
 			{
 				if(b.value) return a + c;
 				return c;
 			}
-			EIGEN_STRONG_INLINE ::mpz_class padd(const ::mpz_class& a, const ::residualConnectivity::binaryValue& b)
+			EIGEN_STRONG_INLINE ::residualConnectivity::mpz_class padd(const ::residualConnectivity::mpz_class& a, const ::residualConnectivity::binaryValue& b)
 			{
 				if(b.value) return a+1;
 				return a;
 			}
-			EIGEN_STRONG_INLINE ::mpz_class pmul(const ::mpz_class& a, const ::residualConnectivity::binaryValue& b)
+			EIGEN_STRONG_INLINE ::residualConnectivity::mpz_class pmul(const ::residualConnectivity::mpz_class& a, const ::residualConnectivity::binaryValue& b)
 			{
 				if(b.value) return a;
 				return 0;

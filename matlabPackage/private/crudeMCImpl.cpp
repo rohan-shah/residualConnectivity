@@ -21,7 +21,7 @@ BEGIN_MEX_WRAPPER
 	{
 		throw std::runtime_error("First input must be a real number");
 	}
-	std::vector<mpfr_class> opProbabilities;
+	std::vector<residualConnectivity::mpfr_class> opProbabilities;
 	for (std::size_t i = 0; i < mxGetNumberOfElements(prhs[0]); i++)
 	{
 		double probability = *(mxGetPr(prhs[0]) + i);

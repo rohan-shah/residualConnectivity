@@ -7,7 +7,7 @@ BEGIN_RCPP
 	bool multithreaded = Rcpp::as<bool>(multithreaded_sexp);
 	int gridDimension = Rcpp::as<int>(gridDimension_sexp);
 	int size = Rcpp::as<int>(size_sexp);
-	mpz_class count;
+	residualConnectivity::mpz_class count;
 	if(multithreaded)
 	{
 		count = residualConnectivity::gridCountSpecificSizeMultiThreaded(gridDimension, size);

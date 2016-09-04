@@ -35,6 +35,7 @@ if(BUILD_VISUALISATION)
 endif()
 
 find_package(Mathematica COMPONENTS MathLink)
+find_package(sampling REQUIRED)
 
 if(WIN32)
 	find_package(mpfr)

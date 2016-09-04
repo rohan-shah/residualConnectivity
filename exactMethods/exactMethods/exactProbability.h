@@ -2,7 +2,7 @@
 #define EXACT_PROBABILITY_HEADER_GUARD
 #include "context.h"
 #include <vector>
-#include "includeNumerics.h"
+#include "includeMPFRResidualConnectivity.h"
 #include <string>
 namespace residualConnectivity
 {

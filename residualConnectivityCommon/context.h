@@ -12,7 +12,7 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/vector.hpp>
 #include <boost/serialization/utility.hpp>
-#include "includeNumerics.h"
+#include "includeMPFRResidualConnectivity.h"
 #include "vertexState.h"
 #include "serializeGMP.hpp"
 namespace residualConnectivity

@@ -3,7 +3,7 @@
 #include "context.h"
 #include <vector>
 #include "observationTree.h"
-#include "includeNumerics.h"
+#include "includeMPFRResidualConnectivity.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "outputObject.h"
 namespace residualConnectivity

@@ -2,7 +2,7 @@
 #define PMC_LIB_HEADER_GUARD
 #include "context.h"
 #include <vector>
-#include "includeNumerics.h"
+#include "includeMPFRResidualConnectivity.h"
 #include <boost/random/mersenne_twister.hpp>
 namespace residualConnectivity
 {

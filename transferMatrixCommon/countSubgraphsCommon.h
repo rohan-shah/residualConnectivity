@@ -1,6 +1,6 @@
 #ifndef COUNT_SUBGRAPHS_COMMON_HEADER_GUARD
 #define COUNT_SUBGRAPHS_COMMON_HEADER_GUARD
-#include "includeNumerics.h"
+#include "includeMPFRResidualConnectivity.h"
 #include <Eigen/Core>
 #include <vector>
 #include "states.h"

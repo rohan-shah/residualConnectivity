@@ -91,7 +91,7 @@ BEGIN_RCPP
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
-	std::vector<mpfr_class> estimatedCounts;
+	std::vector<residualConnectivity::mpfr_class> estimatedCounts;
 	residualConnectivity::stochasticEnumerationArgs args(*graph, randomSource);
 	args.n = budget;
 	args.nPermutations = nPermutations;
@@ -120,7 +120,7 @@ BEGIN_RCPP
 	{
 		/*Convert counts to strings*/
 		std::vector<std::string> estimatedCountStrings;
-		for (std::vector<mpfr_class>::iterator i = estimatedCounts.begin(); i != estimatedCounts.end(); i++)
+		for (std::vector<residualConnectivity::mpfr_class>::iterator i = estimatedCounts.begin(); i != estimatedCounts.end(); i++)
 		{
 			estimatedCountStrings.push_back(i->str());
 		}
@@ -132,16 +132,16 @@ BEGIN_RCPP
 	else
 	{
 		/*Divide by binomial coefficients*/
-		std::vector<mpz_class> factorials;
-		std::vector<mpfr_class> estimatedSpectra;
+		std::vector<residualConnectivity::mpz_class> factorials;
+		std::vector<residualConnectivity::mpfr_class> estimatedSpectra;
 		residualConnectivity::calculateFactorials(factorials, (int)nVertices + 1);
 		for(int vertexCounter = 0; vertexCounter < (int)nVertices+1; vertexCounter++)
 		{
-			estimatedSpectra.push_back(mpfr_class((estimatedCounts[vertexCounter] * factorials[vertexCounter] * factorials[nVertices - vertexCounter]) / factorials[nVertices]));
+			estimatedSpectra.push_back(residualConnectivity::mpfr_class((estimatedCounts[vertexCounter] * factorials[vertexCounter] * factorials[nVertices - vertexCounter]) / factorials[nVertices]));
 		}
 		/*Convert spectra to strings*/
 		std::vector<std::string> estimatedSpectraStrings;
-		for (std::vector<mpfr_class>::iterator i = estimatedSpectra.begin(); i != estimatedSpectra.end(); i++)
+		for (std::vector<residualConnectivity::mpfr_class>::iterator i = estimatedSpectra.begin(); i != estimatedSpectra.end(); i++)
 		{
 			estimatedSpectraStrings.push_back(i->str());
 		}
