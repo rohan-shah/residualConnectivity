@@ -84,18 +84,14 @@ namespace residualConnectivity
 				perThreadSource.seed(perThreadSeeds[omp_get_thread_num()]);
 
 				#pragma omp for
+#else
+				boost::mt19937& perThreadSource = outputs.randomSource;
 #endif
 				for(int j = 0; j < (int)outputs.subObservations.size(); j++)
 				{
 					//get out the current observation
 					const ::residualConnectivity::subObs::articulationConditioningForResampling& currentObs = outputs.subObservations[j];
-					::residualConnectivity::obs::articulationConditioningForResampling obs = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::articulationConditioningForResampling>::get(currentObs, 
-#ifdef USE_OPENMP
-							perThreadSource
-#else
-							outputs.randomSource
-#endif
-					, getObsHelper);
+					::residualConnectivity::obs::articulationConditioningForResampling obs = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::articulationConditioningForResampling>::get(currentObs, perThreadSource, getObsHelper);
 					::residualConnectivity::subObs::articulationConditioningForResampling subObs = ::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningForResampling>::get(obs, inputs.initialRadius - i, getSubObsHelper);
 #ifdef USE_OPENMP
 					#pragma omp critical
@@ -155,16 +151,12 @@ namespace residualConnectivity
 			boost::mt19937 perThreadSource;
 			perThreadSource.seed(perThreadSeeds[omp_get_thread_num()]);
 			#pragma omp for
+#else
+			boost::mt19937& perThreadSource = outputs.randomSource;
 #endif
 			for(int i = 0; i < inputs.n; i++)
 			{
-				::residualConnectivity::obs::articulationConditioningForResampling obs(inputs.contextObj, 
-#ifdef USE_OPENMP
-						perThreadSource
-#else
-						outputs.randomSource
-#endif
-						);
+				::residualConnectivity::obs::articulationConditioningForResampling obs(inputs.contextObj, perThreadSource);
 				::residualConnectivity::subObs::articulationConditioningForResampling subObs(::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningForResampling>::get(obs, inputs.initialRadius, helper));
 #ifdef USE_OPENMP
 				#pragma omp critical

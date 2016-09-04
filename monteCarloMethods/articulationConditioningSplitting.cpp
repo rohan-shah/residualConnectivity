@@ -72,26 +72,16 @@ namespace residualConnectivity
 				perThreadSource.seed(perThreadSeeds[omp_get_thread_num()]);
 				long totalGeneratedThisThread = 0;
 				#pragma omp for
+#else
+				boost::mt19937& perThreadSource = outputs.randomSource;
 #endif
 				for(int j = 0; j < (int)outputs.subObservations.size(); j++)
 				{
 					//number of observations which the current observation is split into
-					int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(
-#ifdef USE_OPENMP
-							perThreadSource
-#else
-							outputs.randomSource
-#endif
-							);
+					int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(perThreadSource);
 					std::size_t previousLength = observationsThisThread.size();
 					//get out the child observations
-					outputs.subObservations[j].estimateRadius1(
-#ifdef USE_OPENMP
-							perThreadSource
-#else
-							outputs.randomSource
-#endif
-							, nThisObservation, connectedComponents, stack, observationsThisThread);
+					outputs.subObservations[j].estimateRadius1(perThreadSource, nThisObservation, connectedComponents, stack, observationsThisThread);
 					std::size_t newLength = observationsThisThread.size();
 					parentIndicesThisThread.insert(parentIndicesThisThread.end(), newLength - previousLength, outputs.potentiallyConnectedIndices[j]);
 #ifdef USE_OPENMP
@@ -174,26 +164,18 @@ namespace residualConnectivity
 					perThreadSource.seed(perThreadSeeds[omp_get_thread_num()]);
 
 					#pragma omp for
+#else
+					boost::mt19937& perThreadSource = outputs.randomSource;
 #endif
 					for(int j = 0; j < (int)outputs.subObservations.size(); j++)
 					{
 						//number of observations which the current observation is split into
-#ifdef USE_OPENMP
 						int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(perThreadSource);
-#else
-						int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(outputs.randomSource);
-#endif
 						//get out the current observation
 						const ::residualConnectivity::subObs::articulationConditioningForSplitting& currentObs = outputs.subObservations[j];
 						for(int k = 0; k < nThisObservation; k++)
 						{
-							::residualConnectivity::obs::articulationConditioningForSplitting obs = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::articulationConditioningForSplitting>::get(currentObs, 
-#ifdef USE_OPENMP
-									perThreadSource
-#else
-									outputs.randomSource
-#endif
-							, getObsHelper);
+							::residualConnectivity::obs::articulationConditioningForSplitting obs = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::articulationConditioningForSplitting>::get(currentObs, perThreadSource	, getObsHelper);
 							::residualConnectivity::subObs::articulationConditioningForSplitting subObs = ::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningForSplitting>::get(obs, inputs.initialRadius - i, getSubObsHelper);
 #ifdef USE_OPENMP
 							#pragma omp critical
@@ -238,16 +220,12 @@ namespace residualConnectivity
 				boost::mt19937 perThreadSource;
 				perThreadSource.seed(perThreadSeeds[omp_get_thread_num()]);
 				#pragma omp for
+#else
+				boost::mt19937& perThreadSource = outputs.randomSource;
 #endif
 				for(int i = 0; i < inputs.n; i++)
 				{
-					::residualConnectivity::obs::articulationConditioningForSplitting obs(inputs.contextObj, 
-#ifdef USE_OPENMP
-							perThreadSource
-#else
-							outputs.randomSource
-#endif
-							);
+					::residualConnectivity::obs::articulationConditioningForSplitting obs(inputs.contextObj, perThreadSource);
 					::residualConnectivity::subObs::articulationConditioningForSplitting subObs(::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningForSplitting>::get(obs, inputs.initialRadius, helper));
 #ifdef USE_OPENMP
 					#pragma omp critical
