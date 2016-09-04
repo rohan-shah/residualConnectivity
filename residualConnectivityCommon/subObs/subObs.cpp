@@ -24,7 +24,7 @@ namespace residualConnectivity
 		{}
 		void subObs::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType&) const
 		{
-			std::size_t nVertices = contextObj.nVertices();
+			std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
 			const std::vector<double>& operationalProbabilitiesD = contextObj.getOperationalProbabilitiesD();
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			//generate a full random grid, which includes the subPoints 

@@ -123,10 +123,6 @@ namespace residualConnectivity
 		boost::johnson_all_pairs_shortest_paths(*orderedGraph, tmp, boost::weight_map(edgeWeights));
 		this->shortestDistances = shortestDistances;
 	}
-	std::size_t context::nVertices() const
-	{
-		return boost::num_vertices(*graph);
-	}
 	context::context(context&& other)
 	{
 		graph.swap(other.graph);

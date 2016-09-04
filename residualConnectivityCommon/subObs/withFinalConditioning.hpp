@@ -35,7 +35,7 @@ namespace residualConnectivity
 				}
 				// Determine which vertices are fixed on, and which are unfixed
 				const vertexState* stateRef = object.getState();
-				std::size_t nVertices = contextObj.nVertices();
+				std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
 				std::vector<context::inputGraph::vertex_descriptor> unfixedVertices;
 				std::vector<context::inputGraph::vertex_descriptor> fixedOnVertices;
 				for(std::size_t i = 0; i < nVertices; i++)

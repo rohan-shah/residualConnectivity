@@ -105,7 +105,7 @@ namespace residualConnectivity
 
 		std::vector<::residualConnectivity::subObs::basic> observations, nextStepObservations;
 		//vector that we re-use to avoid allocations
-		std::vector<int> connectedComponents(contextObj.nVertices());
+		std::vector<int> connectedComponents(boost::num_vertices(contextObj.getGraph()));
 		std::vector<unsigned long long> retained(initialRadius+1, 0);
 		std::vector<unsigned long long> total(initialRadius+1, 0);
 		//stack for depth first search

@@ -13,7 +13,7 @@ namespace residualConnectivity
 				{
 					const context& contextObj = input.getContext();
 					typename T::subObservationConstructorType otherData;
-					boost::shared_array<vertexState> newState(new vertexState[contextObj.nVertices()]);
+					boost::shared_array<vertexState> newState(new vertexState[boost::num_vertices(contextObj.getGraph())]);
 					input.getSubObservation(newState.get(), radius, otherData);
 
 					typename T::subObservationType retVal(contextObj, newState, radius, otherData);
@@ -23,7 +23,7 @@ namespace residualConnectivity
 				{
 					const context& contextObj = input.getContext();
 					typename T::subObservationConstructorType otherData(aux);
-					boost::shared_array<vertexState> newState(new vertexState[contextObj.nVertices()]);
+					boost::shared_array<vertexState> newState(new vertexState[boost::num_vertices(contextObj.getGraph())]);
 					input.getSubObservation(newState.get(), radius, otherData);
 
 					typename T::subObservationType retVal(contextObj, newState, radius, otherData);

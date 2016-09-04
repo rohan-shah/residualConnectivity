@@ -39,13 +39,17 @@ namespace residualConnectivity
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
-			boost::shared_array<vertexState> state(new vertexState[contextObj.nVertices()]);
-			ar & boost::serialization::make_array(state.get(), contextObj.nVertices());
+			const context::inputGraph& graph = contextObj.getGraph();
+			std::size_t nVertices = boost::num_vertices(graph);
+			boost::shared_array<vertexState> state(new vertexState[nVertices]);
+			ar & boost::serialization::make_array(state.get(), nVertices);
 			this->state = state;
 		};
 		template<class Archive> void save(Archive& ar, const unsigned int version) const
 		{
-			ar & boost::serialization::make_array(state.get(), contextObj.nVertices());
+			const context::inputGraph& graph = contextObj.getGraph();
+			std::size_t nVertices = boost::num_vertices(graph);
+			ar & boost::serialization::make_array(state.get(), nVertices);
 		}
 	};
 	class observationWithContext

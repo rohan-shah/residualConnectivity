@@ -10,7 +10,7 @@ namespace residualConnectivity
 		boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 
 		//The cumulative states, in case we decide to use the --splitting option
-		std::vector<vertexState> cumulativeStates(args.contextObj.nVertices());
+		std::vector<vertexState> cumulativeStates(boost::num_vertices(args.contextObj.getGraph()));
 		for(int i = 0; i < args.n; i++)
 		{
 			observation obs(args.contextObj, args.randomSource);

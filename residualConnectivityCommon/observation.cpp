@@ -21,8 +21,9 @@ namespace residualConnectivity
 	}
 	observation::observation(context const& contextObj, boost::mt19937& randomSource)
 		: contextObj(contextObj), state((vertexState*)NULL)
-{
-		std::size_t nVertices = contextObj.nVertices();
+	{
+		const context::inputGraph& graph = contextObj.getGraph();
+		std::size_t nVertices = boost::num_vertices(graph);
 
 		boost::shared_array<vertexState> state(new vertexState[nVertices]);
 		this->state = state;

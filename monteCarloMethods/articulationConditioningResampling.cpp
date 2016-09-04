@@ -69,7 +69,7 @@ namespace residualConnectivity
 #endif
 			{
 				//vector that we re-use to avoid allocations
-				std::vector<int> connectedComponents(inputs.contextObj.nVertices());
+				std::vector<int> connectedComponents(boost::num_vertices(inputs.contextObj.getGraph()));
 				//stack for depth first search
 				boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 				boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
@@ -143,7 +143,7 @@ namespace residualConnectivity
 #endif
 		{
 			//vector that we re-use to avoid allocations
-			std::vector<int> connectedComponents(inputs.contextObj.nVertices());
+			std::vector<int> connectedComponents(boost::num_vertices(inputs.contextObj.getGraph()));
 			//stack for depth first search
 			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
@@ -202,7 +202,7 @@ namespace residualConnectivity
 	}
 	void articulationConditioningResampling(articulationConditioningResamplingArgs& args)
 	{
-		const std::size_t nVertices = args.contextObj.nVertices();
+		const std::size_t nVertices = boost::num_vertices(args.contextObj.getGraph());
 
 		std::vector<::residualConnectivity::subObs::articulationConditioningForResampling> subObservations;
 		std::vector<::residualConnectivity::obs::articulationConditioningForResampling> observations;

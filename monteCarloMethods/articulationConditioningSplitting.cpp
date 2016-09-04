@@ -60,7 +60,7 @@ namespace residualConnectivity
 				std::vector<::residualConnectivity::obs::articulationConditioningForSplitting> observationsThisThread;
 				std::vector<int> parentIndicesThisThread;
 				//vector that we re-use to avoid allocations
-				std::vector<int> connectedComponents(inputs.contextObj.nVertices());
+				std::vector<int> connectedComponents(boost::num_vertices(inputs.contextObj.getGraph()));
 				//stack for depth first search
 				boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 				//used to calculate the splitting factor (which is random)
@@ -158,7 +158,7 @@ namespace residualConnectivity
 #endif
 				{
 					//vector that we re-use to avoid allocations
-					std::vector<int> connectedComponents(inputs.contextObj.nVertices());
+					std::vector<int> connectedComponents(boost::num_vertices(inputs.contextObj.getGraph()));
 					//stack for depth first search
 					boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 					boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
@@ -227,7 +227,7 @@ namespace residualConnectivity
 #endif
 			{
 				//vector that we re-use to avoid allocations
-				std::vector<int> connectedComponents(inputs.contextObj.nVertices());
+				std::vector<int> connectedComponents(boost::num_vertices(inputs.contextObj.getGraph()));
 				//stack for depth first search
 				boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 				boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;

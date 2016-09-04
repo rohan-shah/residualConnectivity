@@ -3,7 +3,7 @@ namespace residualConnectivity
 {
 	void withSub::getSubObservation(int radius, vertexState* newState, const context& contextObj, const vertexState* oldStatesPtr)
 	{
-		std::size_t nVertices = contextObj.nVertices();
+		std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
 		const int* shortestDistances = contextObj.getShortestDistances();
 
 		std::size_t sourceVertex = 0;

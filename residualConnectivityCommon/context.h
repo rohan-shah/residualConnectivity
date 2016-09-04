@@ -74,7 +74,6 @@ namespace residualConnectivity
 			}
 		};
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
-		std::size_t nVertices() const;
 		const int* getShortestDistances() const;
 		const inputGraph& getGraph() const;
 		static context fromFile(std::string path, std::vector<mpfr_class>& opProbabilities);

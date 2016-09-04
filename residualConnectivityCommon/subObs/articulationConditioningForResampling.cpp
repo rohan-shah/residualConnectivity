@@ -31,7 +31,7 @@ namespace residualConnectivity
 		}
 		void articulationConditioningForResampling::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData)const
 		{
-			std::size_t nVertices = contextObj.nVertices();
+			std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			const std::vector<double>& operationalProbabilitiesD = contextObj.getOperationalProbabilitiesD();
 			//generate a full random grid, which includes the subPoints 

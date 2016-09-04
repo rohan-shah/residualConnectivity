@@ -8,7 +8,8 @@ namespace residualConnectivity
 {
 	void recursiveVarianceReduction(recursiveVarianceReductionArgs& args)
 	{
-		std::size_t nVertices = args.contextObj.nVertices();
+		const context::inputGraph& graph = args.contextObj.getGraph();
+		std::size_t nVertices = boost::num_vertices(graph);
 		const std::vector<mpfr_class>& opProbabilities = args.contextObj.getOperationalProbabilities();
 		//Cache powers of opProbability and inopProbability
 		std::vector<mpfr_class> opProbabilityPowers(nVertices+1, 1);
@@ -21,7 +22,6 @@ namespace residualConnectivity
 		}
 		//unifrom distribution
 		boost::random::uniform_01<double> uniformDistribution;
-		const context::inputGraph& graph = args.contextObj.getGraph();
 
 		//scratch memory, to determine whether the base graph is connected
 		std::vector<int> components(nVertices);

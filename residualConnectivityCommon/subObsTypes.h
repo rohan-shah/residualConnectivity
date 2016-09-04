@@ -17,6 +17,13 @@ namespace residualConnectivity
 			withWeightConstructorType();
 			mpfr_class weight;
 		};
+		struct weightAndCountConstructorType
+		{
+			weightAndCountConstructorType()
+			{}
+			int count;
+			mpfr_class weight;
+		};
 	}
 	namespace subObs
 	{
@@ -41,6 +48,11 @@ namespace residualConnectivity
 		{
 			articulationConditioningForResamplingConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph);
 			bool useConditioning;
+		};
+		struct articulationConditioningSameCountConstructorType : public articulationConditioningForResamplingConstructorType
+		{
+			articulationConditioningSameCountConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph);
+			int count;
 		};
 	}
 }

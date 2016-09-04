@@ -14,7 +14,7 @@ namespace residualConnectivity
 				static typename T::observationType get(const T& input, boost::random::mt19937& randomSource)
 				{
 					const context& contextObj = input.getContext();
-					std::size_t nVertices = contextObj.nVertices();
+					std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
 					boost::shared_array<vertexState> state(new vertexState[nVertices]);
 					typename T::observationConstructorType otherData;
 					input.getObservation(state.get(), randomSource, otherData);
@@ -24,7 +24,7 @@ namespace residualConnectivity
 				template<typename U> static typename T::observationType get(const T& input, boost::random::mt19937& randomSource, U& aux)
 				{
 					const context& contextObj = input.getContext();
-					std::size_t nVertices = contextObj.nVertices();
+					std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
 					boost::shared_array<vertexState> state(new vertexState[nVertices]);
 					typename T::observationConstructorType otherData(aux);
 					input.getObservation(state.get(), randomSource, otherData);
