@@ -75,7 +75,6 @@ namespace residualConnectivity
 				boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType filteredGraphStack;
 
 				::residualConnectivity::subObs::articulationConditioningForResamplingConstructorType getSubObsHelper(connectedComponents, stack, filteredGraphStack);
-				getSubObsHelper.useConditioning = true;
 				::residualConnectivity::obs::withWeightConstructorType getObsHelper;
 #ifdef USE_OPENMP
 				//per-thread random number generation
@@ -143,7 +142,6 @@ namespace residualConnectivity
 			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType filteredGraphStack;
 			::residualConnectivity::subObs::articulationConditioningForResamplingConstructorType helper(connectedComponents, stack, filteredGraphStack);
-			helper.useConditioning = false;
 #ifdef USE_OPENMP
 			//per-thread random number generation
 			boost::mt19937 perThreadSource;

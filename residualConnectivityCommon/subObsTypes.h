@@ -46,7 +46,6 @@ namespace residualConnectivity
 		struct articulationConditioningForResamplingConstructorType : public withWeightConstructorType
 		{
 			articulationConditioningForResamplingConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
-			bool useConditioning;
 		};
 		struct articulationConditioningSameCountConstructorType : public articulationConditioningForResamplingConstructorType
 		{

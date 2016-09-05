@@ -14,7 +14,7 @@ namespace residualConnectivity
 			: ::residualConnectivity::subObs::withWeight(contextObj, state, radius, otherData.weight)
 		{
 			potentiallyConnected = isSingleComponentPossible(contextObj.getGraph(), state.get(), otherData.components, otherData.stack);
-			if(potentiallyConnected && otherData.useConditioning)
+			if(potentiallyConnected)
 			{
 				conditionArticulation(state, weight, contextObj, otherData.components, otherData.filteredGraphStack);
 			}
