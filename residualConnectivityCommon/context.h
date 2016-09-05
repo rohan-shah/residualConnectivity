@@ -21,7 +21,7 @@ namespace residualConnectivity
 	{
 	public:
 		friend class boost::serialization::access;
-		typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS> inputGraph;
+		typedef boost::adjacency_list<boost::vecS, boost::vecS, boost::undirectedS, boost::no_property, boost::property<boost::edge_index_t, int> > inputGraph;
 		typedef std::pair<float, float> vertexPosition;
 		context(boost::shared_ptr<const inputGraph> graph, boost::shared_ptr<const std::vector<int> > ordering, boost::shared_ptr<std::vector<vertexPosition> > vertexPositions, std::vector<mpfr_class>& opProbabilities);
 		context(context&& other);

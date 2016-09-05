@@ -151,12 +151,11 @@ namespace residualConnectivity
 					std::vector<int> connectedComponents(boost::num_vertices(inputs.contextObj.getGraph()));
 					//stack for depth first search
 					boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
-					boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
-					subGraphType subGraph;
+					boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType filteredGraphStack;
 					//used to calculate the splitting factor (which is random)
 					boost::random::bernoulli_distribution<float> splittingFactorBernoulli(sptittingFactorRemainder);
 
-					::residualConnectivity::subObs::withWeightConstructorType getSubObsHelper(connectedComponents, stack, subGraphStack, subGraph);
+					::residualConnectivity::subObs::withWeightConstructorType getSubObsHelper(connectedComponents, stack, filteredGraphStack);
 					::residualConnectivity::obs::withWeightConstructorType getObsHelper;
 #ifdef USE_OPENMP
 					//per-thread random number generation
@@ -212,9 +211,8 @@ namespace residualConnectivity
 				std::vector<int> connectedComponents(boost::num_vertices(inputs.contextObj.getGraph()));
 				//stack for depth first search
 				boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
-				boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType subGraphStack;
-				subGraphType subGraph;
-				::residualConnectivity::subObs::withWeightConstructorType helper(connectedComponents, stack, subGraphStack, subGraph);
+				boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType filteredGraphStack;
+				::residualConnectivity::subObs::withWeightConstructorType helper(connectedComponents, stack, filteredGraphStack);
 #ifdef USE_OPENMP
 				//per-thread random number generation
 				boost::mt19937 perThreadSource;

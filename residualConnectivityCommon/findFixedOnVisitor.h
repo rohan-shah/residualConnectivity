@@ -8,16 +8,15 @@ namespace residualConnectivity
 	struct findFixedOnVisitor : public boost::default_dfs_visitor
 	{
 	public:
-		findFixedOnVisitor(const vertexState* state, std::vector<int>& graphVertices)
-			:found(false), state(state), graphVertices(graphVertices)
+		findFixedOnVisitor(const vertexState* state)
+			:found(false), state(state)
 		{}
 		template<typename Vertex, typename Graph> void discover_vertex(Vertex u, const Graph& g)
 		{
-			found |= (state[graphVertices[u]].state == FIXED_ON);
+			found |= (state[u].state == FIXED_ON);
 		}
 		bool found;
 		const vertexState* state;
-		std::vector<int>& graphVertices;
 	};
 }
 #endif

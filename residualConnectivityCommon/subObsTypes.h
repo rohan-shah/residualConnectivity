@@ -3,7 +3,7 @@
 #include <vector>
 #include "depth_first_search_restricted.hpp"
 #include "context.h"
-#include "constructSubGraph.h"
+#include "conditionArticulation.h"
 namespace residualConnectivity
 {
 	namespace obs
@@ -37,21 +37,20 @@ namespace residualConnectivity
 		struct withWeightConstructorType
 		{
 		public:
-			withWeightConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph);
+			withWeightConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
 			std::vector<int>& components;
 			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack;
-			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack;
+			boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack;
 			mpfr_class weight;
-			subGraphType& subGraph;
 		};
 		struct articulationConditioningForResamplingConstructorType : public withWeightConstructorType
 		{
-			articulationConditioningForResamplingConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph);
+			articulationConditioningForResamplingConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
 			bool useConditioning;
 		};
 		struct articulationConditioningSameCountConstructorType : public articulationConditioningForResamplingConstructorType
 		{
-			articulationConditioningSameCountConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph);
+			articulationConditioningSameCountConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
 			int count;
 		};
 	}

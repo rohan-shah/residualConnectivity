@@ -3,14 +3,14 @@ namespace residualConnectivity
 {
 	namespace subObs
 	{
-		articulationConditioningForResamplingConstructorType::articulationConditioningForResamplingConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph)
-			:withWeightConstructorType(components, stack, subGraphStack, subGraph)
+		articulationConditioningForResamplingConstructorType::articulationConditioningForResamplingConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack)
+			:withWeightConstructorType(components, stack, filteredGraphStack)
 		{}
-		articulationConditioningSameCountConstructorType::articulationConditioningSameCountConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph)
-			:articulationConditioningForResamplingConstructorType(components, stack, subGraphStack, subGraph)
+		articulationConditioningSameCountConstructorType::articulationConditioningSameCountConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack)
+			:articulationConditioningForResamplingConstructorType(components, stack, filteredGraphStack)
 		{}
-		withWeightConstructorType::withWeightConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph)
-			:components(components), stack(stack), subGraphStack(subGraphStack), subGraph(subGraph)
+		withWeightConstructorType::withWeightConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack)
+			:components(components), stack(stack), filteredGraphStack(filteredGraphStack)
 		{}
 		basicConstructorType::basicConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack)
 			:components(components), stack(stack)

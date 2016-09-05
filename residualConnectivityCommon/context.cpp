@@ -94,9 +94,10 @@ namespace residualConnectivity
 		boost::shared_ptr<inputGraph> orderedGraph(new inputGraph(nVertices));
 		inputGraph::edge_iterator start, end;
 		boost::tie(start, end) = boost::edges(*unorderedGraph);
+		int edgeCounter = 0;
 		for (; start != end; start++)
 		{
-			boost::add_edge((*ordering)[start->m_source], (*ordering)[start->m_target], *orderedGraph);
+			boost::add_edge((*ordering)[start->m_source], (*ordering)[start->m_target], edgeCounter++, *orderedGraph);
 		}
 
 		this->graph = orderedGraph;

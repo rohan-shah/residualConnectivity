@@ -7,6 +7,7 @@
 #include "obs/getSubObservation.hpp"
 #include "subObs/withWeight.h"
 #include "depth_first_search_restricted.hpp"
+#include "conditionArticulation.h"
 namespace residualConnectivity
 {
 	namespace obs
@@ -32,7 +33,7 @@ namespace residualConnectivity
 		protected:
 			articulationConditioningSameCount(const articulationConditioningSameCount& other, mpfr_class weight, int nUpVertices);
 		private:
-			void conditionArticulation(boost::shared_array<vertexState> state, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph);
+			void conditionArticulation(boost::shared_array<vertexState> state, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
 			articulationConditioningSameCount(const articulationConditioningSameCount& other);
 			bool potentiallyConnected;
 			int nUpVertices;

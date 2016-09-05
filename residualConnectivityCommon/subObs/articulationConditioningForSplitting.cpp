@@ -4,7 +4,6 @@
 #include "isSingleComponentWithRadius.h"
 #include "subObs/articulationConditioningForSplitting.h"
 #include "obs/articulationConditioningForSplitting.h"
-#include "constructSubGraph.h"
 #include "subObs/withFinalConditioning.hpp"
 #include "conditionArticulation.h"
 namespace residualConnectivity
@@ -17,7 +16,7 @@ namespace residualConnectivity
 			potentiallyConnected = isSingleComponentPossible(contextObj.getGraph(), state.get(), otherData.components, otherData.stack);
 			if(radius != 1 && potentiallyConnected)
 			{
-				conditionArticulation(state, weight, contextObj, otherData.components, otherData.subGraphStack, otherData.subGraph);
+				conditionArticulation(state, weight, contextObj, otherData.components, otherData.filteredGraphStack);
 			}
 		}
 		bool articulationConditioningForSplitting::isPotentiallyConnected() const
