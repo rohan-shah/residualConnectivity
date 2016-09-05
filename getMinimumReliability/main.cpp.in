@@ -52,7 +52,7 @@ namespace discreteGermGrain
 			std::cout << "First line was invalid" << std::endl;
 			return 0;
 		}
-		std::vector<mpz_class> graphCounts;
+		std::vector<residualConnectivity::mpz_class> graphCounts;
 		for(std::vector<std::string>::iterator i = lines.begin()+1; i!=lines.end(); i++)
 		{
 			std::stringstream ss;
@@ -61,10 +61,10 @@ namespace discreteGermGrain
 			ss >> count;
 			std::string colon;
 			ss >> colon;
-			mpz_class nGraphs;
+			residualConnectivity::mpz_class nGraphs;
 			std::string nGraphsString;
 			ss >> nGraphsString;
-			nGraphs = mpz_class(nGraphsString);
+			nGraphs = residualConnectivity::mpz_class(nGraphsString);
 			graphCounts.push_back(nGraphs);
 		}
 		MLENV ep =  MLInitialize( (MLParametersPointer)0);
@@ -90,7 +90,7 @@ namespace discreteGermGrain
 		}
 
 		std::string mathematicaCommand = "ToString[Select[x/.NSolve[D[0"; 
-		for(std::vector<mpz_class>::iterator i = graphCounts.begin(); i != graphCounts.end(); i++)
+		for(std::vector<residualConnectivity::mpz_class>::iterator i = graphCounts.begin(); i != graphCounts.end(); i++)
 		{
 			std::size_t power = std::distance(graphCounts.begin(), i);
 			std::size_t complementPower = nVertices - power;
@@ -123,7 +123,7 @@ namespace discreteGermGrain
 		}
 		std::string returnedString = returnedCString;
 		returnedString = returnedString.substr(1, returnedString.size()-2);
-		std::vector<mpfr_class> possibleMinima;
+		std::vector<residualConnectivity::mpfr_class> possibleMinima;
 		while(returnedString.size() != 0)
 		{
 			if(returnedString[0] == ' ' || returnedString[0] == ',')
@@ -136,15 +136,15 @@ namespace discreteGermGrain
 			{
 				finalPos++;
 			}
-			mpfr_class number(returnedString.substr(0, finalPos));
+			residualConnectivity::mpfr_class number(returnedString.substr(0, finalPos));
 			if(number > 0 && number < 1) possibleMinima.push_back(number);
 			returnedString = returnedString.substr(finalPos, returnedString.size()-finalPos);
 		}
-		mpfr_class minimumReliability = 2, minimumProbability = -1;
-		for(std::vector<mpfr_class>::iterator i = possibleMinima.begin(); i != possibleMinima.end(); i++)
+		residualConnectivity::mpfr_class minimumReliability = 2, minimumProbability = -1;
+		for(std::vector<residualConnectivity::mpfr_class>::iterator i = possibleMinima.begin(); i != possibleMinima.end(); i++)
 		{
-			mpfr_class probabilityValue = *i;
-			mpfr_class reliability = 0;
+			residualConnectivity::mpfr_class probabilityValue = *i;
+			residualConnectivity::mpfr_class reliability = 0;
 			for(std::size_t j = 0; j < nVertices+1; j++)
 			{
 				reliability += graphCounts[j] * boost::multiprecision::pow(probabilityValue, j) * boost::multiprecision::pow(1 - probabilityValue, nVertices - j);
