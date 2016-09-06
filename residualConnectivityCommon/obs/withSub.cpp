@@ -1,10 +1,10 @@
 #include "obs/withSub.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
-	void withSub::getSubObservation(int radius, vertexState* newState, const Context& context, const vertexState* oldStatesPtr)
+	void withSub::getSubObservation(int radius, vertexState* newState, const context& contextObj, const vertexState* oldStatesPtr)
 	{
-		std::size_t nVertices = context.nVertices();
-		const int* shortestDistances = context.getShortestDistances();
+		std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
+		const int* shortestDistances = contextObj.getShortestDistances();
 
 		std::size_t sourceVertex = 0;
 
@@ -26,7 +26,7 @@ namespace discreteGermGrain
 				std::size_t copiedSourceVertex = sourceVertex;
 				//we want to begin on the NEXT vertex
 				sourceVertex++;
-				while(sourceVertex <= nVertices)
+				while(sourceVertex < nVertices)
 				{
 					int previousState = oldStatesPtr[sourceVertex].state;
 					if(shortestDistances[copiedSourceVertex + nVertices * sourceVertex] <= radius)
@@ -51,11 +51,11 @@ namespace discreteGermGrain
 			else sourceVertex++;
 		}
 	}
-	withSub::withSub(Context const& context, boost::mt19937& randomSource)
-		:observation(context, randomSource)
+	withSub::withSub(context const& contextObj, boost::mt19937& randomSource)
+		:observation(contextObj, randomSource)
 	{}
-	withSub::withSub(Context const& context, boost::shared_array<const vertexState> state)
-		:observation(context, state)
+	withSub::withSub(context const& contextObj, boost::shared_array<const vertexState> state)
+		:observation(contextObj, state)
 	{}
 	withSub::withSub(withSub&& other)
 		:observation(static_cast<observation&&>(other))
@@ -67,6 +67,6 @@ namespace discreteGermGrain
 	}
 	void withSub::getSubObservation(int radius, vertexState* outputState) const
 	{
-		getSubObservation(radius, outputState, context, state.get());
+		getSubObservation(radius, outputState, contextObj, state.get());
 	}
 }

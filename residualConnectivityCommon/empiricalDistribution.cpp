@@ -1,10 +1,10 @@
 #include "empiricalDistribution.h"
 #include <stdexcept>
 #include <fstream>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
-	empiricalDistribution::empiricalDistribution(bool _isWeighted, std::size_t nVertices, const Context& context)
-	:nVertices(nVertices), sampleSize(0), _isWeighted(_isWeighted), externalContext(&context)
+	empiricalDistribution::empiricalDistribution(bool _isWeighted, std::size_t nVertices, const context& contextObj)
+	:nVertices(nVertices), sampleSize(0), _isWeighted(_isWeighted), externalContext(&contextObj)
 	{}
 	void empiricalDistribution::hintDataCount(std::size_t size)
 	{
@@ -79,7 +79,7 @@ namespace discreteGermGrain
 	{
 		return nVertices;
 	}
-	const Context& empiricalDistribution::getContext() const
+	const context& empiricalDistribution::getContext() const
 	{
 		if(externalContext) return *externalContext;
 		return *containedContext.get();

@@ -16,7 +16,7 @@
 #include "isSingleComponentWithRadius.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	int main(int argc, char **argv)
 	{
@@ -54,18 +54,22 @@ namespace discreteGermGrain
 		}
 
 		std::string message;
-		mpfr_class probability;
-		if(!readProbabilityString(variableMap, probability, message))
+		std::vector<mpfr_class> probabilities;
+		if(!readProbabilityString(variableMap, probabilities, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
-		Context context = Context::gridContext(1, probability);
-		if(!readContext(variableMap, context, probability, message))
+		boost::shared_ptr<context::inputGraph> graph(new context::inputGraph());
+		boost::shared_ptr<std::vector<context::vertexPosition> > vertexPositions(new std::vector<context::vertexPosition>());
+		boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>());
+		bool successful = readGraph(variableMap, *graph.get(), *vertexPositions.get(), *ordering.get(), message);
+		if (!successful)
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
+		context contextObj(graph, ordering, vertexPositions, probabilities);
 
 		boost::mt19937 randomSource;
 		readSeed(variableMap, randomSource);
@@ -99,14 +103,14 @@ namespace discreteGermGrain
 			return 0;
 		}
 
-		std::vector<::discreteGermGrain::subObs::basic> observations, nextStepObservations;
+		std::vector<::residualConnectivity::subObs::basic> observations, nextStepObservations;
 		//vector that we re-use to avoid allocations
-		std::vector<int> connectedComponents(context.nVertices());
+		std::vector<int> connectedComponents(boost::num_vertices(contextObj.getGraph()));
 		std::vector<unsigned long long> retained(initialRadius+1, 0);
 		std::vector<unsigned long long> total(initialRadius+1, 0);
 		//stack for depth first search
-		boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType stack;
-		::discreteGermGrain::subObs::basicConstructorType helper(connectedComponents, stack);
+		boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
+		::residualConnectivity::subObs::basicConstructorType helper(connectedComponents, stack);
 
 		std::vector<boost::random::bernoulli_distribution<float> > bernoullis;
 		for(std::vector<float>::iterator j = splittingFactors.begin(); j != splittingFactors.end(); j++)
@@ -118,8 +122,8 @@ namespace discreteGermGrain
 			observations.clear();
 			nextStepObservations.clear();
 
-			::discreteGermGrain::obs::basic obs(context, randomSource);
-			::discreteGermGrain::subObs::basic subObs(::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::basic>::get(obs, initialRadius, helper));
+			::residualConnectivity::obs::basic obs(contextObj, randomSource);
+			::residualConnectivity::subObs::basic subObs(::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::basic>::get(obs, initialRadius, helper));
 			total[0]++;
 			if(subObs.isPotentiallyConnected())
 			{
@@ -130,14 +134,14 @@ namespace discreteGermGrain
 			{
 				nextStepObservations.clear();
 				float splittingFactor = splittingFactors[initialRadius-radius-1];
-				for(std::vector<::discreteGermGrain::subObs::basic>::iterator subObsIterator = observations.begin(); subObsIterator != observations.end(); subObsIterator++)
+				for(std::vector<::residualConnectivity::subObs::basic>::iterator subObsIterator = observations.begin(); subObsIterator != observations.end(); subObsIterator++)
 				{
 					int integerSplittingFactor = (int)splittingFactor;
 					if(bernoullis[initialRadius-radius-1](randomSource)) integerSplittingFactor++;
 					for(int k = 0; k < integerSplittingFactor; k++)
 					{
-						::discreteGermGrain::obs::basic newObs = ::discreteGermGrain::subObs::getObservation<::discreteGermGrain::subObs::basic>::get(*subObsIterator, randomSource);
-						::discreteGermGrain::subObs::basic newSubObs(::discreteGermGrain::obs::getSubObservation<::discreteGermGrain::obs::basic>::get(newObs, radius, helper));
+						::residualConnectivity::obs::basic newObs = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::basic>::get(*subObsIterator, randomSource);
+						::residualConnectivity::subObs::basic newSubObs(::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::basic>::get(newObs, radius, helper));
 						total[initialRadius-radius]++;
 						if(newSubObs.isPotentiallyConnected())
 						{
@@ -169,7 +173,7 @@ namespace discreteGermGrain
 			{
 				std::cout << "Writing to file..." << std::endl;
 				boost::archive::text_oarchive oarchive(stream);
-				for(std::vector<::discreteGermGrain::subObs::basic>::const_iterator i = observations.begin(); i != observations.end(); i++)
+				for(std::vector<::residualConnectivity::subObs::basic>::const_iterator i = observations.begin(); i != observations.end(); i++)
 				{
 					oarchive << *i;
 				}
@@ -186,5 +190,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char **argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

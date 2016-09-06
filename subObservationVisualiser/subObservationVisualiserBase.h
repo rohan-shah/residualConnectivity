@@ -1,13 +1,13 @@
 #ifndef SUB_OBSERVATION_VISUALISER_BASE_HEADER_GUARD
 #define SUB_OBSERVATION_VISUALISER_BASE_HEADER_GUARD
 #include <QFrame>
-#include "Context.h"
+#include "context.h"
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QLabel>
 #include "observation.h"
 #include <QHBoxLayout>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	enum visualisationMode
 	{
@@ -17,7 +17,7 @@ namespace discreteGermGrain
 	{
 		Q_OBJECT
 	public:
-		subObservationVisualiserBase(const Context& context, float pointSize);
+		subObservationVisualiserBase(const context& contextObj, float pointSize);
 		~subObservationVisualiserBase();
 		bool eventFilter(QObject* object, QEvent *event);
 		void setObservation(const observation& subObs);
@@ -41,7 +41,7 @@ namespace discreteGermGrain
 		QGraphicsView* graphicsView;
 		QHBoxLayout* layout;
 		float minX, maxX, minY, maxY;
-		const Context& context;
+		const context& contextObj;
 
 		QGraphicsItemGroup* standardPointsItem;
 		QGraphicsItemGroup* standardLinesItem;

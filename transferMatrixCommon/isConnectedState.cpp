@@ -1,6 +1,6 @@
 #include "isConnectedState.h"
 #include "countSubgraphsCommon.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	inline bool isConnectedState(unsigned long long originalState, int gridDimension)
 	{

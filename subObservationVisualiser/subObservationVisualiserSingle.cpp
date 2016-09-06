@@ -6,7 +6,7 @@
 #include <QGraphicsRectItem>
 #include <boost/lexical_cast.hpp>
 #include <QGraphicsSceneMouseEvent>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	subObservationVisualiserSingle::subObservationVisualiserSingle(const observationWithContext& obsWithContext, float pointSize)
 		:obsWithContext(obsWithContext) 

@@ -7,10 +7,10 @@
 #include <boost/accumulators/statistics/sum_kahan.hpp>
 #include <iostream>
 #include <iomanip>
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	int main(int argc, char** argv)
 	{
@@ -41,13 +41,13 @@ namespace discreteGermGrain
 		}
 	
 		std::string message;
-		mpfr_class inopProbability, opProbability;
-		if(!readProbabilityString(variableMap, opProbability, message))
+		mpfr_class opProbability;
+		if(!readSingleProbabilityString(variableMap, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
 		}
-		inopProbability = 1 - opProbability;
+		mpfr_class inopProbability = 1 - opProbability;
 
 		std::vector<std::string> lines;
 		std::string line;
@@ -94,5 +94,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char** argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

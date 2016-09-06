@@ -1,6 +1,6 @@
 #include "binaryDataSet.h"
 #include <stdexcept>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	void binaryDataSet1::add(const vertexState* state, const std::size_t size)
 	{

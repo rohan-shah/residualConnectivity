@@ -1,0 +1,5 @@
+#ifndef RPACKAGE_RECURSIVE_VARIANCE_REDUCTION_HEADER_GUARD
+#define RPACKAGE_RECURSIVE_VARIANCE_REDUCTION_HEADER_GUARD
+#include "Rcpp.h"
+SEXP recursiveVarianceReduction(SEXP graph, SEXP probability, SEXP n, SEXP seed);
+#endif

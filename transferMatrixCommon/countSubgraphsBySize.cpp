@@ -1,7 +1,7 @@
 #include "countSubgraphsBySize.h"
 #include "countSubgraphsCommon.h"
 #include "constructMatrices.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	void countSubgraphsBySizeMultiThreaded(mpz_class* counts, int gridDimension, TransitionMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger)
 	{

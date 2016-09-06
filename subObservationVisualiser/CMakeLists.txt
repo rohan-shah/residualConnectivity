@@ -3,7 +3,7 @@ add_executable(subObservationVisualiser subObservationVisualiserBase.cpp subObse
 target_link_libraries(subObservationVisualiser PUBLIC Qt5::Core Qt5::Gui Qt5::Widgets ${IGRAPH_LIBRARIES})
 if(WIN32)
 	target_link_libraries(subObservationVisualiser PUBLIC Qt5::WinMain)
-	set_target_properties(subObservationVisualiser PROPERTIES LINK_FLAGS "/SUBSYSTEM:windows" RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
+	set_target_properties(subObservationVisualiser PROPERTIES LINK_FLAGS "/SUBSYSTEM:windows" RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 endif()
 target_link_libraries(subObservationVisualiser PUBLIC residualConnectivityCommon mpfr)
 target_include_directories(subObservationVisualiser PUBLIC ${Boost_INCLUDE_DIRS} ${IGRAPH_INCLUDES})

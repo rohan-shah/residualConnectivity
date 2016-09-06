@@ -1,7 +1,7 @@
-#ifndef DISCRETE_GERM_GRAIN_ZOOM_GRAPHICS_HEADER_GUARD
-#define DISCRETE_GREM_GRAIN_ZOOM_GRAPHICS_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_ZOOM_GRAPHICS_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_ZOOM_GRAPHICS_HEADER_GUARD
 #include <QGraphicsView>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class ZoomGraphicsView : public QGraphicsView
 	{

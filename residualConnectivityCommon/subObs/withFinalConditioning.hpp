@@ -4,13 +4,13 @@
 #include "isSingleComponentWithRadius.h"
 #include "subObs/usingBiconnectedComponents.h"
 #include "constructSubGraph.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
 		namespace withFinalConditioning
 		{
-			template <class T> void estimateRadius1(const T& object, boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<typename T::observationType>& outputObservations)
+			template <class T> void estimateRadius1(const T& object, boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, std::vector<typename T::observationType>& outputObservations)
 			{
 				if(nSimulations <= 0)
 				{
@@ -20,14 +20,12 @@ namespace discreteGermGrain
 				{
 					throw std::runtime_error("Radius must be 1 to call estimateRadius1");
 				}
-				const Context& context = object.getContext();
-				double openProbability = context.getOperationalProbabilityD();
-				boost::bernoulli_distribution<double> bern(openProbability);
+				const context& contextObj = object.getContext();
 				//Construct helper graph, containing everything except FIXED_OFF vertices. This is because in order to compute the biconnected components / articulation vertices, we need an actual graph object, not just a state vector
 				subGraphType graph;
 				std::vector<int> graphVertices;
 				{
-					constructSubGraph(graph, graphVertices, context, object.getState());
+					constructSubGraph(graph, graphVertices, contextObj, object.getState());
 					//assign edge indices
 					subGraphType::edge_iterator start, end;
 					int edgeIndex = 0;
@@ -37,9 +35,9 @@ namespace discreteGermGrain
 				}
 				// Determine which vertices are fixed on, and which are unfixed
 				const vertexState* stateRef = object.getState();
-				std::size_t nVertices = context.nVertices();
-				std::vector<Context::inputGraph::vertex_descriptor> unfixedVertices;
-				std::vector<Context::inputGraph::vertex_descriptor> fixedOnVertices;
+				std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
+				std::vector<context::inputGraph::vertex_descriptor> unfixedVertices;
+				std::vector<context::inputGraph::vertex_descriptor> fixedOnVertices;
 				for(std::size_t i = 0; i < nVertices; i++)
 				{
 					if(stateRef[i].state & UNFIXED_MASK)
@@ -56,13 +54,13 @@ namespace discreteGermGrain
 				{
 					if(object.isPotentiallyConnected())
 					{
-						::discreteGermGrain::obs::withWeightConstructorType weightType;
+						::residualConnectivity::obs::withWeightConstructorType weightType;
 						weightType.weight = object.getWeight();
 						boost::shared_array<vertexState> copiedState(new vertexState[nVertices]);
 						memcpy(copiedState.get(), object.getState(), nVertices*sizeof(vertexState));
 						for(int i = 0; i < nSimulations;i++)
 						{
-							outputObservations.push_back(typename T::observationType(context, copiedState, weightType));
+							outputObservations.push_back(typename T::observationType(contextObj, copiedState, weightType));
 						}
 					}
 					return;
@@ -78,17 +76,18 @@ namespace discreteGermGrain
 
 				//Count the number of biconnected components. I believe these are guaranteed to be contiguous....
 				std::size_t nBiconnectedComponents = *std::max_element(biconnectedIds.begin(), biconnectedIds.end())+1;
-				int nNotAlreadyFixedArticulation = 0;
 				//convert list of articulation vertices across to a bitset
 				std::vector<bool> isArticulationVertex(nVertices, false);
 				//Mark off each articulation point in the above vector, and count the number of extra points that we're fixing.
+				mpfr_class newWeight = object.getWeight();
+				const std::vector<mpfr_class>& operationalProbabilities = contextObj.getOperationalProbabilities();
 				for(std::vector<std::size_t>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
 				{
 					isArticulationVertex[graphVertices[*i]] = true;
 					if(stateRef[graphVertices[*i]].state & UNFIXED_MASK) 
 					{
-						nNotAlreadyFixedArticulation++;
 						fixedOnVertices.push_back(graphVertices[*i]);
+						newWeight *= operationalProbabilities[graphVertices[*i]];
 					}
 				}
 				//allocate a set per biconnected component
@@ -106,15 +105,15 @@ namespace discreteGermGrain
 					}
 				}
 				//vectors containing the fixed and unfixed vertices for each component
-				std::vector<std::vector<Context::inputGraph::vertex_descriptor> > fixedPointsPerComponent;
-				std::vector<std::vector<Context::inputGraph::vertex_descriptor> > unFixedPointsPerComponent;
+				std::vector<std::vector<context::inputGraph::vertex_descriptor> > fixedPointsPerComponent;
+				std::vector<std::vector<context::inputGraph::vertex_descriptor> > unFixedPointsPerComponent;
 				//we're also going to want to work out the number of fixed points per each component, because we're going to append on the unFixedPoints which end up being kept
 				//to the end of the fixed points vector (just to save on memory allocations). 
 				std::vector<int> nFixedPointsPerComponent;
 				for(std::size_t componentCounter = 0; componentCounter < nBiconnectedComponents; componentCounter++)
 				{
 					std::set<int>& currentComponentVertices = biConnectedSets[componentCounter];
-					std::vector<Context::inputGraph::vertex_descriptor> currentComponentFixed, currentComponentUnFixed;
+					std::vector<context::inputGraph::vertex_descriptor> currentComponentFixed, currentComponentUnFixed;
 					for(std::set<int>::iterator vertexIterator = currentComponentVertices.begin(); vertexIterator != currentComponentVertices.end(); vertexIterator++)
 					{
 						if((stateRef[*vertexIterator].state & FIXED_MASK) || isArticulationVertex[*vertexIterator]) currentComponentFixed.push_back(*vertexIterator);
@@ -124,8 +123,7 @@ namespace discreteGermGrain
 					fixedPointsPerComponent.push_back(std::move(currentComponentFixed));
 					unFixedPointsPerComponent.push_back(std::move(currentComponentUnFixed));
 				}
-				mpfr_class newWeight = object.getWeight() * boost::multiprecision::pow(context.getOperationalProbability(), nNotAlreadyFixedArticulation);
-				::discreteGermGrain::obs::withWeightConstructorType observationInput;
+				::residualConnectivity::obs::withWeightConstructorType observationInput;
 				//We need to take the same number of effective simulations, regardless of the number of biconnected components
 				int nComponentRuns = (int)(pow(nSimulations, 1.0/(float)nBiconnectedComponents));
 				int nRemaining = nSimulations - (int)(pow(nComponentRuns, nBiconnectedComponents) + 0.5);
@@ -141,11 +139,11 @@ namespace discreteGermGrain
 						obsState[graphVertices[*j]].state = FIXED_ON;
 					}
 					observationInput.weight = newWeight;
-					typename T::observationType obs(context, obsState, observationInput);
+					typename T::observationType obs(contextObj, obsState, observationInput);
 					for(std::size_t j = 0; j < nBiconnectedComponents; j++)
 					{
-						std::vector<Context::inputGraph::vertex_descriptor>& currentComponentFixed = fixedPointsPerComponent[j], currentComponentUnFixed = unFixedPointsPerComponent[j];
-						if(partIsSingleComponent(context, obs.getState(), currentComponentFixed, currentComponentUnFixed, scratchMemory, stack)) connectedIndices[j].push_back(i);
+						std::vector<context::inputGraph::vertex_descriptor>& currentComponentFixed = fixedPointsPerComponent[j], currentComponentUnFixed = unFixedPointsPerComponent[j];
+						if(partIsSingleComponent(contextObj, obs.getState(), currentComponentFixed, currentComponentUnFixed, scratchMemory, stack)) connectedIndices[j].push_back(i);
 					}
 					generatedObservations.push_back(std::move(obs));
 				}
@@ -174,19 +172,19 @@ namespace discreteGermGrain
 							typename T::observationType& observationThisComponent = generatedObservations[observationIndexThisComponent];
 							const vertexState* observationThisComponentState = observationThisComponent.getState();
 
-							std::vector<Context::inputGraph::vertex_descriptor>& currentComponentFixed = fixedPointsPerComponent[j];
-							std::vector<Context::inputGraph::vertex_descriptor>& currentComponentUnFixed = unFixedPointsPerComponent[j];
-							for(std::vector<Context::inputGraph::vertex_descriptor>::iterator k = currentComponentFixed.begin(); k != currentComponentFixed.end(); k++)
+							std::vector<context::inputGraph::vertex_descriptor>& currentComponentFixed = fixedPointsPerComponent[j];
+							std::vector<context::inputGraph::vertex_descriptor>& currentComponentUnFixed = unFixedPointsPerComponent[j];
+							for(std::vector<context::inputGraph::vertex_descriptor>::iterator k = currentComponentFixed.begin(); k != currentComponentFixed.end(); k++)
 							{
 								newState[*k] = observationThisComponentState[*k];
 							}
-							for(std::vector<Context::inputGraph::vertex_descriptor>::iterator k = currentComponentUnFixed.begin(); k != currentComponentUnFixed.end(); k++)
+							for(std::vector<context::inputGraph::vertex_descriptor>::iterator k = currentComponentUnFixed.begin(); k != currentComponentUnFixed.end(); k++)
 							{
 								newState[*k] = observationThisComponentState[*k];
 							}
 						}
 						observationInput.weight = newWeight;
-						outputObservations.push_back(typename T::observationType(context, newState, observationInput));
+						outputObservations.push_back(typename T::observationType(contextObj, newState, observationInput));
 						std::size_t currentIncrementPoint = 0;
 						while(currentIncrementPoint < nBiconnectedComponents)
 						{
@@ -217,8 +215,8 @@ namespace discreteGermGrain
 						obsState[graphVertices[*j]].state = FIXED_ON;
 					}
 					observationInput.weight = newWeight;
-					typename T::observationType obs(context, obsState, observationInput);
-					if(isSingleComponentAllOn(context, obs.getState(), scratchMemory, stack)) 
+					typename T::observationType obs(contextObj, obsState, observationInput);
+					if(isSingleComponentAllOn(contextObj, obs.getState(), scratchMemory, stack)) 
 					{
 						outputObservations.push_back(std::move(obs));
 					}

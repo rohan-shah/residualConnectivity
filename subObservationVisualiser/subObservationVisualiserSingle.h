@@ -1,7 +1,7 @@
-#ifndef DISCRETE_GREM_GRAIN_SUB_OBSERVATION_VISUALISER_SINGLE_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUB_OBSERVATION_VISUALISER_SINGLE_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUB_OBSERVATION_VISUALISER_SINGLE_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUB_OBSERVATION_VISUALISER_SINGLE_HEADER_GUARD
 #include <QMainWindow>
-#include "Context.h"
+#include "context.h"
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QLabel>
@@ -12,7 +12,7 @@
 #include "subObservationVisualiserBase.h"
 #include "subObservationStatusBar.h"
 #include "observation.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class subObservationVisualiserSingle : public QMainWindow
 	{

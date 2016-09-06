@@ -4,7 +4,7 @@
 #include "countSubgraphsCommon.h"
 #include "customizedEigen.h"
 #include "states.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class countSubgraphsBySizeLogger
 	{

@@ -2,7 +2,7 @@
 #define OUTPUT_OBJECT_HEADER_GUARD
 #include <iostream>
 #include <string>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	struct outputObject
 	{
@@ -60,6 +60,7 @@ namespace discreteGermGrain
 			std::cout << c;
 			return *this;
 		}
+	protected:
 		virtual outputObject& internalEndl()
 		{
 			std::cout << std::endl;

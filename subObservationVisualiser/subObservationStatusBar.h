@@ -1,11 +1,11 @@
-#ifndef DISCRETE_GERM_GRAIN_SUBOBSERVATION_STATUS_BAR_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUBOBSERVATION_STATUS_BAR_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUBOBSERVATION_STATUS_BAR_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUBOBSERVATION_STATUS_BAR_HEADER_GUARD
 #include <QStatusBar>
 #include <QLabel>
 #include <QFrame>
 #include <QHBoxLayout>
 #include <string>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class subObservationStatusBar : public QStatusBar
 	{

@@ -1,10 +1,10 @@
-#ifndef DISCRETE_GERM_GRAIN_SUB_OBS_TYPES_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUB_OBS_TYPES_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUB_OBS_TYPES_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUB_OBS_TYPES_HEADER_GUARD
 #include <vector>
 #include "depth_first_search_restricted.hpp"
-#include "Context.h"
-#include "constructSubGraph.h"
-namespace discreteGermGrain
+#include "context.h"
+#include "conditionArticulation.h"
+namespace residualConnectivity
 {
 	namespace obs
 	{
@@ -17,30 +17,40 @@ namespace discreteGermGrain
 			withWeightConstructorType();
 			mpfr_class weight;
 		};
+		struct weightAndCountConstructorType
+		{
+			weightAndCountConstructorType()
+			{}
+			int count;
+			mpfr_class weight;
+		};
 	}
 	namespace subObs
 	{
 		struct basicConstructorType
 		{
 		public:
-			basicConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack);
+			basicConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack);
 			std::vector<int>& components;
-			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
+			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack;
 		};
 		struct withWeightConstructorType
 		{
 		public:
-			withWeightConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph);
+			withWeightConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
 			std::vector<int>& components;
-			boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack;
-			boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack;
+			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack;
+			boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack;
 			mpfr_class weight;
-			subGraphType& subGraph;
 		};
 		struct articulationConditioningForResamplingConstructorType : public withWeightConstructorType
 		{
-			articulationConditioningForResamplingConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<subGraphType>::stackType& subGraphStack, subGraphType& subGraph);
-			bool useConditioning;
+			articulationConditioningForResamplingConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
+		};
+		struct articulationConditioningSameCountConstructorType : public articulationConditioningForResamplingConstructorType
+		{
+			articulationConditioningSameCountConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
+			int count;
 		};
 	}
 }

@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 3.1)
-add_executable(conditionalMC conditionalMC.cpp)
-target_link_libraries(conditionalMC PUBLIC residualConnectivityCommon conditionalMCLib)
-target_compile_definitions(conditionalMC PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
-if(WIN32)
-	set_target_properties(conditionalMC PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
-endif()

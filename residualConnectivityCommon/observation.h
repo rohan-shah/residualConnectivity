@@ -1,5 +1,5 @@
-#ifndef DISCRETE_GERM_GRAIN_OBS_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_OBS_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_OBS_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_OBS_HEADER_GUARD
 #include <boost/random/mersenne_twister.hpp>
 #include <boost/graph/adjacency_list.hpp>
 #include <vector>
@@ -10,42 +10,46 @@
 #include <boost/serialization/shared_ptr.hpp>
 #include <boost/serialization/access.hpp>
 #include <boost/noncopyable.hpp>
-#include "Context.h"
+#include "context.h"
 #include "subObsTypes.h"
 #include "subObs/getObservation.hpp"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class observation : public boost::noncopyable
 	{
 	public:
 		friend class boost::serialization::access;
-		template<class T> friend class ::discreteGermGrain::subObs::getObservation;
-		observation(Context const& context, boost::archive::binary_iarchive& archive);
-		observation(Context const& context, boost::archive::text_iarchive& archive);
-		observation(Context const&, boost::mt19937& randomSource);
-		observation(Context const& context, boost::shared_array<const vertexState> state);
+		template<class T> friend class ::residualConnectivity::subObs::getObservation;
+		observation(context const& contextObj, boost::archive::binary_iarchive& archive);
+		observation(context const& contextObj, boost::archive::text_iarchive& archive);
+		observation(context const&, boost::mt19937& randomSource);
+		observation(context const& contextObj, boost::shared_array<const vertexState> state);
 		//A default constructor that fills all numeric members with -1. Somewhat dangerous to leave in here, but problems are due to the use of such invalid objects, it should be fairly obvious. 
-		//observation(Context const& context);
+		//observation(context const& contextObj);
 		observation(observation&& other);
 		observation& operator=(observation&& other);
-		Context const& getContext() const;
+		context const& getContext() const;
 		const vertexState* getState() const;
 	protected:
 		observation(const observation& other);
-		Context const& context;
+		context const& contextObj;
 		boost::shared_array<const vertexState> state;
 	private:
-		observation(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::basicConstructorType&);
+		observation(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::basicConstructorType&);
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
-			boost::shared_array<vertexState> state(new vertexState[context.nVertices()]);
-			ar & boost::serialization::make_array(state.get(), context.nVertices());
+			const context::inputGraph& graph = contextObj.getGraph();
+			std::size_t nVertices = boost::num_vertices(graph);
+			boost::shared_array<vertexState> state(new vertexState[nVertices]);
+			ar & boost::serialization::make_array(state.get(), nVertices);
 			this->state = state;
 		};
 		template<class Archive> void save(Archive& ar, const unsigned int version) const
 		{
-			ar & boost::serialization::make_array(state.get(), context.nVertices());
+			const context::inputGraph& graph = contextObj.getGraph();
+			std::size_t nVertices = boost::num_vertices(graph);
+			ar & boost::serialization::make_array(state.get(), nVertices);
 		}
 	};
 	class observationWithContext
@@ -62,35 +66,35 @@ namespace discreteGermGrain
 		observationWithContext(const observationWithContext& other);
 		friend class boost::serialization::access;
 		const observation& getObs() const;
-		const Context& getContext() const;
+		const context& getContext() const;
 	private:
 		BOOST_SERIALIZATION_SPLIT_MEMBER()
 		template<class Archive> void save(Archive& ar, const unsigned int version) const
 		{
-			std::string typeString = "discreteGermGrainObsWithContext";
+			std::string typeString = "residualConnectivityObsWithContext";
 			ar << typeString;
 			ar << obs->getContext();
 			ar << *obs;
-			typeString = "discreteGermGrainObsWithContext_end";
+			typeString = "residualConnectivityObsWithContext_end";
 			ar << typeString;
 		}
 		template<class Archive> void load(Archive& ar, const unsigned int version)
 		{
 			std::string typeString;
 			ar >> typeString;
-			if(typeString != "discreteGermGrainObsWithContext")
+			if(typeString != "residualConnectivityObsWithContext")
 			{
 				throw std::runtime_error("Incorrect type specifier");
 			}
-			context.reset(new Context(ar));
-			obs.reset(new observation(*context.get(), ar));
+			contextObj.reset(new context(ar));
+			obs.reset(new observation(*contextObj.get(), ar));
 			ar >> typeString;
-			if(typeString != "discreteGermGrainObsWithContext_end")
+			if(typeString != "residualConnectivityObsWithContext_end")
 			{
 				throw std::runtime_error("Incorrect type specifier");
 			}
 		}
-		boost::shared_ptr<const Context> context;
+		boost::shared_ptr<const context> contextObj;
 		boost::shared_ptr<observation> obs;
 	};
 }

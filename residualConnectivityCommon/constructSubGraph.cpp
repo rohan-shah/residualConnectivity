@@ -1,10 +1,11 @@
 #include "constructSubGraph.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
-	void constructSubGraph(subGraphType& graph, std::vector<int>& graphVertices, const Context& context, const vertexState* stateRef)
+	void constructSubGraph(subGraphType& graph, std::vector<int>& graphVertices, const context& contextObj, const vertexState* stateRef)
 	{
+		const context::inputGraph& originalGraph = contextObj.getGraph();
 		graphVertices.clear();
-		std::size_t nVertices = context.nVertices();
+		std::size_t nVertices = boost::num_vertices(originalGraph);
 
 		//graphVertices[i] is the vertex in the global graph that corresponds to vertex i in the returned graph
 		//inverse is the inverse mapping, with 0's everywhere else. 
@@ -22,10 +23,9 @@ namespace discreteGermGrain
 		}
 		graph.clear();
 		//graph = subGraphType(graphVertices.size());
-		const Context::inputGraph& originalGraph = context.getGraph();
 		for(std::size_t i = 0; i < graphVertices.size(); i++)
 		{
-			Context::inputGraph::out_edge_iterator start, end;
+			context::inputGraph::out_edge_iterator start, end;
 			boost::tie(start, end) = boost::out_edges(graphVertices[i], originalGraph);
 			while(start != end)
 			{

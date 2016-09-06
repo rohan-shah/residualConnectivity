@@ -4,20 +4,19 @@
 #include "isSingleComponentWithRadius.h"
 #include "subObs/articulationConditioningForSplitting.h"
 #include "obs/articulationConditioningForSplitting.h"
-#include "constructSubGraph.h"
 #include "subObs/withFinalConditioning.hpp"
 #include "conditionArticulation.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
-		articulationConditioningForSplitting::articulationConditioningForSplitting(Context const& context, boost::shared_array<vertexState> state, int radius, ::discreteGermGrain::subObs::withWeightConstructorType& otherData)
-			: ::discreteGermGrain::subObs::withWeight(context, state, radius, otherData.weight)
+		articulationConditioningForSplitting::articulationConditioningForSplitting(context const& contextObj, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
+			: ::residualConnectivity::subObs::withWeight(contextObj, state, radius, otherData.weight)
 		{
-			potentiallyConnected = isSingleComponentPossible(context, state.get(), otherData.components, otherData.stack);
+			potentiallyConnected = isSingleComponentPossible(contextObj.getGraph(), state.get(), otherData.components, otherData.stack);
 			if(radius != 1 && potentiallyConnected)
 			{
-				conditionArticulation(state, weight, context, otherData.components, otherData.subGraphStack, otherData.subGraph);
+				conditionArticulation(state, weight, contextObj, otherData.components, otherData.filteredGraphStack);
 			}
 		}
 		bool articulationConditioningForSplitting::isPotentiallyConnected() const
@@ -25,20 +24,21 @@ namespace discreteGermGrain
 			return potentiallyConnected;
 		}
 		articulationConditioningForSplitting::articulationConditioningForSplitting(articulationConditioningForSplitting&& other)
-			: ::discreteGermGrain::subObs::withWeight(static_cast<::discreteGermGrain::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
+			: ::residualConnectivity::subObs::withWeight(static_cast< ::residualConnectivity::subObs::withWeight&&>(other)), potentiallyConnected(other.potentiallyConnected)
 		{
 			potentiallyConnected = other.potentiallyConnected;
 		}
 		void articulationConditioningForSplitting::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData)const
 		{
-			boost::random::bernoulli_distribution<double> vertexDistribution(context.getOperationalProbabilityD());
-			std::size_t nVertices = context.nVertices();
+			std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
+			const std::vector<double> operationalProbabilityD = contextObj.getOperationalProbabilitiesD();
 			//generate a full random grid, which includes the subPoints 
 			for(std::size_t i = 0; i < nVertices; i++)
 			{
 				if(outputState[i].state & UNFIXED_MASK)
 				{
+					boost::random::bernoulli_distribution<double> vertexDistribution(operationalProbabilityD[i]);
 					if(vertexDistribution(randomSource))
 					{
 						outputState[i].state = UNFIXED_ON;
@@ -48,7 +48,7 @@ namespace discreteGermGrain
 			}
 			otherData.weight = weight;
 		}
-		void articulationConditioningForSplitting::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<Context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
+		void articulationConditioningForSplitting::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const
 		{
 			if(radius != 1)
 			{
@@ -61,10 +61,10 @@ namespace discreteGermGrain
 			return articulationConditioningForSplitting(*this, weight);
 		}
 		articulationConditioningForSplitting::articulationConditioningForSplitting(const articulationConditioningForSplitting& other, mpfr_class weight)
-			: ::discreteGermGrain::subObs::withWeight(static_cast<const ::discreteGermGrain::subObs::withWeight&>(other), weight), potentiallyConnected(other.potentiallyConnected)
+			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other), weight), potentiallyConnected(other.potentiallyConnected)
 		{}
 		articulationConditioningForSplitting::articulationConditioningForSplitting(const articulationConditioningForSplitting& other)
-			: ::discreteGermGrain::subObs::withWeight(static_cast<const ::discreteGermGrain::subObs::withWeight&>(other)), potentiallyConnected(other.potentiallyConnected)
+			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other)), potentiallyConnected(other.potentiallyConnected)
 		{}
 	}
 }

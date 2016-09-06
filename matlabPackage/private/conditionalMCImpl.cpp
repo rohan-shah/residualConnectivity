@@ -1,5 +1,5 @@
 #include "mex.h"
-#include "conditionalMCLib.h"
+#include "monteCarloMethods/conditionalMC.h"
 #include "convertGraph.h"
 #include "exceptionHandling.h"
 void mexFunction(int nlhs, mxArray* plhs[], int nrhs, const mxArray *prhs[])
@@ -16,17 +16,21 @@ BEGIN_MEX_WRAPPER
 		throw std::runtime_error("Function conditionalMCImpl returns only one value");
 	}
 	//First input must be a probability
-	bool probabilityValid = !mxIsComplex(prhs[0]) && !mxIsSparse(prhs[0]) && mxIsNumeric(prhs[0]) && mxGetNumberOfDimensions(prhs[0]) == 2 && mxGetNumberOfElements(prhs[0]) == 1;
+	bool probabilityValid = !mxIsComplex(prhs[0]) && !mxIsSparse(prhs[0]) && mxIsNumeric(prhs[0]) && mxGetNumberOfDimensions(prhs[0]) == 2;
 	if(!probabilityValid)
 	{
 		throw std::runtime_error("First input must be a real number");
 	}
-	double probability = mxGetScalar(prhs[0]);
-	if(probability < 0 || probability > 1)
+	std::vector<residualConnectivity::mpfr_class> opProbabilities;
+	for (std::size_t i = 0; i < mxGetNumberOfElements(prhs[0]); i++)
 	{
-		throw std::runtime_error("Input probability must be between 0 and 1");
+		double probability = *(mxGetPr(prhs[0]) + i);
+		if (probability < 0 || probability > 1)
+		{
+			throw std::runtime_error("Input probabilities must be between 0 and 1");
+		}
+		opProbabilities.push_back(probability);
 	}
-	mpfr_class probabilityMpfr = probability;
 
 	//Second input must be the sample size n
 	bool nValid = !mxIsComplex(prhs[1]) && !mxIsSparse(prhs[1]) && mxIsNumeric(prhs[1]) && mxGetNumberOfDimensions(prhs[1]) == 2 && mxGetNumberOfElements(prhs[1]) == 1;
@@ -44,8 +48,8 @@ BEGIN_MEX_WRAPPER
 	int seed = (int)round(seedDouble);
 	if(fabs(seed - seedDouble) > 1e-5 || n <= 0) THIRD_INPUT_ERROR;
 	
-	boost::shared_ptr<discreteGermGrain::Context::inputGraph> graph(new discreteGermGrain::Context::inputGraph());
-	boost::shared_ptr<std::vector<discreteGermGrain::Context::vertexPosition> > vertexPositions(new std::vector<discreteGermGrain::Context::vertexPosition>());
+	boost::shared_ptr<residualConnectivity::context::inputGraph> graph(new residualConnectivity::context::inputGraph());
+	boost::shared_ptr<std::vector<residualConnectivity::context::vertexPosition> > vertexPositions(new std::vector<residualConnectivity::context::vertexPosition>());
 	if(nrhs == 4)
 	{
 		std::string error;
@@ -60,14 +64,14 @@ BEGIN_MEX_WRAPPER
 	}
 	boost::shared_ptr<std::vector<int> > ordering(new std::vector<int>(boost::num_vertices(*graph)));
 	for(int i = 0; i < (int)boost::num_vertices(*graph); i++) (*ordering)[i] = i;
-	discreteGermGrain::Context context = discreteGermGrain::Context(graph, ordering, vertexPositions, probabilityMpfr);
+	residualConnectivity::context contextObj = residualConnectivity::context(graph, ordering, vertexPositions, opProbabilities);
 
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
-	discreteGermGrain::conditionalMCArgs args(context, randomSource);
+	residualConnectivity::conditionalMCArgs args(contextObj, randomSource);
 	args.n = n;
 
-	discreteGermGrain::conditionalMC(args);
+	residualConnectivity::conditionalMC(args);
 	plhs[0] = mxCreateDoubleMatrix(1, 1, mxREAL);
 	double* output = mxGetPr(plhs[0]);
 	*output = args.estimate.convert_to<double>();

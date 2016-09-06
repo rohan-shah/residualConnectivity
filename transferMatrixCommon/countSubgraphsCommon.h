@@ -1,10 +1,10 @@
 #ifndef COUNT_SUBGRAPHS_COMMON_HEADER_GUARD
 #define COUNT_SUBGRAPHS_COMMON_HEADER_GUARD
-#include "includeNumerics.h"
+#include "includeMPFRResidualConnectivity.h"
 #include <Eigen/Core>
 #include <vector>
 #include "states.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	typedef ::Eigen::Matrix<mpz_class, -1, -1, ::Eigen::RowMajor, -1, -1> LargeDenseIntMatrix;
 	enum VertexState

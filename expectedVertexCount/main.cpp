@@ -3,14 +3,12 @@
 #include <boost/graph/adjacency_matrix.hpp>
 #include <boost/program_options.hpp>
 #include <boost/math/special_functions/binomial.hpp>
-#include <boost/accumulators/accumulators.hpp>
-#include <boost/accumulators/statistics/sum_kahan.hpp>
 #include <iostream>
 #include <iomanip>
-#include "Context.h"
+#include "context.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	int main(int argc, char** argv)
 	{
@@ -42,7 +40,7 @@ namespace discreteGermGrain
 	
 		std::string message;
 		mpfr_class inopProbability, opProbability;
-		if(!readProbabilityString(variableMap, opProbability, message))
+		if(!readSingleProbabilityString(variableMap, opProbability, message))
 		{
 			std::cout << message << std::endl;
 			return 0;
@@ -96,5 +94,5 @@ namespace discreteGermGrain
 }
 int main(int argc, char** argv)
 {
-	return discreteGermGrain::main(argc, argv);
+	return residualConnectivity::main(argc, argv);
 }

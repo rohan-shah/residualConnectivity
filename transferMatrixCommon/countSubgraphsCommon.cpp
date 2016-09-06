@@ -7,7 +7,7 @@
 #else
 	#include <alloca.h>
 #endif
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	void generateCachedIndices(unsigned long long binaryEncoding, std::vector<std::size_t>& cachedIndices, int nGroups, const transferStates& states)
 	{

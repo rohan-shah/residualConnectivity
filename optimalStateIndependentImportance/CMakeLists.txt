@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 3.1)
-add_executable(optimalStateIndependentImportance main.cpp)
-target_link_libraries(optimalStateIndependentImportance PUBLIC residualConnectivityCommon)
-target_compile_definitions(optimalStateIndependentImportance PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
-if(WIN32)
-	set_target_properties(optimalStateIndependentImportance PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
-endif()

@@ -1,7 +1,0 @@
-cmake_minimum_required(VERSION 3.1)
-add_executable(cancela2002RVR rvr.cpp)
-target_link_libraries(cancela2002RVR PUBLIC residualConnectivityCommon)
-target_compile_definitions(cancela2002RVR PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
-if(WIN32)
-	set_target_properties(cancela2002RVR PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${PROJECT_BINARY_DIR})
-endif()

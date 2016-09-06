@@ -1,7 +1,7 @@
-#ifndef DISCRETE_GERM_GRAIN_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_EMPIRICAL_DISTRIBUTION_HEADER_GUARD
 #include <boost/noncopyable.hpp>
-#include "Context.h"
+#include "context.h"
 #include "vertexState.h"
 #include <string>
 #include <boost/serialization/split_member.hpp>
@@ -10,7 +10,7 @@
 #include <boost/archive/binary_iarchive.hpp>
 #include <boost/archive/text_iarchive.hpp>
 #include "binaryDataSet.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class empiricalDistribution : protected binaryDataSet1, public boost::noncopyable
 	{
@@ -26,7 +26,7 @@ namespace discreteGermGrain
 		friend class boost::serialization::access;
 		empiricalDistribution(empiricalDistribution&& other);
 		empiricalDistribution& operator=(empiricalDistribution&& other);
-		empiricalDistribution(bool isWeighted, std::size_t nVertices, const Context& context);
+		empiricalDistribution(bool isWeighted, std::size_t nVertices, const context& contextObj);
 		void hintDataCount(std::size_t size);
 		void add(const vertexState* state);
 		void add(const vertexState* state, double weight);
@@ -35,11 +35,11 @@ namespace discreteGermGrain
 		std::size_t getNEdges() const;
 		bool isWeighted() const;
 		double getWeight(std::size_t index) const;
-		const Context& getContext() const;
+		const context& getContext() const;
 	private:
 		template<class Archive> void save(Archive & ar, const unsigned int version) const
 		{
-			std::string typeString = "discreteGermGrain::empiricalDistribution";
+			std::string typeString = "residualConnectivity::empiricalDistribution";
 			ar << typeString;
 			if(containedContext)
 			{
@@ -64,18 +64,18 @@ namespace discreteGermGrain
 				ar << endWeights;
 			}
 			ar << *static_cast<const binaryDataSet1*>(this);
-			std::string endFile = "discreteGermGrain::end_distributions";
+			std::string endFile = "residualConnectivity::end_distributions";
 			ar << endFile;
 		}
 		template<class Archive> void load(Archive & ar, const unsigned int version)
 		{
 			std::string typeString;
 			ar >> typeString;
-			if(typeString != "discreteGermGrain::empiricalDistribution")
+			if(typeString != "residualConnectivity::empiricalDistribution")
 			{
 				throw std::runtime_error("File did not start with correct type specifier");
 			}
-			containedContext.reset(new Context(ar));
+			containedContext.reset(new context(ar));
 			std::string weightString;
 			ar >> weightString;
 			if(weightString == "weighted")
@@ -125,7 +125,7 @@ namespace discreteGermGrain
 			}
 			std::string endDistributions;
 			ar >> endDistributions;
-			if(endDistributions != "discreteGermGrain::end_distributions")
+			if(endDistributions != "residualConnectivity::end_distributions")
 			{
 				throw std::runtime_error("Distributions file must end with the string 'end_distributions'");
 			}
@@ -137,8 +137,8 @@ namespace discreteGermGrain
 		bool _isWeighted;
 		std::vector<double> weights;
 
-		std::shared_ptr<Context> containedContext;
-		Context const* externalContext;
+		std::shared_ptr<context> containedContext;
+		context const* externalContext;
 	};
 }
 #endif

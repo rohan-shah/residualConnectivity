@@ -1,14 +1,14 @@
-#ifndef DISCRETE_GERM_GRAIN_BASIC_OBS_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_BASIC_OBS_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_BASIC_OBS_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_BASIC_OBS_HEADER_GUARD
 #include "subObsTypes.h"
 #include "obs/getSubObservation.hpp"
 #include "subObs/getObservation.hpp"
 #include "obs/withSub.h"
 #include <boost/shared_array.hpp>
-#include "Context.h"
+#include "context.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "subObsTypes.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	namespace subObs
 	{
@@ -16,22 +16,22 @@ namespace discreteGermGrain
 	}
 	namespace obs
 	{
-		class basic : public ::discreteGermGrain::withSub
+		class basic : public ::residualConnectivity::withSub
 		{
 		public:
-			template<class T> friend class ::discreteGermGrain::obs::getSubObservation;
-			template<class T> friend class ::discreteGermGrain::subObs::getObservation;
+			template<class T> friend class ::residualConnectivity::obs::getSubObservation;
+			template<class T> friend class ::residualConnectivity::subObs::getObservation;
 
-			typedef ::discreteGermGrain::subObs::basic subObservationType;
-			typedef ::discreteGermGrain::subObs::basicConstructorType subObservationConstructorType;
+			typedef ::residualConnectivity::subObs::basic subObservationType;
+			typedef ::residualConnectivity::subObs::basicConstructorType subObservationConstructorType;
 
-			basic(Context const& context, boost::mt19937& randomSource);
-			basic(Context const& context, boost::shared_array<const vertexState> state);
+			basic(context const& contextObj, boost::mt19937& randomSource);
+			basic(context const& contextObj, boost::shared_array<const vertexState> state);
 			basic(basic&& other);
 			basic& operator=(basic&& other);
 		private:
 			void getSubObservation(vertexState* newState, int radius, subObservationConstructorType& other) const;
-			basic(Context const& context, boost::shared_array<const vertexState> state, ::discreteGermGrain::obs::basicConstructorType&);
+			basic(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::basicConstructorType&);
 		};
 	}
 }

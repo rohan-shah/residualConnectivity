@@ -1,0 +1,5 @@
+#ifndef CREATE_HEXAGONAL_LATTICE_HEADER_GUARD
+#define CREATE_HEXAGONAL_LATTICE_HEADER_GUARD
+#include <Rcpp.h>
+SEXP createHexagonalLattice(SEXP x, SEXP y);
+#endif

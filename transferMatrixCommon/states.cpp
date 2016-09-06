@@ -2,7 +2,7 @@
 #include "countSubgraphsCommon.h"
 #include "subgraphMacros.hpp"
 #include <boost/iterator/counting_iterator.hpp>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	transferStates::transferStates(int gridDimension)
 		:gridDimension(gridDimension)

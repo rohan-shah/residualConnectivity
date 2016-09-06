@@ -1,7 +1,7 @@
 #ifndef TRANSFER_MATRIX_STATES_HEADER_GUARD
 #define TRANSFER_MATRIX_STATES_HEADER_GUARD
 #include <vector>
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	class transferStates
 	{

@@ -1,7 +1,7 @@
 #ifndef SUB_OBSERVATION_VISUALISER_TREE_HEADER_GUARD
 #define SUB_OBSERVATION_VISUALISER_TREE_HEADER_GUARD
 #include <QMainWindow>
-#include "Context.h"
+#include "context.h"
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QLabel>
@@ -12,7 +12,7 @@
 #include "subObservationStatusBar.h"
 #include "observationTree.h"
 #include "treeVisualiserFrame.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	//If the next state is RESIMULATE, then we resimulate until we observe something that hits the next level, BUT
 	class subObservationVisualiserTree : public QMainWindow

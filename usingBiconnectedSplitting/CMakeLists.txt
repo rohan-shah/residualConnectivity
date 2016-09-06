@@ -1,3 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
-add_subdirectory(usingBiconnectedSplitting)
-add_subdirectory(usingBiconnectedSplittingLib)
+add_executable(usingBiconnectedSplitting usingBiconnectedSplitting.cpp)
+target_link_libraries(usingBiconnectedSplitting PUBLIC monteCarloMethods)
+if(WIN32)
+	set_target_properties(usingBiconnectedSplitting PROPERTIES RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR} PDB_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
+endif()

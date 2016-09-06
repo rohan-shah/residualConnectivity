@@ -1,7 +1,7 @@
-#ifndef DISCRETE_GERM_GRAIN_SUB_OBSERVATION_VISUALISER_COLLECTION_HEADER_GUARD
-#define DISCRETE_GERM_GRAIN_SUB_OBSERVATION_VISUALISER_COLLECTION_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_SUB_OBSERVATION_VISUALISER_COLLECTION_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_SUB_OBSERVATION_VISUALISER_COLLECTION_HEADER_GUARD
 #include <QMainWindow>
-#include "Context.h"
+#include "context.h"
 #include <QGraphicsScene>
 #include <QGraphicsView>
 #include <QLabel>
@@ -11,7 +11,7 @@
 #include "subObservationVisualiserBase.h"
 #include "subObservationStatusBar.h"
 #include "observationCollection.h"
-namespace discreteGermGrain
+namespace residualConnectivity
 {
 	//If the next state is RESIMULATE, then we resimulate until we observe something that hits the next level, BUT
 	class subObservationVisualiserCollection : public QMainWindow
