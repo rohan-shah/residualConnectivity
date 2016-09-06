@@ -8,16 +8,14 @@ namespace residualConnectivity
 	struct articulationConditioningSameCountArgs
 	{
 	public:
-		articulationConditioningSameCountArgs(const context& contextObj, boost::mt19937& randomSource, observationTree& tree, outputObject& output)
-		: contextObj(contextObj), randomSource(randomSource), tree(tree), output(output), outputTree(false)
+		articulationConditioningSameCountArgs(const context& contextObj, boost::mt19937& randomSource, outputObject& output)
+		: contextObj(contextObj), randomSource(randomSource), output(output)
 		{}
 		const context& contextObj;
 		boost::mt19937& randomSource;
-		observationTree& tree;
 		outputObject& output;
 		int initialRadius;
 		int n;
-		bool outputTree;
 		mpfr_class expectedUpNumber, estimate;
 		bool verbose;
 	};
