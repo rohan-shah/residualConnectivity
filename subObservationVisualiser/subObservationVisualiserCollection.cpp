@@ -28,7 +28,8 @@ namespace residualConnectivity
 			QObject::connect(base, &subObservationVisualiserBase::observationLeft, this, &subObservationVisualiserCollection::observationLeft);
 			QObject::connect(base, &subObservationVisualiserBase::observationRight, this, &subObservationVisualiserCollection::observationRight);
 
-			boost::shared_array<vertexState> expandedState(new vertexState[collection.getContext().nVertices()]);
+			std::size_t nVertices = boost::num_vertices(collection.getContext().getGraph());
+			boost::shared_array<vertexState> expandedState(new vertexState[nVertices]);
 			collection.expand(currentIndex, expandedState);
 			//Putting in dummy values for the last two constructor arguments
 			observation subObs(collection.getContext(), expandedState);
@@ -61,7 +62,8 @@ namespace residualConnectivity
 		if(currentIndex > 0)
 		{
 			currentIndex--;
-			boost::shared_array<vertexState> expandedState(new vertexState[collection.getContext().nVertices()]);
+			std::size_t nVertices = boost::num_vertices(collection.getContext().getGraph());
+			boost::shared_array<vertexState> expandedState(new vertexState[nVertices]);
 			collection.expand(currentIndex, expandedState);
 			//Putting in dummy values for the last two constructor arguments
 			observation obs(collection.getContext(), expandedState);
@@ -73,7 +75,8 @@ namespace residualConnectivity
 		if(currentIndex < (int)(collection.getSampleSize() - 1))
 		{
 			currentIndex++;
-			boost::shared_array<vertexState> expandedState(new vertexState[collection.getContext().nVertices()]);
+			std::size_t nVertices = boost::num_vertices(collection.getContext().getGraph());
+			boost::shared_array<vertexState> expandedState(new vertexState[nVertices]);
 			collection.expand(currentIndex, expandedState);
 			//Putting in dummy values for the last two constructor arguments
 			observation obs(collection.getContext(), expandedState);

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.1)
 add_executable(transferMatrix main.cpp)
-target_link_libraries(transferMatrix PUBLIC transferMatrixCommon residualConnectivityCommon)
+target_link_libraries(transferMatrix PUBLIC transferMatrixCommon residualConnectivityCommon gmp)
 
 target_compile_options(transferMatrix PRIVATE ${OpenMP_CXX_FLAGS})
 

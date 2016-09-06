@@ -1,4 +1,18 @@
 project(residualConnectivity)
+if(CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+	message(STATUS "CMAKE_COMPILER_ID matches 'Intel'")
+	# No version checking yet, that's needed for full implementation
+	set(CMAKE_CXX11_COMPILE_FEATURES cxx_auto_type cxx_range_for cxx_rvalue_references)
+	set(CMAKE_CXX_COMPILE_FEATURES ${CMAKE_CXX11_COMPILE_FEATURES})
+	set(CMAKE_CXX11_STANDARD_COMPILE_OPTION "-std=c++11")
+	set(CMAKE_CXX11_EXTENSION_COMPILE_OPTION "-std=c++11")
+	set(CMAKE_CXX98_STANDARD_COMPILE_OPTION  "-std=c++11")
+	set(CMAKE_CXX98_EXTENSION_COMPILE_OPTION "-std=c++98")
+
+	# This is the critical variable, there must be a default when the compiler
+	# has the notion of standards
+	set(CMAKE_CXX_STANDARD_DEFAULT "11")
+endif()
 cmake_minimum_required(VERSION 3.1)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
 set(Boost_USE_STATIC_LIBS	OFF)

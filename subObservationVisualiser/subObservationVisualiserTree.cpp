@@ -64,7 +64,8 @@ namespace residualConnectivity
 	}
 	void subObservationVisualiserTree::setObservation()
 	{
-		boost::shared_array<vertexState> expandedState(new vertexState[tree.getContext().nVertices()]);
+		std::size_t nVertices = boost::num_vertices(tree.getContext().getGraph());
+		boost::shared_array<vertexState> expandedState(new vertexState[nVertices]);
 		tree.expand(expandedState, currentLevel, currentIndex);
 		//Putting in dummy values for the last two constructor arguments
 		observation obs(tree.getContext(), expandedState);

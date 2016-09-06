@@ -168,11 +168,11 @@ namespace residualConnectivity
 						double parameter;
 						if(samplingArgs.n - nDeterministic - 1 - chosen == 0)
 						{
-							parameter = (samplingArgs.expExponentialParameters[i] / samplingArgs.expNormalisingConstant(i-skipped, samplingArgs.n - nDeterministic - chosen - 1)).convert_to<double>();
+							parameter = mpfr_class(samplingArgs.expExponentialParameters[i] / samplingArgs.expNormalisingConstant(i-skipped, samplingArgs.n - nDeterministic - chosen - 1)).convert_to<double>();
 						}
 						else
 						{
-							parameter = (samplingArgs.expExponentialParameters[i] * samplingArgs.expNormalisingConstant(i+1-skipped, samplingArgs.n - nDeterministic - 1 - chosen - 1) / samplingArgs.expNormalisingConstant(i-skipped, samplingArgs.n - nDeterministic - chosen - 1)).convert_to<double>();
+							parameter = mpfr_class(samplingArgs.expExponentialParameters[i] * samplingArgs.expNormalisingConstant(i+1-skipped, samplingArgs.n - nDeterministic - 1 - chosen - 1) / samplingArgs.expNormalisingConstant(i-skipped, samplingArgs.n - nDeterministic - chosen - 1)).convert_to<double>();
 						}
 						//Vertices are only marked as UNFIXED_ON or UNFIXED_OFF, because those marked as FIXED_ON or FIXED_OFF are excluded by th zeroWeights / deterministicInclusion conditions. And those that have just been conditioned on are excluded by the i = nConditioningVertices. 
 						boost::random::bernoulli_distribution<> bernoulli(parameter);
