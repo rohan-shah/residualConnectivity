@@ -3,7 +3,7 @@
 #include "articulationConditioningSameCount.h"
 #include "graphInterface.h"
 #include "ROutputObject.h"
-SEXP articulationConditioningSameCount(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP verbose_sexp)
+SEXP articulationConditioningSameCount(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP finalStepSampleSize_sexp, SEXP verbose_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -32,6 +32,7 @@ BEGIN_RCPP
 	{
 		throw std::runtime_error("Unable to convert input initialRadius to a number");
 	}
+	
 	long initialRadius;
 	if(std::abs(initialRadius_double - std::round(initialRadius_double)) > 1e-3)
 	{
@@ -39,6 +40,15 @@ BEGIN_RCPP
 	}
 	initialRadius = (long)std::round(initialRadius_double);
 
+	int finalStepSampleSize;
+	try
+	{
+		finalStepSampleSize = Rcpp::as<int>(finalStepSampleSize_sexp);
+	}
+	catch(Rcpp::not_compatible&)
+	{
+		throw std::runtime_error("Input finalStepSampleSize must be an integer");
+	}
 	bool verbose = Rcpp::as<bool>(verbose_sexp);
 
 	//convert seed
@@ -61,6 +71,7 @@ BEGIN_RCPP
 	args.n = (int)n;
 	args.initialRadius = (int)initialRadius;
 	args.verbose = verbose;
+	args.finalStepSampleSize = finalStepSampleSize;
 	randomSource.seed(seed);
 
 	residualConnectivity::articulationConditioningSameCount(args);

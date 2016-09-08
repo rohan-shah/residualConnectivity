@@ -16,7 +16,8 @@ namespace residualConnectivity
 		outputObject& output;
 		int initialRadius;
 		int n;
-		mpfr_class expectedUpNumber, estimate;
+		int finalStepSampleSize;
+		mpfr_class estimate;
 		bool verbose;
 	};
 	void articulationConditioningSameCount(articulationConditioningSameCountArgs& args);

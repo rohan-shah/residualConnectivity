@@ -44,6 +44,52 @@ namespace residualConnectivity
 			std::vector<std::ptrdiff_t> aliasMethodTemporary1, aliasMethodTemporary2;
 			std::vector<std::pair<double, std::ptrdiff_t> > aliasMethodTemporary3;
 		};
+		mpfr_class finalStep(const stepInputs& inputs, stepOutputs& outputs, int finalStepCount)
+		{
+#ifdef USE_OPENMP
+			boost::mt19937 perThreadSeeds[100];
+			for(int i = 0; i < 100; i++) perThreadSeeds[i] = outputs.randomSource();
+#endif
+			mpfr_class result = 0;
+			//The number of sub-observations that were generated - If the splitting factor is not an integer, this will be random so we need to keep track of it. 
+#ifdef USE_OPENMP
+			#pragma omp parallel
+#endif
+			{
+				std::vector< ::residualConnectivity::obs::articulationConditioningSameCount> observationsThisThread;
+				//vector that we re-use to avoid allocations
+				std::vector<int> connectedComponents(boost::num_vertices(inputs.contextObj.getGraph()));
+				//stack for depth first search
+				boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
+				mpfr_class sumThisThread = 0;
+#ifdef USE_OPENMP
+				//per-thread random number generation
+				boost::mt19937 perThreadSource;
+				perThreadSource.seed(perThreadSeeds[omp_get_thread_num()]);
+				#pragma omp for
+#else
+				boost::mt19937& perThreadSource = outputs.randomSource;
+#endif
+				for(int j = 0; j < (int)outputs.subObservations.size(); j++)
+				{
+					//get out the child observations
+					sumThisThread += outputs.subObservations[j].getWeight()*outputs.subObservations[j].estimateRadius1(perThreadSource, finalStepCount, connectedComponents, stack);
+				}
+#ifdef USE_OPENMP
+				for(int j = 0; j < omp_get_num_threads(); j++)
+				{
+					#pragma omp barrier 
+					#pragma omp critical
+					{
+						result += sumThisThread;
+					}
+				}
+#else
+				result = sumThisThread;
+#endif
+			}
+			return result;
+		}
 		void stepsExceptFirst(stepInputs& inputs, stepOutputs& outputs)
 		{
 			std::vector<double> resamplingProbabilities;
@@ -55,7 +101,7 @@ namespace residualConnectivity
 			std::vector<::residualConnectivity::subObs::articulationConditioningSameCount> nextSetObservations;
 			std::vector<int> nextStepPotentiallyConnectedIndices;
 			//Loop over the splitting steps (the different nested events)
-			for(int i = 1; i < inputs.initialRadius+1; i++)
+			for(int i = 1; i < inputs.initialRadius; i++)
 			{
 				//The number of sub-observations that were generated - If the splitting factor is not an integer, this will be random so we need to keep track of it. 
 				int generated = -1;
@@ -205,21 +251,8 @@ namespace residualConnectivity
 
 		articulationConditioningSameCountPrivate::stepsExceptFirst(inputs, outputs);
 
-		mpfr_class probabilitySum = 0;
-		mpfr_class numeratorExpectedUpNumber = 0;
-		for(std::vector<::residualConnectivity::subObs::articulationConditioningSameCount>::iterator i = subObservations.begin(); i != subObservations.end(); i++)
-		{
-			probabilitySum += i->getWeight();
-			const vertexState* statePtr = i->getState();
-			int onCounter = 0;
-			for(std::size_t j = 0; j < nVertices; j++)
-			{
-				if(statePtr[j].state & ON_MASK) onCounter++;
-			}
-			numeratorExpectedUpNumber += i->getWeight() * onCounter;
-		}
-		args.estimate =  probabilitySum / args.n;
-		args.expectedUpNumber = numeratorExpectedUpNumber / (args.n * args.estimate);
+		args.estimate = finalStep(inputs, outputs, args.finalStepSampleSize);
+		args.estimate /= args.n;
 	}
 }
 
