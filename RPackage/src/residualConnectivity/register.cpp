@@ -15,6 +15,7 @@
 #include "PMC.h"
 #include "exactProbability.h"
 #include "setDefaultPrec.h"
+#include "averageComponentSize.h"
 #ifdef _MSC_VER
 	#undef RcppExport
 	#define RcppExport extern "C" __declspec(dllexport)
@@ -40,6 +41,7 @@ extern "C"
 		{"optimalStateIndependentImportance", (DL_FUNC)&optimalStateIndependentImportance, 2},
 		{"exactProbability", (DL_FUNC)&exactProbability, 2},
 		{"setDefaultPrec", (DL_FUNC)&setDefaultPrec, 1}, 
+		{"averageComponentSize", (DL_FUNC)&averageComponentSize, 4},
 		{NULL, NULL, 0}
 	};
 	RcppExport void R_init_residualConnectivity(DllInfo *info)
