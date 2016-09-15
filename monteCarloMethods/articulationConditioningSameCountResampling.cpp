@@ -16,10 +16,10 @@
 	#include <omp.h>
 #endif
 #include "isSingleComponentWithRadius.h"
-#include "monteCarloMethods/articulationConditioningSameCount.h"
+#include "monteCarloMethods/articulationConditioningSameCountResampling.h"
 namespace residualConnectivity
 {
-	namespace articulationConditioningSameCountPrivate
+	namespace articulationConditioningSameCountResamplingPrivate
 	{
 		struct stepInputs
 		{
@@ -233,23 +233,23 @@ namespace residualConnectivity
 			outputs.potentiallyConnectedIndices.swap(nextPotentiallyConnectedIndices);
 		}
 	}
-	void articulationConditioningSameCount(articulationConditioningSameCountArgs& args)
+	void articulationConditioningSameCountResampling(articulationConditioningSameCountResamplingArgs& args)
 	{
 		const std::size_t nVertices = boost::num_vertices(args.contextObj.getGraph());
 
 		std::vector<::residualConnectivity::subObs::articulationConditioningSameCount> subObservations;
 		std::vector<::residualConnectivity::obs::articulationConditioningSameCount> observations;
 
-		articulationConditioningSameCountPrivate::stepInputs inputs(args.contextObj);
+		articulationConditioningSameCountResamplingPrivate::stepInputs inputs(args.contextObj);
 		inputs.initialRadius = args.initialRadius;
 		inputs.n = args.n;
 		inputs.verbose = args.verbose;
 
-		articulationConditioningSameCountPrivate::stepOutputs outputs(subObservations, observations, args.randomSource, args.output);
+		articulationConditioningSameCountResamplingPrivate::stepOutputs outputs(subObservations, observations, args.randomSource, args.output);
 
-		articulationConditioningSameCountPrivate::doCrudeMCStep(inputs, outputs);
+		articulationConditioningSameCountResamplingPrivate::doCrudeMCStep(inputs, outputs);
 
-		articulationConditioningSameCountPrivate::stepsExceptFirst(inputs, outputs);
+		articulationConditioningSameCountResamplingPrivate::stepsExceptFirst(inputs, outputs);
 
 		args.estimate = finalStep(inputs, outputs, args.finalStepSampleSize);
 		args.estimate /= args.n;

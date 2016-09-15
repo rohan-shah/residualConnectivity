@@ -1,5 +1,5 @@
 #' @export
-articulationConditioningSameCount <- function(probabilities, n, seed, graph, initialRadius, finalStepSampleSize, verbose=FALSE)
+articulationConditioningSameCountResampling <- function(probabilities, n, seed, graph, initialRadius, finalStepSampleSize, verbose=FALSE)
 {
 	if(missing(probabilities))
 	{
@@ -56,7 +56,7 @@ articulationConditioningSameCount <- function(probabilities, n, seed, graph, ini
 	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
 	{
 		start <- Sys.time()
-		estimate <- .Call("articulationConditioningSameCount", graph, probabilities, n, initialRadius, seed, finalStepSampleSize, verbose, PACKAGE="residualConnectivity")
+		estimate <- .Call("articulationConditioningSameCountResampling", graph, probabilities, n, initialRadius, seed, finalStepSampleSize, verbose, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else

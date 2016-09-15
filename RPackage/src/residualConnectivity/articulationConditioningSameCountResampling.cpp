@@ -1,9 +1,9 @@
-#include "monteCarloMethods/articulationConditioningSameCount.h"
+#include "monteCarloMethods/articulationConditioningSameCountResampling.h"
 #include "Rcpp.h"
-#include "articulationConditioningSameCount.h"
+#include "articulationConditioningSameCountResampling.h"
 #include "graphInterface.h"
 #include "ROutputObject.h"
-SEXP articulationConditioningSameCount(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP finalStepSampleSize_sexp, SEXP verbose_sexp)
+SEXP articulationConditioningSameCountResampling(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP finalStepSampleSize_sexp, SEXP verbose_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -67,14 +67,14 @@ BEGIN_RCPP
 	residualConnectivity::context contextObj = graphInterface(graph_sexp, probability_sexp);
 	residualConnectivity::observationTree tree(&contextObj, (int)initialRadius);
 	ROutputObject output;
-	residualConnectivity::articulationConditioningSameCountArgs args(contextObj, randomSource, output);
+	residualConnectivity::articulationConditioningSameCountResamplingArgs args(contextObj, randomSource, output);
 	args.n = (int)n;
 	args.initialRadius = (int)initialRadius;
 	args.verbose = verbose;
 	args.finalStepSampleSize = finalStepSampleSize;
 	randomSource.seed(seed);
 
-	residualConnectivity::articulationConditioningSameCount(args);
+	residualConnectivity::articulationConditioningSameCountResampling(args);
 	double result = args.estimate.convert_to<double>();
 	return Rcpp::wrap(result);
 END_RCPP
