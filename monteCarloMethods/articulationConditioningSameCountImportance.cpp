@@ -34,6 +34,7 @@ namespace residualConnectivity
 		::residualConnectivity::subObs::articulationConditioningSameCountImportanceConstructorType getSubObsHelper(connectedComponents, stack, filteredGraphStack);
 		::residualConnectivity::obs::articulationConditioningSameCountImportanceConstructorType getObsHelper;
 
+		std::vector<mpfr_class> sums(args.initialRadius+1, 0);
 		for(int i = 0; i < n; i++)
 		{
 			obs::articulationConditioningSameCountImportance observation(contextObj, importanceProbabilities, randomSource);
@@ -42,12 +43,28 @@ namespace residualConnectivity
 				subObs::articulationConditioningSameCountImportance subObs = ::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningSameCountImportance>::get(observation, currentRadius, getSubObsHelper);
 				if(currentRadius == 1)
 				{
-					if(subObs.isPotentiallyConnected()) args.estimate += subObs.getWeight()*subObs.estimateRadius1(randomSource, args.finalStepSampleSize, connectedComponents, stack);
+					if(subObs.isPotentiallyConnected())
+					{
+						sums[currentRadius] += subObs.getWeight();
+						mpfr_class extraPart = subObs.estimateRadius1(randomSource, args.finalStepSampleSize, connectedComponents, stack);
+						args.estimate += subObs.getWeight()*extraPart;
+						sums[currentRadius-1] += subObs.getWeight()*extraPart;
+
+					}
 				}
 				else if(subObs.isPotentiallyConnected())
 				{
 					observation = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::articulationConditioningSameCountImportance>::get(subObs, randomSource, getObsHelper);
+					sums[currentRadius] += subObs.getWeight();
 				}
+				else break;
+			}
+		}
+		if(args.verbose)
+		{
+			for(int currentRadius = args.initialRadius; currentRadius >= 0; currentRadius--)
+			{
+				args.output << "Radius currentRadius, probability " << mpfr_class(sums[currentRadius]/args.n).str(10, std::ios_base::dec) << outputObject::endl;
 			}
 		}
 		args.estimate /= n;
