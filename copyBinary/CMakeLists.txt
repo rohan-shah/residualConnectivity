@@ -25,7 +25,11 @@ function(copyBinary buildType destination resultName)
 	add_custom_command(OUTPUT "${destination}/${NAME_PART}.dll" COMMAND ${CMAKE_COMMAND} ARGS -E copy "${PATH_PART}/${NAME_PART}.dll" "${destination}/${NAME_PART}.dll")
 	list(APPEND COPIED_BINARY_FILES "${destination}/${NAME_PART}.dll")
 
-	#Now for MPFR
+	set(${resultName} ${COPIED_BINARY_FILES} PARENT_SCOPE)
+endfunction()
+function(copyNumericsBinary buildType destination resultName)
+	set(COPIED_BINARY_FILES)
+	#Copy MPFR
 	get_target_property(MPFR_LOCATION mpfr "LOCATION_${buildType}")
 	get_filename_component(NAME_PART "${MPFR_LOCATION}" NAME_WE)
 	add_custom_command(OUTPUT "${destination}/${NAME_PART}.dll" COMMAND ${CMAKE_COMMAND} ARGS -E copy "${MPFR_LOCATION}" "${destination}/${NAME_PART}.dll")
@@ -97,8 +101,10 @@ if(WIN32)
 	foreach(val RANGE 3)
 		list(GET BUILD_TYPES ${val} BUILD_TYPE)
 		list(GET BOOST_BUILD_TYPES ${val} BOOST_BUILD_TYPE)
+		string(TOUPPER ${BUILD_TYPE} BUILD_TYPE_UPPER)
 		
 		copyBinary("${BOOST_BUILD_TYPE}" "${CMAKE_BINARY_DIR}/${BUILD_TYPE}" additionalBinaryFiles)
+		copyNumericsBinary("${BUILD_TYPE_UPPER}" "${CMAKE_BINARY_DIR}/${BUILD_TYPE}" additionalBinaryFiles)
 		list(APPEND COPIED_BINARY_FILES ${additionalBinaryFiles})
 	endforeach()
 
