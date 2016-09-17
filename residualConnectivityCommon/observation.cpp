@@ -9,6 +9,9 @@
 #include <boost/lexical_cast.hpp>
 namespace residualConnectivity
 {
+	observation::observation(context const& contextObj)
+		:contextObj(contextObj)
+	{}
 	observation::observation(context const& contextObj, boost::archive::binary_iarchive& archive)
 		:contextObj(contextObj)
 	{

@@ -11,6 +11,7 @@ namespace residualConnectivity
 	public:
 		static void getSubObservation(int radius, vertexState* newState, const context& contextObj, const vertexState* oldStatesPtr);
 	protected:
+		withSub(context const& contextObj);
 		withSub(context const& contextObj, boost::mt19937& randomSource);
 		withSub(context const& contextObj, boost::shared_array<const vertexState> state);
 		withSub(withSub&& other);

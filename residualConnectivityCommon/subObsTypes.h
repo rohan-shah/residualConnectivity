@@ -24,6 +24,14 @@ namespace residualConnectivity
 			int count;
 			mpfr_class weight;
 		};
+		struct articulationConditioningSameCountImportanceConstructorType
+		{
+			articulationConditioningSameCountImportanceConstructorType()
+			{}
+			int count;
+			mpfr_class weight;
+			const std::vector<double>* importanceProbabilities;
+		};
 	}
 	namespace subObs
 	{
@@ -51,6 +59,18 @@ namespace residualConnectivity
 		{
 			articulationConditioningSameCountConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
 			int count;
+		};
+		struct articulationConditioningSameCountImportanceConstructorType
+		{
+			articulationConditioningSameCountImportanceConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack)
+				:components(components), stack(stack), filteredGraphStack(filteredGraphStack)
+			{}
+			std::vector<int>& components;
+			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack;
+			boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack;
+			int count;
+			mpfr_class weight;
+			const std::vector<double>* importanceProbabilities;
 		};
 	}
 }

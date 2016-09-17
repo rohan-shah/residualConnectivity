@@ -31,6 +31,7 @@ namespace residualConnectivity
 		context const& getContext() const;
 		const vertexState* getState() const;
 	protected:
+		observation(const context& contextObj);
 		observation(const observation& other);
 		context const& contextObj;
 		boost::shared_array<const vertexState> state;

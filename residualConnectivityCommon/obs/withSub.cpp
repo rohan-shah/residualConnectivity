@@ -51,6 +51,9 @@ namespace residualConnectivity
 			else sourceVertex++;
 		}
 	}
+	withSub::withSub(context const& contextObj)
+		:observation(contextObj)
+	{}
 	withSub::withSub(context const& contextObj, boost::mt19937& randomSource)
 		:observation(contextObj, randomSource)
 	{}

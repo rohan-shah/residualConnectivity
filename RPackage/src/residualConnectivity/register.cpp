@@ -8,6 +8,7 @@
 #include "createHexagonalLattice.h"
 #include "articulationConditioningResampling.h"
 #include "articulationConditioningSameCountResampling.h"
+#include "articulationConditioningSameCountImportance.h"
 #include "recursiveVarianceReduction.h"
 #include "gridCountSpecificSize.h"
 #include "optimalStateIndependentImportance.h"
@@ -32,7 +33,8 @@ extern "C"
 		{"countConnectedSubgraphsBySize", (DL_FUNC)&countConnectedSubgraphsBySize, 1},
 		{"stochasticEnumeration", (DL_FUNC)&stochasticEnumeration, 7},
 		{"articulationConditioningSameCountResampling", (DL_FUNC)&articulationConditioningSameCountResampling, 7},
-		{"articulationConditioningResampling", (DL_FUNC)&articulationConditioningResampling, 6},
+		{"articulationConditioningResampling", (DL_FUNC)&articulationConditioningResampling, 7},
+		{"articulationConditioningSameCountImportance", (DL_FUNC)&articulationConditioningSameCountImportance, 8},
 		{"articulationConditioningSplitting", (DL_FUNC)&articulationConditioningSplitting, 7},
 		{"PMC", (DL_FUNC)&PMC, 3},
 		{"createHexagonalLattice", (DL_FUNC)&createHexagonalLattice, 2},
