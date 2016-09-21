@@ -21,6 +21,7 @@ namespace residualConnectivity
 			subObs(subObs&& other);
 		protected:
 			subObs(const subObs& other);
+			subObs& operator=(const subObs& other);
 		private:
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
 		};
@@ -34,6 +35,7 @@ namespace residualConnectivity
 			}
 		protected:
 			subObsWithRadius(const context& contextObj, boost::shared_array<const vertexState> state, int radius);
+			subObsWithRadius& operator=(const subObsWithRadius&);
 			subObsWithRadius(subObsWithRadius&& other);
 			subObsWithRadius(const subObsWithRadius& other);
 			int radius;
