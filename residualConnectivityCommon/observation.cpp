@@ -51,6 +51,11 @@ namespace residualConnectivity
 	observation::observation(const observation& other)
 		: contextObj(other.contextObj), state(other.state)
 	{}
+	observation& observation::operator=(const observation& other)
+	{
+		state = other.state;
+		return *this;
+	}
 	observation::observation(context const& contextObj, boost::shared_array<const vertexState> state)
 		: contextObj(contextObj), state(state)
 	{

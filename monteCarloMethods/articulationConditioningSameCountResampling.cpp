@@ -235,8 +235,6 @@ namespace residualConnectivity
 	}
 	void articulationConditioningSameCountResampling(articulationConditioningSameCountResamplingArgs& args)
 	{
-		const std::size_t nVertices = boost::num_vertices(args.contextObj.getGraph());
-
 		std::vector<::residualConnectivity::subObs::articulationConditioningSameCount> subObservations;
 		std::vector<::residualConnectivity::obs::articulationConditioningSameCount> observations;
 

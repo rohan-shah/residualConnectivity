@@ -64,7 +64,7 @@ namespace residualConnectivity
 		{
 			for(int currentRadius = args.initialRadius; currentRadius >= 0; currentRadius--)
 			{
-				args.output << "Radius currentRadius, probability " << mpfr_class(sums[currentRadius]/args.n).str(10, std::ios_base::dec) << outputObject::endl;
+				args.output << "Radius " << currentRadius << ", probability " << mpfr_class(sums[currentRadius]/args.n).str(10, std::ios_base::dec) << outputObject::endl;
 			}
 		}
 		args.estimate /= n;

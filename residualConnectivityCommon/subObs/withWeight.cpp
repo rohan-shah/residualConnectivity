@@ -16,6 +16,12 @@ namespace residualConnectivity
 		withWeight::withWeight(const withWeight& other)
 			: ::residualConnectivity::subObs::subObsWithRadius(static_cast<const ::residualConnectivity::subObs::subObsWithRadius&>(other)), weight(other.weight)
 		{}
+		withWeight& withWeight::operator=(const withWeight& other)
+		{
+			::residualConnectivity::subObs::subObsWithRadius::operator=(other);
+			weight = other.weight;
+			return *this;
+		}
 		withWeight::withWeight(const withWeight& other, mpfr_class newWeight)
 			: ::residualConnectivity::subObs::subObsWithRadius(static_cast<const ::residualConnectivity::subObs::subObsWithRadius&>(other)), weight(newWeight)
 		{}

@@ -4,6 +4,12 @@ namespace residualConnectivity
 {
 	namespace subObs
 	{
+		subObsWithRadius& subObsWithRadius::operator=(const subObsWithRadius& other)
+		{
+			subObs::operator=(other);
+			radius = other.radius;
+			return *this;
+		}
 		subObsWithRadius::subObsWithRadius(context const& contextObj, boost::shared_array<const vertexState> state, int radius)
 			: ::residualConnectivity::subObs::subObs(contextObj, state), radius(radius)
 		{}
@@ -13,6 +19,11 @@ namespace residualConnectivity
 		subObs::subObs(context const& contextObj, boost::shared_array<const vertexState> state)
 			: ::residualConnectivity::observation(contextObj, state)
 		{}
+		subObs& subObs::operator=(const subObs& other)
+		{
+			observation::operator=(other);
+			return *this;
+		}
 		subObs::subObs(subObs&& other)
 			: ::residualConnectivity::observation(static_cast< ::residualConnectivity::observation&&>(other))
 		{}

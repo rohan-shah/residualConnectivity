@@ -33,15 +33,16 @@ namespace residualConnectivity
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
 			articulationConditioningSameCountImportance copyWithWeight(mpfr_class weight) const;
 			mpfr_class estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack) const;
+			articulationConditioningSameCountImportance(const articulationConditioningSameCountImportance& other);
+			articulationConditioningSameCountImportance& operator=(const articulationConditioningSameCountImportance& other);
 		protected:
 			articulationConditioningSameCountImportance(const articulationConditioningSameCountImportance& other, mpfr_class weight, int nUpVertices, const std::vector<double>* importanceProbabilities);
 		private:
 			void conditionArticulation(boost::shared_array<vertexState> state, std::vector<int>& scratch, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
-			std::vector<int> simulationOrder;
-			articulationConditioningSameCountImportance(const articulationConditioningSameCountImportance& other);
+			std::shared_ptr<std::vector<int> > simulationOrder;
 			bool potentiallyConnected;
 			int nUpVertices;
-			sampling::conditionalPoissonArgs samplingArgsOriginal, samplingArgsImportance;
+			std::shared_ptr<sampling::conditionalPoissonArgs> samplingArgsOriginal, samplingArgsImportance;
 			int nConditioningVertices;
 			const std::vector<double>* importanceProbabilities;
 		};

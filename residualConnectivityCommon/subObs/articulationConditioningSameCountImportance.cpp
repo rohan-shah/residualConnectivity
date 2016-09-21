@@ -70,6 +70,8 @@ namespace residualConnectivity
 			}
 
 			//Order in which the vertices are simulated. The articulation vertices are going to be first, to make it easier to compute the probability that all these vertices are present. 
+			this->simulationOrder.reset(new std::vector<int>());
+			std::vector<int>& simulationOrder = *this->simulationOrder.get();
 			simulationOrder.clear();
 			simulationOrder.reserve(nVertices);
 			for(std::size_t i = 0; i < nVertices; i++) simulationOrder.push_back((int)i);
@@ -78,6 +80,8 @@ namespace residualConnectivity
 			{
 				std::swap(simulationOrder[i], simulationOrder[conditioningVertices[i]]);
 			}
+			this->samplingArgsOriginal.reset(new sampling::conditionalPoissonArgs());
+			sampling::conditionalPoissonArgs& samplingArgsOriginal = *this->samplingArgsOriginal.get();
 			samplingArgsOriginal.weights.clear();
 			samplingArgsOriginal.indices.clear();
 			//Put in the probabilities for the conditioning vertices. These have to be handled seperately because they've already been marked as FIXED_ON, and we don't want to put in the value of 1 for the probability - We want to put in the actual probability. 
@@ -114,6 +118,8 @@ namespace residualConnectivity
 			sampling::computeExponentialParameters(samplingArgsOriginal);
 			calculateExpNormalisingConstants(samplingArgsOriginal);
 
+			this->samplingArgsImportance.reset(new sampling::conditionalPoissonArgs());
+			sampling::conditionalPoissonArgs& samplingArgsImportance = *this->samplingArgsImportance.get();
 			samplingArgsImportance.weights.clear();
 			samplingArgsImportance.indices.clear();
 			for(std::size_t i = 0; i < conditioningVertices.size(); i++)
@@ -173,6 +179,7 @@ namespace residualConnectivity
 		{}
 		void articulationConditioningSameCountImportance::getObservation(vertexState* outputState, boost::mt19937& randomSource, observationConstructorType& otherData) const
 		{
+			sampling::conditionalPoissonArgs& samplingArgsImportance = *this->samplingArgsImportance.get();
 			std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
 			memcpy(outputState, state.get(), sizeof(vertexState)*nVertices);
 			
@@ -186,6 +193,7 @@ namespace residualConnectivity
 			int skipped = 0;
 			if((int)samplingArgsImportance.n != nDeterministic + chosen)
 			{
+				std::vector<int>& simulationOrder = *this->simulationOrder.get();
 				for(int i = nConditioningVertices; i < (int)simulationOrder.size(); i++)
 				{
 					if(!samplingArgsImportance.zeroWeights[i] && !samplingArgsImportance.deterministicInclusion[i])
@@ -221,43 +229,23 @@ namespace residualConnectivity
 			return articulationConditioningSameCountImportance(*this, weight, nUpVertices, importanceProbabilities);
 		}
 		articulationConditioningSameCountImportance::articulationConditioningSameCountImportance(const articulationConditioningSameCountImportance& other, mpfr_class weight, int nUpVertices, const std::vector<double>* importanceProbabilities)
-			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other), weight), simulationOrder(other.simulationOrder), potentiallyConnected(other.potentiallyConnected), nUpVertices(nUpVertices), nConditioningVertices(other.nConditioningVertices), importanceProbabilities(importanceProbabilities)
+			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other), weight), simulationOrder(other.simulationOrder), potentiallyConnected(other.potentiallyConnected), nUpVertices(nUpVertices), samplingArgsOriginal(other.samplingArgsOriginal), samplingArgsImportance(other.samplingArgsImportance), nConditioningVertices(other.nConditioningVertices), importanceProbabilities(importanceProbabilities)
+		{}
+		articulationConditioningSameCountImportance& articulationConditioningSameCountImportance::operator=(const articulationConditioningSameCountImportance& other)
 		{
-			samplingArgsOriginal.n = other.samplingArgsOriginal.n;
-			samplingArgsOriginal.exponentialParameters = other.samplingArgsOriginal.exponentialParameters;
-			samplingArgsOriginal.weights = other.samplingArgsOriginal.weights;
-			samplingArgsOriginal.expExponentialParameters = other.samplingArgsOriginal.expExponentialParameters;
-			samplingArgsOriginal.expNormalisingConstant = other.samplingArgsOriginal.expNormalisingConstant;
-			samplingArgsOriginal.deterministicInclusion = other.samplingArgsOriginal.deterministicInclusion;
-			samplingArgsOriginal.zeroWeights = other.samplingArgsOriginal.zeroWeights;
-
-			samplingArgsImportance.n = other.samplingArgsImportance.n;
-			samplingArgsImportance.exponentialParameters = other.samplingArgsImportance.exponentialParameters;
-			samplingArgsImportance.weights = other.samplingArgsImportance.weights;
-			samplingArgsImportance.expExponentialParameters = other.samplingArgsImportance.expExponentialParameters;
-			samplingArgsImportance.expNormalisingConstant = other.samplingArgsImportance.expNormalisingConstant;
-			samplingArgsImportance.deterministicInclusion = other.samplingArgsImportance.deterministicInclusion;
-			samplingArgsImportance.zeroWeights = other.samplingArgsImportance.zeroWeights;
+			::residualConnectivity::subObs::withWeight::operator=(other);
+			simulationOrder = other.simulationOrder;
+			potentiallyConnected = other.potentiallyConnected;
+			nUpVertices = other.nUpVertices;
+			samplingArgsOriginal = other.samplingArgsOriginal;
+			samplingArgsImportance = other.samplingArgsImportance;
+			nConditioningVertices = other.nConditioningVertices;
+			importanceProbabilities = other.importanceProbabilities;
+			return *this;
 		}
 		articulationConditioningSameCountImportance::articulationConditioningSameCountImportance(const articulationConditioningSameCountImportance& other)
-			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other)), simulationOrder(other.simulationOrder), potentiallyConnected(other.potentiallyConnected), nUpVertices(other.nUpVertices), nConditioningVertices(other.nConditioningVertices), importanceProbabilities(other.importanceProbabilities)
-		{
-			samplingArgsOriginal.n = other.samplingArgsOriginal.n;
-			samplingArgsOriginal.exponentialParameters = other.samplingArgsOriginal.exponentialParameters;
-			samplingArgsOriginal.weights = other.samplingArgsOriginal.weights;
-			samplingArgsOriginal.expExponentialParameters = other.samplingArgsOriginal.expExponentialParameters;
-			samplingArgsOriginal.expNormalisingConstant = other.samplingArgsOriginal.expNormalisingConstant;
-			samplingArgsOriginal.deterministicInclusion = other.samplingArgsOriginal.deterministicInclusion;
-			samplingArgsOriginal.zeroWeights = other.samplingArgsOriginal.zeroWeights;
-
-			samplingArgsImportance.n = other.samplingArgsImportance.n;
-			samplingArgsImportance.exponentialParameters = other.samplingArgsImportance.exponentialParameters;
-			samplingArgsImportance.weights = other.samplingArgsImportance.weights;
-			samplingArgsImportance.expExponentialParameters = other.samplingArgsImportance.expExponentialParameters;
-			samplingArgsImportance.expNormalisingConstant = other.samplingArgsImportance.expNormalisingConstant;
-			samplingArgsImportance.deterministicInclusion = other.samplingArgsImportance.deterministicInclusion;
-			samplingArgsImportance.zeroWeights = other.samplingArgsImportance.zeroWeights;
-		}
+			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other)), simulationOrder(other.simulationOrder), potentiallyConnected(other.potentiallyConnected), nUpVertices(other.nUpVertices), samplingArgsOriginal(other.samplingArgsOriginal), samplingArgsImportance(other.samplingArgsImportance), nConditioningVertices(other.nConditioningVertices), importanceProbabilities(other.importanceProbabilities)
+		{}
 		mpfr_class articulationConditioningSameCountImportance::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack) const
 		{
 			if(radius != 1)
