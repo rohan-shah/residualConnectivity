@@ -224,7 +224,6 @@ namespace residualConnectivity
 			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other), weight), simulationOrder(other.simulationOrder), potentiallyConnected(other.potentiallyConnected), nUpVertices(nUpVertices), nConditioningVertices(other.nConditioningVertices), importanceProbabilities(importanceProbabilities)
 		{
 			samplingArgsOriginal.n = other.samplingArgsOriginal.n;
-			samplingArgsOriginal.exponentialParameters = other.samplingArgsOriginal.exponentialParameters;
 			samplingArgsOriginal.weights = other.samplingArgsOriginal.weights;
 			samplingArgsOriginal.expExponentialParameters = other.samplingArgsOriginal.expExponentialParameters;
 			samplingArgsOriginal.expNormalisingConstant = other.samplingArgsOriginal.expNormalisingConstant;
@@ -232,7 +231,6 @@ namespace residualConnectivity
 			samplingArgsOriginal.zeroWeights = other.samplingArgsOriginal.zeroWeights;
 
 			samplingArgsImportance.n = other.samplingArgsImportance.n;
-			samplingArgsImportance.exponentialParameters = other.samplingArgsImportance.exponentialParameters;
 			samplingArgsImportance.weights = other.samplingArgsImportance.weights;
 			samplingArgsImportance.expExponentialParameters = other.samplingArgsImportance.expExponentialParameters;
 			samplingArgsImportance.expNormalisingConstant = other.samplingArgsImportance.expNormalisingConstant;
@@ -243,7 +241,6 @@ namespace residualConnectivity
 			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other)), simulationOrder(other.simulationOrder), potentiallyConnected(other.potentiallyConnected), nUpVertices(other.nUpVertices), nConditioningVertices(other.nConditioningVertices), importanceProbabilities(other.importanceProbabilities)
 		{
 			samplingArgsOriginal.n = other.samplingArgsOriginal.n;
-			samplingArgsOriginal.exponentialParameters = other.samplingArgsOriginal.exponentialParameters;
 			samplingArgsOriginal.weights = other.samplingArgsOriginal.weights;
 			samplingArgsOriginal.expExponentialParameters = other.samplingArgsOriginal.expExponentialParameters;
 			samplingArgsOriginal.expNormalisingConstant = other.samplingArgsOriginal.expNormalisingConstant;
@@ -251,7 +248,6 @@ namespace residualConnectivity
 			samplingArgsOriginal.zeroWeights = other.samplingArgsOriginal.zeroWeights;
 
 			samplingArgsImportance.n = other.samplingArgsImportance.n;
-			samplingArgsImportance.exponentialParameters = other.samplingArgsImportance.exponentialParameters;
 			samplingArgsImportance.weights = other.samplingArgsImportance.weights;
 			samplingArgsImportance.expExponentialParameters = other.samplingArgsImportance.expExponentialParameters;
 			samplingArgsImportance.expNormalisingConstant = other.samplingArgsImportance.expNormalisingConstant;

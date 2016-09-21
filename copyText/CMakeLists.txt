@@ -58,8 +58,10 @@ if(WIN32)
 		add_custom_command(TARGET copyText COMMAND "${R_COMMAND}" ARGS "-e \"library(roxygen2); roxygen2::roxygenise()\"" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/RPackage")
 	else()
 		foreach(BUILD_TYPE IN LISTS CMAKE_CONFIGURATION_TYPES)
-			#Run roxygen2
-			add_custom_command(TARGET copyText COMMAND "${R_COMMAND}" ARGS "-e \"library(roxygen2); roxygen2::roxygenise()\"" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/${BUILD_TYPE}/RPackage")
+			if(EXISTS "${CMAKE_BINARY_DIR}/RPackage/${BUILD_TYPE}")
+				#Run roxygen2
+				add_custom_command(TARGET copyText COMMAND "${R_COMMAND}" ARGS "-e \"library(roxygen2); roxygen2::roxygenise()\"" WORKING_DIRECTORY "${CMAKE_BINARY_DIR}/RPackage/${BUILD_TYPE}")
+			endif()
 		endforeach()
 	endif()
 else()

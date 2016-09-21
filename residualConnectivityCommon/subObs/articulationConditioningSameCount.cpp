@@ -200,7 +200,6 @@ namespace residualConnectivity
 			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other), weight), simulationOrder(other.simulationOrder), potentiallyConnected(other.potentiallyConnected), nUpVertices(nUpVertices), nConditioningVertices(other.nConditioningVertices)
 		{
 			samplingArgs.n = other.samplingArgs.n;
-			samplingArgs.exponentialParameters = other.samplingArgs.exponentialParameters;
 			samplingArgs.weights = other.samplingArgs.weights;
 			samplingArgs.expExponentialParameters = other.samplingArgs.expExponentialParameters;
 			samplingArgs.expNormalisingConstant = other.samplingArgs.expNormalisingConstant;
@@ -211,7 +210,6 @@ namespace residualConnectivity
 			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other)), simulationOrder(other.simulationOrder), potentiallyConnected(other.potentiallyConnected), nUpVertices(other.nUpVertices), nConditioningVertices(other.nConditioningVertices)
 		{
 			samplingArgs.n = other.samplingArgs.n;
-			samplingArgs.exponentialParameters = other.samplingArgs.exponentialParameters;
 			samplingArgs.weights = other.samplingArgs.weights;
 			samplingArgs.expExponentialParameters = other.samplingArgs.expExponentialParameters;
 			samplingArgs.expNormalisingConstant = other.samplingArgs.expNormalisingConstant;
