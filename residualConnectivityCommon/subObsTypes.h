@@ -4,6 +4,7 @@
 #include "depth_first_search_restricted.hpp"
 #include "context.h"
 #include "conditionArticulation.h"
+#include "conditionalPoissonBase.h"
 namespace residualConnectivity
 {
 	namespace obs
@@ -68,9 +69,13 @@ namespace residualConnectivity
 			std::vector<int>& components;
 			boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack;
 			boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack;
+			sampling::conditionalPoissonArgs samplingArgsOriginal, samplingArgsImportance;
 			int count;
 			mpfr_class weight;
 			const std::vector<double>* importanceProbabilities;
+		private:
+			articulationConditioningSameCountImportanceConstructorType& operator=(const articulationConditioningSameCountImportanceConstructorType&);
+			articulationConditioningSameCountImportanceConstructorType(const articulationConditioningSameCountImportanceConstructorType&);
 		};
 	}
 }

@@ -50,7 +50,7 @@ namespace residualConnectivity
 			for(int i = 0; i < 100; i++) perThreadSeeds[i] = outputs.randomSource();
 #endif
 
-			float sptittingFactorRemainder = inputs.splittingFactors[inputs.initialRadius-1] - floor(inputs.splittingFactors[inputs.initialRadius-1]);
+			float sptittingFactorRemainder = (float)(inputs.splittingFactors[inputs.initialRadius-1] - floor(inputs.splittingFactors[inputs.initialRadius-1]));
 			int splittingFactorInteger = (int)floor(inputs.splittingFactors[inputs.initialRadius-1]);
 			//The number of sub-observations that were generated - If the splitting factor is not an integer, this will be random so we need to keep track of it. 
 #ifdef USE_OPENMP
@@ -134,7 +134,7 @@ namespace residualConnectivity
 			//Loop over the splitting steps (the different nested events)
 			for(int i = 1; i < inputs.initialRadius/*+1*/; i++)
 			{
-				float sptittingFactorRemainder = inputs.splittingFactors[i-1] - floor(inputs.splittingFactors[i-1]);
+				float sptittingFactorRemainder = (float)(inputs.splittingFactors[i-1] - floor(inputs.splittingFactors[i-1]));
 				int splittingFactorInteger = (int)floor(inputs.splittingFactors[i-1]);
 
 				//The number of sub-observations that were generated - If the splitting factor is not an integer, this will be random so we need to keep track of it. 

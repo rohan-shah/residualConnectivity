@@ -67,7 +67,7 @@ namespace residualConnectivity
 					if(nComponentsWithFixedOnVertices > 1)
 					{
 						state[*i].state = FIXED_ON;
-						conditioningVertices.push_back(*i);
+						conditioningVertices.push_back((int)*i);
 					}
 				}
 			}
@@ -113,7 +113,7 @@ namespace residualConnectivity
 			}
 			samplingArgs.n = nUpVertices;
 			int nDeterministic = 0, nZeroWeights = 0;
-			sampling::samplingBase(samplingArgs.n, samplingArgs.indices, samplingArgs.weights, samplingArgs.zeroWeights, samplingArgs.deterministicInclusion, nDeterministic, nZeroWeights);
+			sampling::samplingBase((int)samplingArgs.n, samplingArgs.indices, samplingArgs.weights, samplingArgs.zeroWeights, samplingArgs.deterministicInclusion, nDeterministic, nZeroWeights);
 			sampling::computeExponentialParameters(samplingArgs);
 			calculateExpNormalisingConstants(samplingArgs);
 
@@ -330,7 +330,7 @@ namespace residualConnectivity
 			int nDeterministic = 0, nZeroWeights = 0;
 			const std::vector<mpfr_class> operationalProbabilities = contextObj.getOperationalProbabilities();
 			for(std::vector<int>::iterator i = newSimulationOrder.begin(); i != newSimulationOrder.end(); i++) newSamplingArgs.weights.push_back(operationalProbabilities[*i]);
-			sampling::samplingBase(newSamplingArgs.n, newSamplingArgs.indices, newSamplingArgs.weights, newSamplingArgs.zeroWeights, newSamplingArgs.deterministicInclusion, nDeterministic, nZeroWeights);
+			sampling::samplingBase((int)newSamplingArgs.n, newSamplingArgs.indices, newSamplingArgs.weights, newSamplingArgs.zeroWeights, newSamplingArgs.deterministicInclusion, nDeterministic, nZeroWeights);
 			sampling::computeExponentialParameters(newSamplingArgs);
 			calculateExpNormalisingConstants(newSamplingArgs);
 
@@ -350,7 +350,7 @@ namespace residualConnectivity
 				//Number of vertices that are being simulated in this biconnected component
 				std::vector<context::inputGraph::vertex_descriptor>& unFixedVerticesThisComponent = unFixedPointsPerComponent[i];
 				std::vector<context::inputGraph::vertex_descriptor>& fixedVerticesThisComponent = fixedPointsPerComponent[i];
-				int currentComponentSize = unFixedVerticesThisComponent.size();
+				int currentComponentSize = (int)unFixedVerticesThisComponent.size();
 				int copiedSkipped = skipped;
 				//Loop over all the particles
 				for(int j = 0; j < nSimulations; j++)
@@ -397,7 +397,7 @@ namespace residualConnectivity
 				//Update estimate by the fraction of particles for which the current component was connected. 
 				estimate *= (double)otherNChosen.size() / (double)nSimulations;
 				//Stratified sampling to bring the number of samples up to nSimulations
-				int multiple = nSimulations / otherNChosen.size();
+				int multiple = nSimulations / (int)otherNChosen.size();
 				nChosen.clear();
 				for(int j = 0; j < multiple; j++)
 				{

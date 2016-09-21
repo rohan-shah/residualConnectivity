@@ -19,14 +19,13 @@ namespace residualConnectivity
 					typename T::subObservationType retVal(contextObj, newState, radius, otherData);
 					return retVal;
 				}
-				template<typename U> static typename T::subObservationType get(const T& input, int radius, const U& aux)
+				template<typename U> static typename T::subObservationType get(const T& input, int radius, U& aux)
 				{
 					const context& contextObj = input.getContext();
-					typename T::subObservationConstructorType otherData(aux);
 					boost::shared_array<vertexState> newState(new vertexState[boost::num_vertices(contextObj.getGraph())]);
-					input.getSubObservation(newState.get(), radius, otherData);
+					input.getSubObservation(newState.get(), radius, aux);
 
-					typename T::subObservationType retVal(contextObj, newState, radius, otherData);
+					typename T::subObservationType retVal(contextObj, newState, radius, aux);
 					return retVal;
 				}
 			private:

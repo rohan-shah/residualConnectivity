@@ -61,39 +61,44 @@ namespace residualConnectivity
 					samplingOrder.push_back((int)i);
 				}
 			}
-			sampling::conditionalPoissonArgs samplingArgsOriginal, samplingArgsImportance;
+			sampling::conditionalPoissonArgs& samplingArgsOriginal = other.samplingArgsOriginal;
+			sampling::conditionalPoissonArgs& samplingArgsImportance = other.samplingArgsImportance;
 			samplingArgsOriginal.n = samplingArgsImportance.n = nUpVertices;
 
+			samplingArgsOriginal.weights.resize(nVertices);
+			samplingArgsImportance.weights.resize(nVertices);
+			samplingArgsOriginal.indices.clear();
+			samplingArgsImportance.indices.clear();
 			for(int i = 0; i < nImportance; i++)
 			{
-				samplingArgsOriginal.weights.push_back(operationalProbabilities[samplingOrder[i]]);
-				samplingArgsImportance.weights.push_back((*importanceProbabilities)[samplingOrder[i]]);
+				samplingArgsOriginal.weights[i] = operationalProbabilities[samplingOrder[i]];
+				samplingArgsImportance.weights[i] = (*importanceProbabilities)[samplingOrder[i]];
 			}
 			for(int i = nImportance; i < (int)nVertices; i++)
 			{
 				if(newState[samplingOrder[i]].state == FIXED_ON)
 				{
-					samplingArgsOriginal.weights.push_back(1);
-					samplingArgsImportance.weights.push_back(1);
+					samplingArgsOriginal.weights[i] = 1;
+					samplingArgsImportance.weights[i] = 1;
 				}
 				else if(newState[samplingOrder[i]].state == FIXED_OFF)
 				{
-					samplingArgsOriginal.weights.push_back(0);
-					samplingArgsImportance.weights.push_back(0);
+					samplingArgsOriginal.weights[i] = 0;
+					samplingArgsImportance.weights[i] = 0;
 				}
 				else
 				{
-					samplingArgsOriginal.weights.push_back(operationalProbabilities[samplingOrder[i]]);
-					samplingArgsImportance.weights.push_back((*importanceProbabilities)[samplingOrder[i]]);
+					samplingArgsOriginal.weights[i] = operationalProbabilities[samplingOrder[i]];
+					samplingArgsImportance.weights[i] = (*importanceProbabilities)[samplingOrder[i]];
 				}
 			}
 			int nDeterministic = 0, nZeroWeights = 0;
-			sampling::samplingBase(samplingArgsOriginal.n, samplingArgsOriginal.indices, samplingArgsOriginal.weights, samplingArgsOriginal.zeroWeights, samplingArgsOriginal.deterministicInclusion, nDeterministic, nZeroWeights);
+			sampling::samplingBase((int)samplingArgsOriginal.n, samplingArgsOriginal.indices, samplingArgsOriginal.weights, samplingArgsOriginal.zeroWeights, samplingArgsOriginal.deterministicInclusion, nDeterministic, nZeroWeights);
 			sampling::computeExponentialParameters(samplingArgsOriginal);
 			calculateExpNormalisingConstants(samplingArgsOriginal);
 
 			nDeterministic = 0, nZeroWeights = 0;
-			sampling::samplingBase(samplingArgsImportance.n, samplingArgsImportance.indices, samplingArgsImportance.weights, samplingArgsImportance.zeroWeights, samplingArgsImportance.deterministicInclusion, nDeterministic, nZeroWeights);
+			sampling::samplingBase((int)samplingArgsImportance.n, samplingArgsImportance.indices, samplingArgsImportance.weights, samplingArgsImportance.zeroWeights, samplingArgsImportance.deterministicInclusion, nDeterministic, nZeroWeights);
 			sampling::computeExponentialParameters(samplingArgsImportance);
 			calculateExpNormalisingConstants(samplingArgsImportance);
 

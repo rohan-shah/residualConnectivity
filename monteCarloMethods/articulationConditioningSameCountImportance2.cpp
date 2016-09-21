@@ -54,13 +54,13 @@ namespace residualConnectivity
 		{
 			args.output << "Radius " << args.initialRadius << ", probability " << transitionProbabilities[args.initialRadius].str(10, std::ios_base::dec) << outputObject::endl;
 		}
-		int multiple = n / subObservations.size();
+		int multiple = n / (int)subObservations.size();
 		copiedSubObservations.clear();
 		for(int i = 0; i < multiple; i++)
 		{
 			copiedSubObservations.insert(copiedSubObservations.begin(), subObservations.begin(), subObservations.end());
 		}
-		int remaining = n - copiedSubObservations.size();
+		int remaining = n - (int)copiedSubObservations.size();
 		std::vector<int> indices;
 		for(int i = 0; i < (int)subObservations.size(); i++) indices.push_back(i);
 		boost::random_shuffle(indices);
@@ -100,13 +100,13 @@ namespace residualConnectivity
 			args.estimate *= transitionProbabilities[currentRadius];
 			if(currentRadius != 1)
 			{
-				int multiple = n / subObservations.size();
+				int multiple = n / (int)subObservations.size();
 				copiedSubObservations.clear();
 				for(int i = 0; i < multiple; i++)
 				{
 					copiedSubObservations.insert(copiedSubObservations.begin(), subObservations.begin(), subObservations.end());
 				}
-				int remaining = n - copiedSubObservations.size();
+				int remaining = n - (int)copiedSubObservations.size();
 				std::vector<int> indices;
 				for(int i = 0; i < (int)subObservations.size(); i++) indices.push_back(i);
 				boost::random_shuffle(indices);
