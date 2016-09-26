@@ -20,7 +20,7 @@
 #include "monteCarloMethods/articulationConditioningSameCountImportance.h"
 namespace residualConnectivity
 {
-	void articulationConditioningSameCountImportance(articulationConditioningSameCountImportanceArgs& args)
+	void articulationConditioningSameCountImportance(articulationConditioningImportanceArgs& args)
 	{
 		const context& contextObj = args.contextObj;
 		boost::mt19937& randomSource = args.randomSource;

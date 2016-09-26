@@ -10,7 +10,7 @@ namespace residualConnectivity
 {
 	namespace subObs
 	{
-		articulationConditioningForResampling::articulationConditioningForResampling(context const& contextObj, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::articulationConditioningForResamplingConstructorType& otherData)
+		articulationConditioningForResampling::articulationConditioningForResampling(context const& contextObj, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType& otherData)
 			: ::residualConnectivity::subObs::withWeight(contextObj, state, radius, otherData.weight)
 		{
 			potentiallyConnected = isSingleComponentPossible(contextObj.getGraph(), state.get(), otherData.components, otherData.stack);

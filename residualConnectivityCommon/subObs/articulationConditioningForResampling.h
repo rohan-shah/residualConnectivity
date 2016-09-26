@@ -25,7 +25,7 @@ namespace residualConnectivity
 
 			articulationConditioningForResampling(articulationConditioningForResampling&& other);
 			bool isPotentiallyConnected() const;
-			articulationConditioningForResampling(context const& contextObj, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::articulationConditioningForResamplingConstructorType &);
+			articulationConditioningForResampling(context const& contextObj, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType &);
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
 			articulationConditioningForResampling copyWithWeight(mpfr_class weight) const;
 		protected:

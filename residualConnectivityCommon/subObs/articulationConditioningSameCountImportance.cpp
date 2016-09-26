@@ -248,10 +248,6 @@ namespace residualConnectivity
 		{}
 		mpfr_class articulationConditioningSameCountImportance::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack) const
 		{
-			if(radius != 1)
-			{
-				throw std::runtime_error("Radius must be 1 to call constructRadius1Graph");
-			}
 			if(nSimulations <= 0)
 			{
 				throw std::runtime_error("Input nSimulations must be positive");

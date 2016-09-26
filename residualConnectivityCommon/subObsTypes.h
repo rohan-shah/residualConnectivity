@@ -18,6 +18,14 @@ namespace residualConnectivity
 			withWeightConstructorType();
 			mpfr_class weight;
 		};
+		struct withWeightImportanceConstructorType
+		{
+		public:
+			withWeightImportanceConstructorType()
+			{}
+			mpfr_class weight;
+			const std::vector<double>* importanceProbabilities;
+		};
 		struct weightAndCountConstructorType
 		{
 			weightAndCountConstructorType()
@@ -52,11 +60,13 @@ namespace residualConnectivity
 			boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack;
 			mpfr_class weight;
 		};
-		struct articulationConditioningForResamplingConstructorType : public withWeightConstructorType
+		struct withWeightImportanceConstructorType : public withWeightConstructorType
 		{
-			articulationConditioningForResamplingConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
+		public:
+			withWeightImportanceConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
+			const std::vector<double>* importanceProbabilities;
 		};
-		struct articulationConditioningSameCountConstructorType : public articulationConditioningForResamplingConstructorType
+		struct articulationConditioningSameCountConstructorType : public withWeightConstructorType
 		{
 			articulationConditioningSameCountConstructorType(std::vector<int>& components, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType& filteredGraphStack);
 			int count;

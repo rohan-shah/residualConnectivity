@@ -77,7 +77,7 @@ BEGIN_RCPP
 	residualConnectivity::context contextObj = graphInterface(graph_sexp, probability_sexp);
 	residualConnectivity::observationTree tree(&contextObj, (int)initialRadius);
 	ROutputObject output;
-	residualConnectivity::articulationConditioningSameCountImportanceArgs args(contextObj, randomSource, output);
+	residualConnectivity::articulationConditioningImportanceArgs args(contextObj, randomSource, output);
 	args.n = (int)n;
 	args.initialRadius = (int)initialRadius;
 	args.verbose = verbose;

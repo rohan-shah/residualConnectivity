@@ -6,6 +6,6 @@
 #include "articulationConditioningSameCountImportance.h"
 namespace residualConnectivity
 {
-	void articulationConditioningSameCountImportance2(articulationConditioningSameCountImportanceArgs& args);
+	void articulationConditioningSameCountImportance2(articulationConditioningImportanceArgs& args);
 }
 #endif

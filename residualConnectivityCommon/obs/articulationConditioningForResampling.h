@@ -23,7 +23,7 @@ namespace residualConnectivity
 			template<class T> friend class ::residualConnectivity::subObs::getObservation;
 
 			typedef ::residualConnectivity::subObs::articulationConditioningForResampling subObservationType;
-			typedef ::residualConnectivity::subObs::articulationConditioningForResamplingConstructorType subObservationConstructorType;
+			typedef ::residualConnectivity::subObs::withWeightConstructorType subObservationConstructorType;
 
 			articulationConditioningForResampling(context const& contextObj, boost::mt19937& randomSource);
 			articulationConditioningForResampling(articulationConditioningForResampling&& other);

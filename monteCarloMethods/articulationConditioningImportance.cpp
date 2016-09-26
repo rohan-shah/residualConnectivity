@@ -4,8 +4,8 @@
 #include "empiricalDistribution.h"
 #include <boost/random/mersenne_twister.hpp>
 #include "observation.h"
-#include "obs/articulationConditioningSameCountImportance.h"
-#include "subObs/articulationConditioningSameCountImportance.h"
+#include "obs/articulationConditioningImportance.h"
+#include "subObs/articulationConditioningImportance.h"
 #include <boost/accumulators/statistics/stats.hpp>
 #include <boost/accumulators/accumulators.hpp>
 #include <boost/range/algorithm/random_shuffle.hpp>
@@ -18,10 +18,10 @@
 	#include <omp.h>
 #endif
 #include "isSingleComponentWithRadius.h"
-#include "monteCarloMethods/articulationConditioningSameCountImportance2.h"
+#include "monteCarloMethods/articulationConditioningImportance.h"
 namespace residualConnectivity
 {
-	void articulationConditioningSameCountImportance2(articulationConditioningImportanceArgs& args)
+	void articulationConditioningImportance(articulationConditioningImportanceArgs& args)
 	{
 		const context& contextObj = args.contextObj;
 		boost::mt19937& randomSource = args.randomSource;
@@ -32,16 +32,17 @@ namespace residualConnectivity
 		std::vector<int> connectedComponents;
 		boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType stack;
 		boost::detail::depth_first_visit_restricted_impl_helper<filteredGraphType>::stackType filteredGraphStack;
-		::residualConnectivity::subObs::articulationConditioningSameCountImportanceConstructorType getSubObsHelper(connectedComponents, stack, filteredGraphStack);
-		::residualConnectivity::obs::articulationConditioningSameCountImportanceConstructorType getObsHelper;
+		::residualConnectivity::subObs::withWeightImportanceConstructorType getSubObsHelper(connectedComponents, stack, filteredGraphStack);
+		getSubObsHelper.importanceProbabilities = &args.importanceProbabilities;
+		::residualConnectivity::obs::withWeightImportanceConstructorType getObsHelper;
 
 		std::vector<mpfr_class> transitionProbabilities(args.initialRadius+1, 0);
-		std::vector<subObs::articulationConditioningSameCountImportance> subObservations, copiedSubObservations;
+		std::vector<subObs::articulationConditioningImportance> subObservations, copiedSubObservations;
 		mpfr_class currentSum = 0, previousSum;
 		for(int i = 0; i < n; i++)
 		{
-			obs::articulationConditioningSameCountImportance observation(contextObj, importanceProbabilities, randomSource);
-			subObs::articulationConditioningSameCountImportance subObs = ::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningSameCountImportance>::get(observation, args.initialRadius, getSubObsHelper);
+			obs::articulationConditioningImportance observation(contextObj, randomSource, importanceProbabilities);
+			subObs::articulationConditioningImportance subObs = ::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningImportance>::get(observation, args.initialRadius, getSubObsHelper);
 			if(subObs.isPotentiallyConnected())
 			{
 				currentSum += subObs.getWeight();
@@ -78,8 +79,8 @@ namespace residualConnectivity
 			copiedSubObservations.clear();
 			for(int i = 0; i < n; i++)
 			{
-				::residualConnectivity::obs::articulationConditioningSameCountImportance observation = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::articulationConditioningSameCountImportance>::get(subObservations[i], randomSource, getObsHelper);
-				subObs::articulationConditioningSameCountImportance subObs = ::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningSameCountImportance>::get(observation, currentRadius, getSubObsHelper);
+				::residualConnectivity::obs::articulationConditioningImportance observation = ::residualConnectivity::subObs::getObservation<::residualConnectivity::subObs::articulationConditioningImportance>::get(subObservations[i], randomSource, getObsHelper);
+				subObs::articulationConditioningImportance subObs = ::residualConnectivity::obs::getSubObservation<::residualConnectivity::obs::articulationConditioningImportance>::get(observation, currentRadius, getSubObsHelper);
 				if(currentRadius == 1)
 				{
 					if(subObs.isPotentiallyConnected())
@@ -87,7 +88,6 @@ namespace residualConnectivity
 						mpfr_class extraPart = subObs.estimateRadius1(randomSource, args.finalStepSampleSize, connectedComponents, stack);
 						currentSum += subObs.getWeight();
 						lastRadiusSum += subObs.getWeight() * extraPart;
-
 					}
 				}
 				else if(subObs.isPotentiallyConnected())
@@ -127,6 +127,7 @@ namespace residualConnectivity
 		args.estimate *= transitionProbabilities[0];
 		if(args.verbose)
 		{
+			args.output << "Radius 1, probability " << transitionProbabilities[1].str(10, std::ios_base::dec) << outputObject::endl;
 			args.output << "Radius 0, probability " << transitionProbabilities[0].str(10, std::ios_base::dec) << outputObject::endl;
 		}
 	}

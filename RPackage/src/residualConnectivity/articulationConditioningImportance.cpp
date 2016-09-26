@@ -1,9 +1,9 @@
-#include "monteCarloMethods/articulationConditioningSameCountImportance2.h"
+#include "monteCarloMethods/articulationConditioningImportance.h"
 #include "Rcpp.h"
-#include "articulationConditioningSameCountImportance2.h"
+#include "articulationConditioningImportance.h"
 #include "graphInterface.h"
 #include "ROutputObject.h"
-SEXP articulationConditioningSameCountImportance2(SEXP importanceProbabilities_sexp, SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP finalStepSampleSize_sexp, SEXP verbose_sexp)
+SEXP articulationConditioningImportance(SEXP importanceProbabilities_sexp, SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP verbose_sexp, SEXP finalStepSampleSize_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -32,7 +32,6 @@ BEGIN_RCPP
 	{
 		throw std::runtime_error("Unable to convert input initialRadius to a number");
 	}
-	
 	long initialRadius;
 	if(std::abs(initialRadius_double - std::round(initialRadius_double)) > 1e-3)
 	{
@@ -40,15 +39,6 @@ BEGIN_RCPP
 	}
 	initialRadius = (long)std::round(initialRadius_double);
 
-	int finalStepSampleSize;
-	try
-	{
-		finalStepSampleSize = Rcpp::as<int>(finalStepSampleSize_sexp);
-	}
-	catch(Rcpp::not_compatible&)
-	{
-		throw std::runtime_error("Input finalStepSampleSize must be an integer");
-	}
 	bool verbose = Rcpp::as<bool>(verbose_sexp);
 
 	std::vector<double> importanceProbabilities;
@@ -60,7 +50,17 @@ BEGIN_RCPP
 	{
 		throw std::runtime_error("Input importanceProbabilities must be a numeric vector");
 	}
-	
+
+	int finalStepSampleSize;
+	try
+	{
+		finalStepSampleSize = Rcpp::as<int>(finalStepSampleSize_sexp);
+	}
+	catch(...)
+	{
+		throw std::runtime_error("Input finalStepSampleSize must be an integer");
+	}
+
 	//convert seed
 	int seed;
 	try
@@ -75,17 +75,16 @@ BEGIN_RCPP
 	randomSource.seed(seed);
 
 	residualConnectivity::context contextObj = graphInterface(graph_sexp, probability_sexp);
-	residualConnectivity::observationTree tree(&contextObj, (int)initialRadius);
 	ROutputObject output;
 	residualConnectivity::articulationConditioningImportanceArgs args(contextObj, randomSource, output);
+	args.finalStepSampleSize = finalStepSampleSize;
 	args.n = (int)n;
 	args.initialRadius = (int)initialRadius;
 	args.verbose = verbose;
-	args.finalStepSampleSize = finalStepSampleSize;
 	args.importanceProbabilities = importanceProbabilities;
 	randomSource.seed(seed);
 
-	residualConnectivity::articulationConditioningSameCountImportance2(args);
+	residualConnectivity::articulationConditioningImportance(args);
 	double result = args.estimate.convert_to<double>();
 	return Rcpp::wrap(result);
 END_RCPP
