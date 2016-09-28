@@ -15,6 +15,7 @@
 #include "optimalStateIndependentImportance.h"
 #include "articulationConditioningImportance.h"
 #include "articulationConditioningSplitting.h"
+#include "transferMatrixIdentical.h"
 #include "PMC.h"
 #include "exactProbability.h"
 #include "setDefaultPrec.h"
@@ -48,6 +49,7 @@ extern "C"
 		{"exactProbability", (DL_FUNC)&exactProbability, 2},
 		{"setDefaultPrec", (DL_FUNC)&setDefaultPrec, 1}, 
 		{"averageComponentSize", (DL_FUNC)&averageComponentSize, 4},
+		{"transferMatrixIdentical", (DL_FUNC)&transferMatrixIdentical, 1},
 		{NULL, NULL, 0}
 	};
 	RcppExport void R_init_residualConnectivity(DllInfo *info)
