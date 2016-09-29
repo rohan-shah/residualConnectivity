@@ -1,7 +1,7 @@
-#include "countSubgraphsCommon.h"
-#include "states.h"
+#include "transferMatrixCommon/countSubgraphsCommon.h"
+#include "transferMatrixCommon/states.h"
 #include <boost/scoped_array.hpp>
-#include "subgraphMacros.hpp"
+#include "transferMatrixCommon/subgraphMacros.hpp"
 #ifdef _MSC_VER
 	#include <malloc.h>
 #else

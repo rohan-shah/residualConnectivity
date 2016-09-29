@@ -91,7 +91,7 @@ namespace Eigen
 			}
 		};
 	}
-	template<> GeneralProduct<::residualConnectivity::LargeDenseIntMatrix, ::residualConnectivity::TransitionMatrix, 5>::GeneralProduct(const ::residualConnectivity::LargeDenseIntMatrix& lhs, const ::residualConnectivity::TransitionMatrix& rhs);
+//	template<> GeneralProduct<::residualConnectivity::LargeDenseIntMatrix, ::residualConnectivity::TransitionMatrix, 5>::GeneralProduct(const ::residualConnectivity::LargeDenseIntMatrix& lhs, const ::residualConnectivity::TransitionMatrix& rhs);
 //                :GeneralProduct<::residualConnectivity::LargeDenseIntMatrix, ::residualConnectivity::TransitionMatrix, 5>::Base(lhs, rhs)
 //         {}
 }

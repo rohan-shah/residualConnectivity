@@ -20,6 +20,7 @@
 #include "exactProbability.h"
 #include "setDefaultPrec.h"
 #include "averageComponentSize.h"
+#include "transferMatrixUnequalProbabilities.h"
 #ifdef _MSC_VER
 	#undef RcppExport
 	#define RcppExport extern "C" __declspec(dllexport)
@@ -50,6 +51,7 @@ extern "C"
 		{"setDefaultPrec", (DL_FUNC)&setDefaultPrec, 1}, 
 		{"averageComponentSize", (DL_FUNC)&averageComponentSize, 4},
 		{"transferMatrixIdentical", (DL_FUNC)&transferMatrixIdentical, 1},
+		{"transferMatrixUnequalProbabilities", (DL_FUNC)&transferMatrixUnequalProbabilities, 1}, 
 		{NULL, NULL, 0}
 	};
 	RcppExport void R_init_residualConnectivity(DllInfo *info)

@@ -1,6 +1,6 @@
-#include "states.h"
-#include "countSubgraphsCommon.h"
-#include "subgraphMacros.hpp"
+#include "transferMatrixCommon/states.h"
+#include "transferMatrixCommon/countSubgraphsCommon.h"
+#include "transferMatrixCommon/subgraphMacros.hpp"
 #include <boost/iterator/counting_iterator.hpp>
 namespace residualConnectivity
 {

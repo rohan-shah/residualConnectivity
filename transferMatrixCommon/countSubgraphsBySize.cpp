@@ -1,8 +1,9 @@
-#include "countSubgraphsBySize.h"
-#include "countSubgraphsCommon.h"
-#include "constructMatrices.h"
+#include "transferMatrixCommon/countSubgraphsBySize.h"
+#include "transferMatrixCommon/countSubgraphsCommon.h"
+#include "transferMatrixCommon/constructMatrices.h"
 namespace residualConnectivity
 {
+#ifdef USE_OPENMP
 	void countSubgraphsBySizeMultiThreaded(mpz_class* counts, int gridDimension, TransitionMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger)
 	{
 		if(gridDimension > 32)
@@ -87,6 +88,7 @@ namespace residualConnectivity
 		}
 		logger->endCheckFinalStates();
 	}
+#endif
 	void countSubgraphsBySizeSingleThreaded(mpz_class* counts, int gridDimension, TransitionMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger)
 	{
 		if(gridDimension > 32)

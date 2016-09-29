@@ -1,9 +1,9 @@
 #include "transferMatrixIdentical.h"
 #include <boost/scoped_array.hpp>
-#include "countSubgraphs.h"
-#include "countSubgraphsBySize.h"
-#include "countSubgraphsCommon.h"
-#include "constructMatrices.h"
+#include "transferMatrixCommon/countSubgraphs.h"
+#include "transferMatrixCommon/countSubgraphsBySize.h"
+#include "transferMatrixCommon/countSubgraphsCommon.h"
+#include "transferMatrixCommon/constructMatrices.h"
 #include "includeMPFRResidualConnectivity.h"
 namespace residualConnectivity
 {
@@ -60,7 +60,11 @@ BEGIN_RCPP
 	std::size_t nonZeroCount = 0;
 	residualConnectivity::TransitionMatrix transitionMatrix;
 	residualConnectivity::transferMatrixLogger logger;
+#ifdef USE_OPENMP
 	residualConnectivity::countSubgraphsBySizeMultiThreaded(&(counts[0]), size, transitionMatrix, nonZeroCount, &logger);
+#else
+	residualConnectivity::countSubgraphsBySizeSingleThreaded(&(counts[0]), size, transitionMatrix, nonZeroCount, &logger);
+#endif
 
 	std::vector<std::string> sizesAsStrings;
 	std::transform(counts.begin(), counts.end(), std::back_inserter(sizesAsStrings), [](const residualConnectivity::mpz_class& x){return x.str();});

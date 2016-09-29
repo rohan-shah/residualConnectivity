@@ -1,6 +1,6 @@
-#include "countSubgraphsCommon.h"
-#include "states.h"
-#include "countSubgraphs.h"
+#include "transferMatrixCommon/countSubgraphsCommon.h"
+#include "transferMatrixCommon/states.h"
+#include "transferMatrixCommon/countSubgraphs.h"
 #include <stdexcept>
 #include <vector>
 namespace residualConnectivity

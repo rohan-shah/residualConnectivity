@@ -1,5 +1,5 @@
-#include "isConnectedState.h"
-#include "countSubgraphsCommon.h"
+#include "transferMatrixCommon/isConnectedState.h"
+#include "transferMatrixCommon/countSubgraphsCommon.h"
 namespace residualConnectivity
 {
 	inline bool isConnectedState(unsigned long long originalState, int gridDimension)

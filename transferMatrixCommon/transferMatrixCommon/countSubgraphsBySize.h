@@ -19,7 +19,9 @@ namespace residualConnectivity
 		virtual void beginCheckFinalStates(){}
 		virtual void endCheckFinalStates(){}
 	};
+#ifdef USE_OPENMP
 	void countSubgraphsBySizeMultiThreaded(mpz_class* counts, int gridDimension, TransitionMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger);
+#endif
 	void countSubgraphsBySizeSingleThreaded(mpz_class* counts, int gridDimension, TransitionMatrix& transitionMatrix, std::size_t& nonZeroCount, countSubgraphsBySizeLogger* logger);
 }
 #endif

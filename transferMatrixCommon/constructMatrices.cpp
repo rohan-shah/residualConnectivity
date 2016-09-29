@@ -1,7 +1,7 @@
-#include "constructMatrices.h"
+#include "transferMatrixCommon/constructMatrices.h"
 #include <boost/scoped_array.hpp>
-#include "subgraphMacros.hpp"
-#include "isConnectedState.h"
+#include "transferMatrixCommon/subgraphMacros.hpp"
+#include "transferMatrixCommon/isConnectedState.h"
 #include "isConnectedState.cpp"
 namespace residualConnectivity
 {

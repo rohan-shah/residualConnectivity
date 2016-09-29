@@ -1,11 +1,13 @@
 cmake_minimum_required(VERSION 3.1)
-set(HeaderFiles constructMatrices.h states.h countSubgraphsBySize.h countSubgraphsCommon.h countSubgraphs.h isConnectedState.h customizedEigen.h)
-set(CppFiles constructMatrices.cpp states.cpp countSubgraphsBySize.cpp countSubgraphsCommon.cpp countSubgraphs.cpp isConnectedState.cpp subgraphMacros.hpp customizedEigen.cpp)
+set(HeaderFiles transferMatrixCommon/constructMatrices.h transferMatrixCommon/states.h transferMatrixCommon/countSubgraphsBySize.h transferMatrixCommon/countSubgraphsCommon.h transferMatrixCommon/countSubgraphs.h transferMatrixCommon/isConnectedState.h transferMatrixCommon/customizedEigen.h transferMatrixCommon/unequalProbabilities.h transferMatrixCommon/subgraphMacros.hpp)
+set(CppFiles constructMatrices.cpp states.cpp countSubgraphsBySize.cpp countSubgraphsCommon.cpp countSubgraphs.cpp isConnectedState.cpp customizedEigen.cpp unequalProbabilities.cpp)
 add_library(transferMatrixCommon STATIC ${HeaderFiles} ${CppFiles})
 target_compile_definitions(transferMatrixCommon PUBLIC BOOST_ALL_NO_LIB BOOST_ALL_DYN_LINK)
-target_compile_definitions(transferMatrixCommon PRIVATE USE_OPENMP)
 
-target_compile_options(transferMatrixCommon PRIVATE ${OpenMP_CXX_FLAGS})
+if(USE_OPENMP)
+	target_compile_definitions(transferMatrixCommon PRIVATE USE_OPENMP)
+	target_compile_options(transferMatrixCommon PRIVATE ${OpenMP_CXX_FLAGS})
+endif()
 
 target_include_directories(transferMatrixCommon PUBLIC ${Boost_INCLUDE_DIRS} ${PROJECT_SOURCE_DIR}/transferMatrixCommon)
 

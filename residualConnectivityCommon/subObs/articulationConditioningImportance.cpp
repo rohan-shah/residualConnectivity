@@ -56,6 +56,7 @@ namespace residualConnectivity
 			::residualConnectivity::subObs::withWeight::operator=(other);
 			potentiallyConnected = other.potentiallyConnected;
 			importanceProbabilities = other.importanceProbabilities;
+			return *this;
 		}
 		articulationConditioningImportance::articulationConditioningImportance(const articulationConditioningImportance& other, mpfr_class weight)
 			: ::residualConnectivity::subObs::withWeight(static_cast<const ::residualConnectivity::subObs::withWeight&>(other), weight), potentiallyConnected(other.potentiallyConnected), importanceProbabilities(other.importanceProbabilities)

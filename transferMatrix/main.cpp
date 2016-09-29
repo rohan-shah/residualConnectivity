@@ -2,10 +2,10 @@
 #include "context.h"
 #include "arguments.h"
 #include <boost/scoped_array.hpp>
-#include "countSubgraphs.h"
-#include "countSubgraphsBySize.h"
-#include "countSubgraphsCommon.h"
-#include "constructMatrices.h"
+#include "transferMatrixCommon/countSubgraphs.h"
+#include "transferMatrixCommon/countSubgraphsBySize.h"
+#include "transferMatrixCommon/countSubgraphsCommon.h"
+#include "transferMatrixCommon/constructMatrices.h"
 #include <fstream>
 namespace residualConnectivity
 {
@@ -116,8 +116,12 @@ namespace residualConnectivity
 			std::size_t nonZeroCount = 0;
 			TransitionMatrix transitionMatrix;
 			transferMatrixLogger logger;
+#ifdef USE_OPENMP
 			if(multithreaded) countSubgraphsBySizeMultiThreaded(counts.get(), gridDimension, transitionMatrix, nonZeroCount, &logger);
 			else countSubgraphsBySizeSingleThreaded(counts.get(), gridDimension, transitionMatrix, nonZeroCount, &logger);
+#else
+			countSubgraphsBySizeSingleThreaded(counts.get(), gridDimension, transitionMatrix, nonZeroCount, &logger);
+#endif
 
 			outputStream << "Number of connected subgraphs with that number of points" << std::endl;
 			for(int i = 0; i < gridDimension*gridDimension+1; i++)
