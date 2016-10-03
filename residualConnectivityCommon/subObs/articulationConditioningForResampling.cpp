@@ -48,6 +48,14 @@ namespace residualConnectivity
 			}
 			otherData.weight = weight;
 		}
+		mpfr_class articulationConditioningForResampling::estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack) const
+		{
+			if(radius != 1)
+			{
+				throw std::runtime_error("Radius must be 1 to call constructRadius1Graph");
+			}
+			return withFinalConditioning::estimateRadius1<articulationConditioningForResampling>(*this, randomSource, nSimulations, scratchMemory, stack);
+		}
 		articulationConditioningForResampling articulationConditioningForResampling::copyWithWeight(mpfr_class weight) const
 		{
 			return articulationConditioningForResampling(*this, weight);

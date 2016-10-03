@@ -24,7 +24,7 @@ namespace residualConnectivity
 			typedef ::residualConnectivity::obs::withWeightConstructorType observationConstructorType;
 
 			usingBiconnectedComponents(usingBiconnectedComponents&& other);
-			void estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, std::vector<observationType>& outputObservations) const;
+			mpfr_class estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack) const;
 			bool isPotentiallyConnected() const;
 			usingBiconnectedComponents(context const& contextObj, boost::shared_array<const vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType &);
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;

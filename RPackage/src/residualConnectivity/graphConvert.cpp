@@ -10,7 +10,7 @@ void graphConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph& bo
 	if(className == "igraph")
 	{
 		Rcpp::Environment igraphEnv("package:igraph");
-		Rcpp::Function isDirected = igraphEnv["is.directed"];
+		Rcpp::Function isDirected = igraphEnv["is_directed"];
 		if(Rcpp::as<bool>(isDirected(graph)))
 		{
 			throw std::runtime_error("Input `graph' must be undirected");

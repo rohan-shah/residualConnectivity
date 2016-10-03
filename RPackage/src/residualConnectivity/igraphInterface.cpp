@@ -11,14 +11,11 @@ void igraphConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph& o
 	{
 		throw std::runtime_error("Unable to convert input graph to a list");
 	}
-	int nVertices = Rcpp::as<int>(graph(0));
-	bool directed = Rcpp::as<bool>(graph(1));
-	Rcpp::IntegerVector edgesVertex1 = Rcpp::as<Rcpp::IntegerVector>(graph(2));
-	Rcpp::IntegerVector edgesVertex2 = Rcpp::as<Rcpp::IntegerVector>(graph(3));
-	if(edgesVertex1.size() != edgesVertex2.size())
-	{
-		throw std::runtime_error("Internal error");
-	}
+	Rcpp::Environment igraphEnv("package:igraph");
+	Rcpp::Function length("length"), as_edgelist = igraphEnv["as_edgelist"], is_directed = igraphEnv["is_directed"], V = igraphEnv["V"];
+	int nVertices = Rcpp::as<int>(length(V(graph_sexp)));
+	bool directed = Rcpp::as<bool>(is_directed(graph_sexp));
+	Rcpp::NumericMatrix edgeList = Rcpp::as<Rcpp::NumericMatrix>(as_edgelist(graph_sexp));
 	if(directed)
 	{
 		throw std::runtime_error("Input graph must be undirected");
@@ -26,8 +23,9 @@ void igraphConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph& o
 
 	//Construct graph
 	outputGraph = residualConnectivity::context::inputGraph(nVertices);
-	for(int i = 0; i < edgesVertex1.size(); i++)
+	for(int i = 0; i < edgeList.nrow(); i++)
 	{
-		boost::add_edge(edgesVertex1(i), edgesVertex2(i), outputGraph);
+		boost::add_edge(edgeList(i, 0)-1, edgeList(i, 1)-1, outputGraph);
+		boost::add_edge(edgeList(i, 1)-1, edgeList(i, 0)-1, outputGraph);
 	}
 }

@@ -15,7 +15,6 @@ namespace residualConnectivity
 			INITIAL_RADIUS_OPTION
 			N_OPTION
 			SPLITTING_FACTOR_OPTION
-			OUTPUT_DISTRIBUTION_OPTION
 			OUTPUT_TREE_OPTION
 			HELP_OPTION;
 
@@ -89,18 +88,11 @@ namespace residualConnectivity
 		observationTree tree(&contextObj, initialRadius);
 
 		commandLineOutput outputStream;
-		usingBiconnectedSplittingArgs args(contextObj, tree, outputStream);
-		args.outputTree = variableMap.count("outputTree");
-		args.outputTreeFile = variableMap["outputTree"].as<std::string>();
+		usingBiconnectedSplittingArgs args(contextObj, outputStream);
 		args.n = n;
 		args.splittingFactors = splittingFactors;
 		args.initialRadius = initialRadius;
 		args.estimate = 0;
-		args.outputDistribution = variableMap.count("outputDistribution");
-		if(args.outputDistribution)
-		{
-			args.outputDistributionFile = variableMap["outputDistribution"].as<std::string>();
-		}
 
 		readSeed(variableMap, args.randomSource);
 		usingBiconnectedSplitting(args);

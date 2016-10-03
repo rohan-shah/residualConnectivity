@@ -28,6 +28,7 @@ namespace residualConnectivity
 			articulationConditioningForResampling(context const& contextObj, boost::shared_array<vertexState> state, int radius, ::residualConnectivity::subObs::withWeightConstructorType &);
 			void getObservation(vertexState* state, boost::mt19937& randomSource, observationConstructorType&) const;
 			articulationConditioningForResampling copyWithWeight(mpfr_class weight) const;
+			mpfr_class estimateRadius1(boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack) const;
 		protected:
 			articulationConditioningForResampling(const articulationConditioningForResampling& other, mpfr_class weight);
 		private:

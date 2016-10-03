@@ -19,32 +19,30 @@ namespace residualConnectivity
 		struct stepInputs
 		{
 			stepInputs(context const& contextObj, const std::vector<double>& splittingFactors)
-				:contextObj(contextObj), splittingFactors(splittingFactors), outputTree(false)
+				:contextObj(contextObj), splittingFactors(splittingFactors)
 			{}
 			context const& contextObj;
 			const std::vector<double>& splittingFactors;
 			int initialRadius;
 			long n;
-			bool outputTree;
 			bool verbose;
 		};
 		struct stepOutputs
 		{
-			stepOutputs(std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>& subObservations, std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>& observations, boost::mt19937& randomSource, observationTree& tree, std::vector<double>& levelProbabilities, outputObject& output)
-				:subObservations(subObservations), observations(observations), randomSource(randomSource), tree(tree), levelProbabilities(levelProbabilities), output(output)
+			stepOutputs(std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>& subObservations, std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>& observations, boost::mt19937& randomSource, std::vector<double>& levelProbabilities, outputObject& output)
+				:subObservations(subObservations), observations(observations), randomSource(randomSource), levelProbabilities(levelProbabilities), output(output)
 			{}
 			std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting>& subObservations;
 			std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>& observations;
-			std::vector<int> potentiallyConnectedIndices;
 			boost::mt19937& randomSource;
-			observationTree& tree;
 			std::vector<double>& levelProbabilities;
 			outputObject& output;
 			long totalGenerated;
 		};
-		void stepOne(const stepInputs& inputs, stepOutputs& outputs)
+		mpfr_class stepOne(const stepInputs& inputs, stepOutputs& outputs)
 		{
 			outputs.totalGenerated = 0;
+			mpfr_class sumProbabilities = 0;
 #ifdef USE_OPENMP
 			boost::mt19937::result_type perThreadSeeds[100];
 			for(int i = 0; i < 100; i++) perThreadSeeds[i] = outputs.randomSource();
@@ -57,8 +55,6 @@ namespace residualConnectivity
 			#pragma omp parallel
 #endif
 			{
-				std::vector<::residualConnectivity::obs::articulationConditioningForSplitting> observationsThisThread;
-				std::vector<int> parentIndicesThisThread;
 				//vector that we re-use to avoid allocations
 				std::vector<int> connectedComponents(boost::num_vertices(inputs.contextObj.getGraph()));
 				//stack for depth first search
@@ -71,19 +67,18 @@ namespace residualConnectivity
 				boost::mt19937 perThreadSource;
 				perThreadSource.seed(perThreadSeeds[omp_get_thread_num()]);
 				long totalGeneratedThisThread = 0;
+				mpfr_class sumProbabilitiesThisThread = 0;
 				#pragma omp for
 #else
 				boost::mt19937& perThreadSource = outputs.randomSource;
+				mpfr_class& sumProbabilitiesThisThread = sumProbabilities;
 #endif
 				for(int j = 0; j < (int)outputs.subObservations.size(); j++)
 				{
 					//number of observations which the current observation is split into
 					int nThisObservation = splittingFactorInteger + splittingFactorBernoulli(perThreadSource);
-					std::size_t previousLength = observationsThisThread.size();
 					//get out the child observations
-					outputs.subObservations[j].estimateRadius1(perThreadSource, nThisObservation, connectedComponents, stack, observationsThisThread);
-					std::size_t newLength = observationsThisThread.size();
-					parentIndicesThisThread.insert(parentIndicesThisThread.end(), newLength - previousLength, outputs.potentiallyConnectedIndices[j]);
+					sumProbabilitiesThisThread += outputs.subObservations[j].getWeight() * outputs.subObservations[j].estimateRadius1(perThreadSource, nThisObservation, connectedComponents, stack);
 #ifdef USE_OPENMP
 					totalThisThreadGenerated += nThisObservation;
 #else
@@ -91,36 +86,16 @@ namespace residualConnectivity
 #endif
 				}
 #ifdef USE_OPENMP
-				for(int j = 0; j < omp_get_num_threads(); j++)
+				#pragma omp barrier 
+				#pragma omp critical
 				{
-					#pragma omp barrier 
-					#pragma omp critical
-					{
-						if(j == omp_get_thread_num())
-						{
-							if(inputs.outputTree)
-							{
-								for(int k = 0; k < observationsThisThread.size(); k++)
-								{
-									outputs.tree.add(observationsThisThread[k], initialRadius, parentIndicesThisThread[k], true);
-								}
-							}
-							output.observations.insert(output.observations.end(), std::make_move_iterator(observationsThisThread.begin()), std::make_move_iterator(observationsThisThread.end()));
-							outputs.totalGenerated += totalGeneratedThisThread;
-						}
-					}
+					outputs.totalGenerated += totalGeneratedThisThread;
+					sumProbabilities += sumProbabilitiesThisThread;
 				}
 #else
-				if(inputs.outputTree)
-				{
-					for(std::size_t k = 0; k < observationsThisThread.size(); k++)
-					{
-						outputs.tree.add(observationsThisThread[k], inputs.initialRadius, parentIndicesThisThread[k], true);
-					}
-				}
-				outputs.observations.swap(observationsThisThread);
 #endif
 			}
+			return sumProbabilities;
 		}
 		void stepsExceptOne(stepInputs& inputs, stepOutputs& outputs)
 		{
@@ -130,7 +105,6 @@ namespace residualConnectivity
 			for(int j = 0; j < 100; j++) perThreadSeeds[j] = outputs.randomSource();
 #endif
 			std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting> nextSetObservations;
-			std::vector<int> nextStepPotentiallyConnectedIndices;
 			//Loop over the splitting steps (the different nested events)
 			for(int i = 1; i < inputs.initialRadius/*+1*/; i++)
 			{
@@ -140,7 +114,6 @@ namespace residualConnectivity
 				//The number of sub-observations that were generated - If the splitting factor is not an integer, this will be random so we need to keep track of it. 
 				int generated = -1;
 				nextSetObservations.clear();
-				nextStepPotentiallyConnectedIndices.clear();
 				
 				//loop over the various sample paths
 #ifdef USE_OPENMP
@@ -180,12 +153,10 @@ namespace residualConnectivity
 							#pragma omp critical
 #endif
 							{
-								if(inputs.outputTree) outputs.tree.add(subObs, i, outputs.potentiallyConnectedIndices[j], subObs.isPotentiallyConnected());
 								generated++;
 								if(subObs.isPotentiallyConnected())
 								{
 									nextSetObservations.push_back(std::move(subObs));
-									nextStepPotentiallyConnectedIndices.push_back(generated);
 								}
 							}
 						}
@@ -194,7 +165,6 @@ namespace residualConnectivity
 				if(inputs.verbose) outputs.output << "Finished splitting step " << i << " / " << inputs.initialRadius << ", " << nextSetObservations.size() << " / " << generated+1 << " observations continuing" << outputObject::endl;
 				outputs.levelProbabilities.push_back((double)nextSetObservations.size() / (double)(generated+1));
 				outputs.subObservations.swap(nextSetObservations);
-				outputs.potentiallyConnectedIndices.swap(nextStepPotentiallyConnectedIndices);
 			}
 		}
 		void doCrudeMCStep(stepInputs& inputs, stepOutputs& outputs)
@@ -229,12 +199,10 @@ namespace residualConnectivity
 					#pragma omp critical
 #endif
 					{
-						if(inputs.outputTree) outputs.tree.add(subObs, 0, -1, subObs.isPotentiallyConnected());
 						generated++;
 						if(subObs.isPotentiallyConnected())
 						{
 							outputs.subObservations.push_back(std::move(subObs));
-							outputs.potentiallyConnectedIndices.push_back(generated);
 						}
 					}
 				}
@@ -256,14 +224,13 @@ namespace residualConnectivity
 		//3. initialRadius >= 2, crude MC and then two types of algorithm
 		std::vector<::residualConnectivity::subObs::articulationConditioningForSplitting> subObservations;
 		std::vector<::residualConnectivity::obs::articulationConditioningForSplitting> observations;
-		observationTree tree(&contextObj, initialRadius);
 
 		articulationConditioningSplittingPrivate::stepInputs inputs(contextObj, splittingFactors);
 		inputs.verbose = args.verbose;
 		inputs.initialRadius = initialRadius;
 		inputs.n = n;
 
-		articulationConditioningSplittingPrivate::stepOutputs outputs(subObservations, observations, randomSource, tree, levelProbabilities, args.output);
+		articulationConditioningSplittingPrivate::stepOutputs outputs(subObservations, observations, randomSource, levelProbabilities, args.output);
 		outputs.totalGenerated = 0;
 
 		articulationConditioningSplittingPrivate::doCrudeMCStep(inputs, outputs);
@@ -276,15 +243,10 @@ namespace residualConnectivity
 			articulationConditioningSplittingPrivate::stepsExceptOne(inputs, outputs);
 			
 			//When the radius is 1 we use a different algorithm
-			articulationConditioningSplittingPrivate::stepOne(inputs, outputs);
+			mpfr_class probabilitySum = articulationConditioningSplittingPrivate::stepOne(inputs, outputs);
 			if(args.verbose) args.output << "Finished splitting step " << initialRadius << " / " << initialRadius << ", " << observations.size() << " / " << outputs.totalGenerated  << " observations had non-zero probability" << outputObject::endl;
 			levelProbabilities.push_back((double)observations.size() / (double)outputs.totalGenerated);
 
-			mpfr_class probabilitySum = 0;
-			for(std::vector<::residualConnectivity::obs::articulationConditioningForSplitting>::iterator i = observations.begin(); i != observations.end(); i++)
-			{
-				probabilitySum += i->getWeight();
-			}
 			mpfr_class averageLastStep = probabilitySum / outputs.totalGenerated;
 			mpfr_class totalSampleSize = n;
 			for(std::vector<double>::iterator i = splittingFactors.begin(); i != splittingFactors.end(); i++) totalSampleSize *= *i;

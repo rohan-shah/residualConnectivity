@@ -33,7 +33,7 @@ test_that("Values agree with exact values for small grids and uniform probabilit
 		{
 			methodResult <- articulationConditioningSplitting(graph=graph, n = 20000, seed = gridSize, probabilities = probability, initialRadius = 3, splittingFactors = rep(1L, 3))
 			exactResult <- exactRCR(subgraphCounts, probability)
-			expect_equal(as.numeric(methodResult@estimate), as.numeric(exactResult), tolerance = 3e-2)
+			expect_equal(as.numeric(methodResult@estimate), as.numeric(exactResult), tolerance = 4e-2)
 		}
 	}
 })

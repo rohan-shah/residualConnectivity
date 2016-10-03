@@ -10,7 +10,7 @@ namespace residualConnectivity
 	{
 		namespace withFinalConditioning
 		{
-			template <class T> void estimateRadius1(const T& object, boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack, std::vector<typename T::observationType>& outputObservations)
+			template <class T> mpfr_class estimateRadius1(const T& object, boost::mt19937& randomSource, int nSimulations, std::vector<int>& scratchMemory, boost::detail::depth_first_visit_restricted_impl_helper<context::inputGraph>::stackType& stack)
 			{
 				if(nSimulations <= 0)
 				{
@@ -25,7 +25,7 @@ namespace residualConnectivity
 				subGraphType graph;
 				std::vector<int> graphVertices;
 				{
-					constructSubGraph(graph, graphVertices, contextObj, object.getState());
+					constructSubGraph(graph, graphVertices, object.getContext(), object.getState());
 					//assign edge indices
 					subGraphType::edge_iterator start, end;
 					int edgeIndex = 0;
@@ -35,7 +35,7 @@ namespace residualConnectivity
 				}
 				// Determine which vertices are fixed on, and which are unfixed
 				const vertexState* stateRef = object.getState();
-				std::size_t nVertices = boost::num_vertices(contextObj.getGraph());
+				std::size_t nVertices = boost::num_vertices(object.getContext().getGraph());
 				std::vector<context::inputGraph::vertex_descriptor> unfixedVertices;
 				std::vector<context::inputGraph::vertex_descriptor> fixedOnVertices;
 				for(std::size_t i = 0; i < nVertices; i++)
@@ -54,16 +54,9 @@ namespace residualConnectivity
 				{
 					if(object.isPotentiallyConnected())
 					{
-						::residualConnectivity::obs::withWeightConstructorType weightType;
-						weightType.weight = object.getWeight();
-						boost::shared_array<vertexState> copiedState(new vertexState[nVertices]);
-						memcpy(copiedState.get(), object.getState(), nVertices*sizeof(vertexState));
-						for(int i = 0; i < nSimulations;i++)
-						{
-							outputObservations.push_back(typename T::observationType(contextObj, copiedState, weightType));
-						}
+						return 1;
 					}
-					return;
+					return 0;
 				}
 
 				//get out biconnected components of helper graph (which has different vertex ids, remember)
@@ -76,20 +69,6 @@ namespace residualConnectivity
 
 				//Count the number of biconnected components. I believe these are guaranteed to be contiguous....
 				std::size_t nBiconnectedComponents = *std::max_element(biconnectedIds.begin(), biconnectedIds.end())+1;
-				//convert list of articulation vertices across to a bitset
-				std::vector<bool> isArticulationVertex(nVertices, false);
-				//Mark off each articulation point in the above vector, and count the number of extra points that we're fixing.
-				mpfr_class newWeight = object.getWeight();
-				const std::vector<mpfr_class>& operationalProbabilities = contextObj.getOperationalProbabilities();
-				for(std::vector<std::size_t>::iterator i = articulationVertices.begin(); i != articulationVertices.end(); i++)
-				{
-					isArticulationVertex[graphVertices[*i]] = true;
-					if(stateRef[graphVertices[*i]].state & UNFIXED_MASK) 
-					{
-						fixedOnVertices.push_back(graphVertices[*i]);
-						newWeight *= operationalProbabilities[graphVertices[*i]];
-					}
-				}
 				//allocate a set per biconnected component
 				std::vector<std::set<int> > biConnectedSets(nBiconnectedComponents);
 				//Add to each set the indices of the vertices that are contained in this biconnected component
@@ -116,111 +95,34 @@ namespace residualConnectivity
 					std::vector<context::inputGraph::vertex_descriptor> currentComponentFixed, currentComponentUnFixed;
 					for(std::set<int>::iterator vertexIterator = currentComponentVertices.begin(); vertexIterator != currentComponentVertices.end(); vertexIterator++)
 					{
-						if((stateRef[*vertexIterator].state & FIXED_MASK) || isArticulationVertex[*vertexIterator]) currentComponentFixed.push_back(*vertexIterator);
+						if((stateRef[*vertexIterator].state & FIXED_MASK)) currentComponentFixed.push_back(*vertexIterator);
 						else currentComponentUnFixed.push_back(*vertexIterator);
 					}
 					nFixedPointsPerComponent.push_back((int)currentComponentFixed.size());
 					fixedPointsPerComponent.push_back(std::move(currentComponentFixed));
 					unFixedPointsPerComponent.push_back(std::move(currentComponentUnFixed));
 				}
-				::residualConnectivity::obs::withWeightConstructorType observationInput;
-				//We need to take the same number of effective simulations, regardless of the number of biconnected components
-				int nComponentRuns = (int)(pow(nSimulations, 1.0/(float)nBiconnectedComponents));
-				int nRemaining = nSimulations - (int)(pow(nComponentRuns, nBiconnectedComponents) + 0.5);
-				std::vector<typename T::observationType> generatedObservations;
 				//connectedIndices[0] gives the indices of the entries in generatedObservations that are connected for biconnected component 0
 				std::vector<std::vector<int> > connectedIndices(nBiconnectedComponents);
-				for(int i = 0; i < nComponentRuns; i++)
+				boost::shared_array<vertexState> obsState(new vertexState[nVertices]);
+				std::vector<int> componentProbabilities(nBiconnectedComponents, 0);
+
+				typename T::observationConstructorType getObservationHelper;
+				for(int i = 0; i < nSimulations; i++)
 				{
-					boost::shared_array<vertexState> obsState(new vertexState[nVertices]);
-					object.getObservation(obsState.get(), randomSource, observationInput);
-					for(std::vector<std::size_t>::iterator j = articulationVertices.begin(); j != articulationVertices.end(); j++)
-					{
-						obsState[graphVertices[*j]].state = FIXED_ON;
-					}
-					observationInput.weight = newWeight;
-					typename T::observationType obs(contextObj, obsState, observationInput);
+					object.getObservation(obsState.get(), randomSource, getObservationHelper);
 					for(std::size_t j = 0; j < nBiconnectedComponents; j++)
 					{
 						std::vector<context::inputGraph::vertex_descriptor>& currentComponentFixed = fixedPointsPerComponent[j], currentComponentUnFixed = unFixedPointsPerComponent[j];
-						if(partIsSingleComponent(contextObj, obs.getState(), currentComponentFixed, currentComponentUnFixed, scratchMemory, stack)) connectedIndices[j].push_back(i);
-					}
-					generatedObservations.push_back(std::move(obs));
-				}
-				//Can we combine parts of the first nComponentRuns observations to get something connected?
-				bool canCombine = true;
-				for(std::vector<std::vector<int> >::const_iterator i = connectedIndices.begin(); i != connectedIndices.end(); i++)
-				{
-					if(i->size() == 0)
-					{
-						canCombine = false;
-						break;
-					}
-				}
-				if(canCombine)
-				{
-					//Now generate every possible observation that is connected, from the combinations drawn from the first nComponentRuns values in generatedObservations
-					std::vector<std::vector<int>::const_iterator> currentPosition;
-					for(std::size_t j = 0; j < nBiconnectedComponents; j++) currentPosition.push_back(connectedIndices[j].begin());
-					while(true)
-					{
-						boost::shared_array<vertexState> newState(new vertexState[nVertices]);
-						std::fill(newState.get(), newState.get()+nVertices, vertexState::fixed_off());
-						for(std::size_t j = 0; j < nBiconnectedComponents; j++)
+						if(partIsSingleComponent(contextObj, obsState.get(), currentComponentFixed, currentComponentUnFixed, scratchMemory, stack))
 						{
-							int observationIndexThisComponent = *currentPosition[j];
-							typename T::observationType& observationThisComponent = generatedObservations[observationIndexThisComponent];
-							const vertexState* observationThisComponentState = observationThisComponent.getState();
-
-							std::vector<context::inputGraph::vertex_descriptor>& currentComponentFixed = fixedPointsPerComponent[j];
-							std::vector<context::inputGraph::vertex_descriptor>& currentComponentUnFixed = unFixedPointsPerComponent[j];
-							for(std::vector<context::inputGraph::vertex_descriptor>::iterator k = currentComponentFixed.begin(); k != currentComponentFixed.end(); k++)
-							{
-								newState[*k] = observationThisComponentState[*k];
-							}
-							for(std::vector<context::inputGraph::vertex_descriptor>::iterator k = currentComponentUnFixed.begin(); k != currentComponentUnFixed.end(); k++)
-							{
-								newState[*k] = observationThisComponentState[*k];
-							}
-						}
-						observationInput.weight = newWeight;
-						outputObservations.push_back(typename T::observationType(contextObj, newState, observationInput));
-						std::size_t currentIncrementPoint = 0;
-						while(currentIncrementPoint < nBiconnectedComponents)
-						{
-							currentPosition[currentIncrementPoint]++;
-							if(currentPosition[currentIncrementPoint] == connectedIndices[currentIncrementPoint].end())
-							{
-								currentPosition[currentIncrementPoint] = connectedIndices[currentIncrementPoint].begin();
-								currentIncrementPoint++;
-							}
-							else
-							{
-								break;
-							}
-						}
-						if(currentIncrementPoint == nBiconnectedComponents)
-						{
-							break;
+							componentProbabilities[j] += 1;
 						}
 					}
 				}
-				//Now for the remaining ones
-				for(int i = nComponentRuns; i < nComponentRuns + nRemaining; i++)
-				{
-					boost::shared_array<vertexState> obsState(new vertexState[nVertices]);
-					object.getObservation(obsState.get(), randomSource, observationInput);
-					for(std::vector<std::size_t>::iterator j = articulationVertices.begin(); j != articulationVertices.end(); j++)
-					{
-						obsState[graphVertices[*j]].state = FIXED_ON;
-					}
-					observationInput.weight = newWeight;
-					typename T::observationType obs(contextObj, obsState, observationInput);
-					if(isSingleComponentAllOn(contextObj, obs.getState(), scratchMemory, stack)) 
-					{
-						outputObservations.push_back(std::move(obs));
-					}
-				}
+				mpfr_class product = 1;
+				for(std::size_t j = 0; j < nBiconnectedComponents; j++) product *= (double)componentProbabilities[j] / (double)nSimulations;
+				return product;
 			}
 		}
 	}
