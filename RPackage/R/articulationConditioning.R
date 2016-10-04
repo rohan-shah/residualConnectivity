@@ -1,5 +1,5 @@
 #' @export
-articulationConditioningResampling <- function(probabilities, n, seed, graph, initialRadius, verbose=FALSE)
+articulationConditioning <- function(probabilities, n, seed, graph, initialRadius, nLastStep, verbose=FALSE)
 {
 	if(missing(probabilities))
 	{
@@ -20,6 +20,10 @@ articulationConditioningResampling <- function(probabilities, n, seed, graph, in
 	if(missing(initialRadius))
 	{
 		stop("Input initialRadius cannot be missing")
+	}
+	if(missing(nLastStep))
+	{
+		stop("Input nLastStep cannot be missing")
 	}
 	if(any(probabilities < 0 | probabilities > 1 || is.na(probabilities)))
 	{
@@ -45,10 +49,14 @@ articulationConditioningResampling <- function(probabilities, n, seed, graph, in
 	{
 		stop("Input seed must be a single integer")
 	}
+	if(length(nLastStep) != 1 || !is.numeric(nLastStep) || nLastStep < 1)
+	{
+		stop("Input nLastStep must be a number")
+	}
 	if(class(graph) %in% c("igraph", "graphNEL", "graphAM"))
 	{
 		start <- Sys.time()
-		estimate <- .Call("articulationConditioningResampling", graph, probabilities, n, initialRadius, seed, verbose, PACKAGE="residualConnectivity")
+		estimate <- .Call("articulationConditioning", graph, probabilities, n, initialRadius, seed, verbose, nLastStep, PACKAGE="residualConnectivity")
 		end <- Sys.time()
 	}
 	else

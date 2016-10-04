@@ -26,6 +26,5 @@ void igraphConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph& o
 	for(int i = 0; i < edgeList.nrow(); i++)
 	{
 		boost::add_edge(edgeList(i, 0)-1, edgeList(i, 1)-1, outputGraph);
-		boost::add_edge(edgeList(i, 1)-1, edgeList(i, 0)-1, outputGraph);
 	}
 }

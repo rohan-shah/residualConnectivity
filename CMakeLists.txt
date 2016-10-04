@@ -65,7 +65,6 @@ endif()
 
 add_subdirectory(residualConnectivityCommon)
 add_subdirectory(exhaustiveProbability)
-add_subdirectory(usingBiconnectedSplitting)
 add_subdirectory(transferMatrix)
 add_subdirectory(transferMatrixCommon)
 add_subdirectory(monteCarloMethods)

@@ -44,7 +44,7 @@ void graphAMConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph& 
 	outputGraph = residualConnectivity::context::inputGraph(nVertices);
 	for(int i = 0; i < nVertices; i++)
 	{
-		for(int j = 0; j < nVertices; j++)
+		for(int j = i; j < nVertices; j++)
 		{
 			if(adjMat(i, j) > 0)
 			{

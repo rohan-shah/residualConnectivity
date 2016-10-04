@@ -1,8 +1,6 @@
-#include "subObs/usingBiconnectedComponents.h"
 #include <boost/random/bernoulli_distribution.hpp>
 #include <boost/graph/biconnected_components.hpp>
 #include "isSingleComponentWithRadius.h"
-#include "subObs/usingBiconnectedComponents.h"
 #include "constructSubGraph.h"
 namespace residualConnectivity
 {
@@ -62,7 +60,7 @@ namespace residualConnectivity
 				//get out biconnected components of helper graph (which has different vertex ids, remember)
 				typedef std::vector<boost::graph_traits<subGraphType>::edges_size_type> component_storage_t;
 				typedef boost::iterator_property_map<component_storage_t::iterator, boost::property_map<subGraphType, boost::edge_index_t>::type> component_map_t;
-				component_storage_t biconnectedIds(boost::num_edges(graph));
+				component_storage_t biconnectedIds(boost::num_edges(graph), -1);
 				component_map_t componentMap(biconnectedIds.begin(), boost::get(boost::edge_index, graph));
 				std::vector<std::size_t> articulationVertices;
 				boost::biconnected_components(graph, componentMap, std::back_inserter(articulationVertices));

@@ -96,7 +96,7 @@ void graphNELConvert(SEXP graph_sexp, residualConnectivity::context::inputGraph&
 		}
 		for(int j = 0; j < targetIndicesThisNode.size(); j++)
 		{
-			boost::add_edge((std::size_t)nodeIndex, (std::size_t)((int)targetIndicesThisNode(j)-1), outputGraph);
+			if(nodeIndex < (int)targetIndicesThisNode(j)-1) boost::add_edge((std::size_t)nodeIndex, (std::size_t)((int)targetIndicesThisNode(j)-1), outputGraph);
 		}
 	}
 }

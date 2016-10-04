@@ -1,5 +1,5 @@
-#ifndef RESIDUAL_CONNECTIVITY_USING_BICONNECTED_COMPONENTS_OBS_HEADER_GUARD
-#define RESIDUAL_CONNECTIVITY_USING_BICONNECTED_COMPONENTS_OBS_HEADER_GUARD
+#ifndef RESIDUAL_CONNECTIVITY_ARTICULATION_CONDITIONING_OBS_HEADER_GUARD
+#define RESIDUAL_CONNECTIVITY_ARTICULATION_CONDITIONING_OBS_HEADER_GUARD
 #include "subObsTypes.h"
 #include "obs/getSubObservation.hpp"
 #include "subObs/getObservation.hpp"
@@ -12,23 +12,23 @@ namespace residualConnectivity
 {
 	namespace subObs
 	{
-		class usingBiconnectedComponents;
+		class articulationConditioning;
 	}
 	namespace obs
 	{
-		class usingBiconnectedComponents : public ::residualConnectivity::withSub
+		class articulationConditioning : public ::residualConnectivity::withSub
 		{
 		public:
 			template<class T> friend class ::residualConnectivity::obs::getSubObservation;
 			template<class T> friend class ::residualConnectivity::subObs::getObservation;
 
-			typedef ::residualConnectivity::subObs::usingBiconnectedComponents subObservationType;
+			typedef ::residualConnectivity::subObs::articulationConditioning subObservationType;
 			typedef ::residualConnectivity::subObs::withWeightConstructorType subObservationConstructorType;
 
-			usingBiconnectedComponents(context const& contextObj, boost::mt19937& randomSource);
-			usingBiconnectedComponents(usingBiconnectedComponents&& other);
-			usingBiconnectedComponents& operator=(usingBiconnectedComponents&& other);
-			usingBiconnectedComponents(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType&);
+			articulationConditioning(context const& contextObj, boost::mt19937& randomSource);
+			articulationConditioning(articulationConditioning&& other);
+			articulationConditioning& operator=(articulationConditioning&& other);
+			articulationConditioning(context const& contextObj, boost::shared_array<const vertexState> state, ::residualConnectivity::obs::withWeightConstructorType&);
 			const mpfr_class& getWeight() const;
 		private:
 			void getSubObservation(vertexState* newState, int radius, subObservationConstructorType& other) const;

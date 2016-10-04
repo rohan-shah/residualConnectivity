@@ -6,7 +6,7 @@
 #include "countConnectedSubgraphsBySize.h"
 #include "stochasticEnumeration.h"
 #include "createHexagonalLattice.h"
-#include "articulationConditioningResampling.h"
+#include "articulationConditioning.h"
 #include "articulationConditioningSameCountResampling.h"
 #include "articulationConditioningSameCountImportance.h"
 #include "articulationConditioningSameCountImportance2.h"
@@ -14,7 +14,6 @@
 #include "gridCountSpecificSize.h"
 #include "optimalStateIndependentImportance.h"
 #include "articulationConditioningImportance.h"
-#include "articulationConditioningSplitting.h"
 #include "transferMatrixIdentical.h"
 #include "PMC.h"
 #include "exactProbability.h"
@@ -37,11 +36,10 @@ extern "C"
 		{"countConnectedSubgraphsBySize", (DL_FUNC)&countConnectedSubgraphsBySize, 1},
 		{"stochasticEnumeration", (DL_FUNC)&stochasticEnumeration, 7},
 		{"articulationConditioningSameCountResampling", (DL_FUNC)&articulationConditioningSameCountResampling, 7},
-		{"articulationConditioningResampling", (DL_FUNC)&articulationConditioningResampling, 6},
+		{"articulationConditioning", (DL_FUNC)&articulationConditioning, 7},
 		{"articulationConditioningImportance", (DL_FUNC)&articulationConditioningImportance, 8},
 		{"articulationConditioningSameCountImportance", (DL_FUNC)&articulationConditioningSameCountImportance, 8},
 		{"articulationConditioningSameCountImportance2", (DL_FUNC)&articulationConditioningSameCountImportance2, 8},
-		{"articulationConditioningSplitting", (DL_FUNC)&articulationConditioningSplitting, 7},
 		{"PMC", (DL_FUNC)&PMC, 3},
 		{"createHexagonalLattice", (DL_FUNC)&createHexagonalLattice, 2},
 		{"gridCountSpecificSize", (DL_FUNC)&gridCountSpecificSize, 3},

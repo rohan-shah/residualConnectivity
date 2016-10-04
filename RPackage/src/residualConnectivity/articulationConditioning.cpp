@@ -1,9 +1,9 @@
-#include "monteCarloMethods/articulationConditioningResampling.h"
+#include "monteCarloMethods/articulationConditioning.h"
 #include "Rcpp.h"
-#include "articulationConditioningResampling.h"
+#include "articulationConditioning.h"
 #include "graphInterface.h"
 #include "ROutputObject.h"
-SEXP articulationConditioningResampling(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP verbose_sexp)
+SEXP articulationConditioning(SEXP graph_sexp, SEXP probability_sexp, SEXP n_sexp, SEXP initialRadius_sexp, SEXP seed_sexp, SEXP verbose_sexp, SEXP nLastStep_sexp)
 {
 BEGIN_RCPP
 	//convert number of samples
@@ -51,20 +51,29 @@ BEGIN_RCPP
 	{
 		throw std::runtime_error("Input seed must be an integer");
 	}
+
+	long nLastStep;
+	try
+	{
+		nLastStep = Rcpp::as<long>(nLastStep_sexp);
+	}
+	catch(...)
+	{
+		throw std::runtime_error("Input nLastStep must be a number");
+	}
 	boost::mt19937 randomSource;
 	randomSource.seed(seed);
 
 	residualConnectivity::context contextObj = graphInterface(graph_sexp, probability_sexp);
-	residualConnectivity::observationTree tree(&contextObj, (int)initialRadius);
 	ROutputObject output;
-	residualConnectivity::articulationConditioningResamplingArgs args(contextObj, randomSource, tree, output);
-	args.outputTree = false;
+	residualConnectivity::articulationConditioningArgs args(contextObj, randomSource, output);
 	args.n = (int)n;
 	args.initialRadius = (int)initialRadius;
 	args.verbose = verbose;
+	args.nLastStep = nLastStep;
 	randomSource.seed(seed);
 
-	residualConnectivity::articulationConditioningResampling(args);
+	residualConnectivity::articulationConditioning(args);
 	double result = args.estimate.convert_to<double>();
 	return Rcpp::wrap(result);
 END_RCPP

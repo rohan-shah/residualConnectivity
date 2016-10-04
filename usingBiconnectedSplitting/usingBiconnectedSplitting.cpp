@@ -1,6 +1,6 @@
 #include <boost/program_options.hpp>
 #include <iostream>
-#include "monteCarloMethods/usingBiconnectedSplitting.h"
+#include "monteCarloMethods/articulationConditioning.h"
 #include "arguments.h"
 #include "argumentsMPFR.h"
 namespace residualConnectivity
